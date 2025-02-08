@@ -1,136 +1,156 @@
+"""
+Parser for converting draw.io XML files into our diagram model.
+"""
+
 import xml.etree.ElementTree as ET
-from typing import Dict, Optional, List
+from typing import Dict, List, Optional, Tuple, Set
+from logging import getLogger
 from pydantic import ValidationError
-from questionnaire_parser.models.diagram import (Diagram, DiagramNode, DiagramEdge, DiagramContainer, NodeType, GeometryModel, Severity, SelectOption)
-from questionnaire_parser.exceptions.parsing import XMLParsingError
+
+from questionnaire_parser.models.diagram import (
+    Diagram, Node, Edge, Container, Geometry, Style, 
+    ShapeType, BaseElement
+)
+from questionnaire_parser.exceptions import XMLParsingError, ValidationError
+
+
+logger = getLogger(__name__)
 
 class DrawIoParser:
-    """Handles parsing of draw.io XML files into Pydantic models"""
+    """Parses draw.io XML files into our diagram model"""
     
     def __init__(self):
-        #self.ns = {'': 'http://www.w3.org/2000/svg'}
-        self.ns = None # no namespace
-    
+        self.namespace = None # no namespace in draw.io XML
+        # Map draw.io shape styles to our ShapeType enum
+        self.shape_map = {
+            'rhombus': ShapeType.RHOMBUS,
+            'hexagon': ShapeType.HEXAGON,
+            'ellipse': ShapeType.ELLIPSE,
+            'rectangle': ShapeType.RECTANGLE,
+            'callout': ShapeType.CALLOUT
+        }
+
     def parse_file(self, filepath: str) -> Diagram:
-        """Parse a draw.io XML file into our Pydantic models"""
+        """Parse a draw.io XML file into our diagram model"""
         try:
             tree = ET.parse(filepath)
             root = tree.getroot()
             return self.parse_xml(root)
         except ET.ParseError as e:
             raise XMLParsingError(f"Failed to parse XML file: {e}")
-        except ValidationError as e:
-            raise XMLParsingError(f"Validation error in parsed data: {e}")
         except Exception as e:
             raise XMLParsingError(f"Unexpected error during parsing: {e}")
 
     def parse_xml(self, root: ET.Element) -> Diagram:
-        """Convert XML root element into Pydantic diagram representation"""
-        diagram_data: Dict[str, Dict] = {
-            "nodes": {},
-            "edges": {},
-            "containers": {},
-            "select_options": {}
-        }
-
-        # Keep track of processed mxCells
-        processed_cell_ids = set()
-
-        # First pass: Process UserObjects
-        user_objects = root.findall('.//UserObject', self.ns)
-        for user_object in user_objects:
-            cell = user_object.find('mxCell')
-            if cell is not None:
-                processed_cell_ids.add(cell.get('id'))
-                element_data = self._parse_element(user_object, cell)
-                if element_data:
-                    if self._is_node(user_object):
-                        node = self._create_node(element_data)
-                        if node:
-                            diagram_data["nodes"][node.id] = node
-                    elif self._is_container(user_object):
-                        container = self._create_container(element_data)
-                        if container:
-                            diagram_data["containers"][container.id] = container
-
-        # Process remaining mxCells
-        mx_cells = root.findall('.//mxCell', self.ns)
-        for cell in mx_cells:
-            cell_id = cell.get('id')
-            if cell_id not in processed_cell_ids:
-                element_data = self._parse_element(cell)
-                if element_data:
-                    if self._is_edge(cell):
-                        edge = self._create_edge(cell)
-                        if edge:
-                            diagram_data["edges"][edge.id] = edge
-                    elif self._is_node(cell):
-                        node = self._create_node(element_data)
-                        if node:
-                            diagram_data["nodes"][node.id] = node
-                    elif self._is_container(cell):
-                        container = self._create_container(element_data)
-                        if container:
-                            diagram_data["containers"][container.id] = container
-
-        # Second pass: Process edges from UserObjects
-        for user_object in user_objects:
-            cell = user_object.find('mxCell')
-            if cell is not None and self._is_edge(cell):
+        """Convert XML root element into our diagram representation"""
+        # Initialize collections for diagram elements
+        nodes: Dict[str, Node] = {}
+        edges: Dict[str, Edge] = {}
+        containers: Dict[str, Container] = {}
+        
+        # First pass: Create all nodes and containers
+        for cell in root.findall('.//mxCell', self.namespace):
+            element_data = self._parse_element(cell)
+            if not element_data:
+                continue
+                
+            if self._is_node(cell):
+                node = self._create_node(element_data)
+                nodes[node.id] = node
+            elif self._is_container(cell):
+                container = self._create_container(element_data)
+                containers[container.id] = container
+                
+        # Second pass: Create edges
+        for cell in root.findall('.//mxCell', self.namespace):
+            if self._is_edge(cell):
                 edge = self._create_edge(cell)
                 if edge:
-                    diagram_data["edges"][edge.id] = edge
-
-        return Diagram(**diagram_data)
+                    edges[edge.id] = edge
+                    
+        # Build and validate the diagram
+        try:
+            diagram = Diagram(
+                nodes=nodes,
+                edges=edges,
+                containers=containers
+            )
+            return diagram
+        except ValidationError as e:
+            logger.error(f"Failed to create valid diagram: {e}")
+            raise
 
     def _parse_element(self, element: ET.Element) -> Optional[Dict]:
-        """Extract basic properties from an mxCell or UserObject element"""
+        """Extract basic properties from an mxCell element"""
         element_id = element.get('id')
-        if not element_id or element_id in ('0', '1'):
+        if not element_id or element_id in ('0', '1'):  # Skip root elements
             return None
             
         return {
             'id': element_id,
             'style': self._parse_style(element.get('style', '')),
-            'geometry': self._parse_geometry(element.find('mxGeometry', self.ns)),
-            'value': element.get('value', ''),
+            'geometry': self._parse_geometry(element.find('mxGeometry', self.namespace)),
+            'label': element.get('value', ''),
             'parent': element.get('parent'),
             'source': element.get('source'),
             'target': element.get('target')
         }
 
+    def _parse_style(self, style_str: str) -> Style:
+        """Convert draw.io style string into a Style model"""
+        if not style_str:
+            return Style()
+            
+        # Parse style string into dictionary
+        style_dict = {}
+        for item in style_str.split(';'):
+            if '=' in item:
+                key, value = item.split('=', 1)
+                style_dict[key.strip()] = value.strip()
+        
+        # Map to our Style model
+        shape = self._determine_shape(style_dict)
+        rounded = style_dict.get('rounded', '0') == '1'
+        dashed = style_dict.get('dashed', '0') == '1'
+        fill_color = style_dict.get('fillColor')
+        stroke_color = style_dict.get('strokeColor')
+        
+        return Style(
+            shape=shape,
+            rounded=rounded,
+            dashed=dashed,
+            fill_color=fill_color,
+            stroke_color=stroke_color
+        )
 
-    def _parse_style(self, style_str: str) -> Dict[str, str]:
-           """Convert draw.io style string into a dictionary"""
-           if not style_str:
-               return {}
-               
-           style_dict = {}
-           for item in style_str.split(';'):
-               if '=' in item:
-                   key, value = item.split('=', 1)
-                   style_dict[key.strip()] = value.strip()
-           return style_dict
+    def _determine_shape(self, style_dict: Dict[str, str]) -> Optional[ShapeType]:
+        """Determine the shape type from style properties"""
+        shape = style_dict.get('shape', '')
+        return self.shape_map.get(shape, ShapeType.RECTANGLE)
 
-    def _parse_geometry(self, geometry: Optional[ET.Element]) -> Dict[str, float]:
+    def _parse_geometry(self, geometry: Optional[ET.Element]) -> Optional[Geometry]:
         """Extract geometric properties from mxGeometry element"""
         if geometry is None:
-            return {}
+            return None
             
-        return {
-            'x': float(geometry.get('x', 0)),
-            'y': float(geometry.get('y', 0)),
-            'width': float(geometry.get('width', 0)),
-            'height': float(geometry.get('height', 0))
-        }
-
-
+        try:
+            return Geometry(
+                x=float(geometry.get('x', 0)),
+                y=float(geometry.get('y', 0)),
+                width=float(geometry.get('width', 0)),
+                height=float(geometry.get('height', 0))
+            )
+        except (ValueError, TypeError) as e:
+            logger.warning(f"Invalid geometry values: {e}")
+            return None
 
     def _is_node(self, element: ET.Element) -> bool:
         """Determine if an element represents a node"""
-        style = self._parse_style(element.get('style', ''))
-        return not (element.get('edge') == '1' or 
-                   style.get('container') == '1')
+        style = element.get('style', '')
+        return (
+            not element.get('edge') == '1' 
+            and 'container=1' not in style
+        )
 
     def _is_edge(self, element: ET.Element) -> bool:
         """Determine if an element represents an edge"""
@@ -138,75 +158,51 @@ class DrawIoParser:
 
     def _is_container(self, element: ET.Element) -> bool:
         """Determine if an element represents a container"""
-        style = self._parse_style(element.get('style', ''))
-        return style.get('container') == '1'
+        style = element.get('style', '')
+        return 'container=1' in style
 
-    def _create_container(self, data: Dict) -> Optional[DiagramContainer]:
-        """Create a container from parsed element data"""
-        try:
-            return DiagramContainer(
-                id=data['id'],
-                element_type='container',
-                visual_properties=data['style'],
-                heading=data['value'],
-                contained_elements=[],
-                container_type='page'  # Default type, should be determined from style
-            )
-        except ValidationError:
-            return None
-
-    def _determine_node_type(self, style_dict: Dict[str, str], 
-                           element_data: Dict) -> NodeType:
-        """Determine node type based on shape and style"""
-        shape = style_dict.get('shape', '')
-        
-        if shape == 'callout':
-            return NodeType.TEXT
-        elif shape == 'offPageConnector':
-            return NodeType.GOTO
-        elif shape == 'rhombus':
-            return NodeType.RHOMBUS
-        elif shape == 'hexagon':
-            return NodeType.INTEGER
-        elif shape == 'ellipse':
-            return NodeType.DECIMAL
-            
-        # Handle other cases based on style and context
-        return NodeType.NOTE  # Default type
-
-    def _create_node(self, data: Dict) -> Optional[DiagramNode]:
+    def _create_node(self, data: Dict) -> Node:
         """Create a node from parsed element data"""
-        try:
-            node_type = self._determine_node_type(data['style'], data)
-            geometry = GeometryModel(**data['geometry'])
-            
-            return DiagramNode(
-                id=data['id'],
-                element_type='node',
-                node_type=node_type,
-                visual_properties=data['style'],
-                geometry=geometry,
-                label=data['value'],
-                parent_id=data['parent']
-            )
-        except ValidationError:
-            return None
+        return Node(
+            id=data['id'],
+            geometry=data['geometry'],
+            style=data['style'],
+            label=data['label']
+        )
 
-    def _create_edge(self, element: ET.Element) -> Optional[DiagramEdge]:
-        """Create an edge from an mxCell"""
+    def _create_edge(self, element: ET.Element) -> Optional[Edge]:
+        """Create an edge from an mxCell element"""
         data = self._parse_element(element)
         if not data or not data['source'] or not data['target']:
             return None
             
-        try:
-            return DiagramEdge(
-                id=data['id'],
-                element_type='edge',
-                visual_properties=data['style'],
-                source=data['source'],
-                target=data['target'],
-                label=data['value']
-            )
-        except ValidationError:
-            return None
-    
+        return Edge(
+            id=data['id'],
+            style=data['style'],
+            label=data['label'],
+            source=data['source'],
+            target=data['target']
+        )
+
+    def _create_container(self, data: Dict) -> Container:
+        """Create a container from parsed element data"""
+        return Container(
+            id=data['id'],
+            geometry=data['geometry'],
+            style=data['style'],
+            label=data['label'],
+            contained_elements=[]
+        )
+
+    def validate_diagram(self, diagram: Diagram):
+        """Perform additional validation on the parsed diagram"""
+        # Verify it's a DAG
+        if not diagram.validate_dag():
+            raise ValidationError("Diagram contains cycles")
+            
+        # Verify single entry point
+        entry_points = diagram.get_entry_points()
+        if not entry_points:
+            raise ValidationError("Diagram has no entry points")
+        if len(entry_points) > 1:
+            logger.warning(f"Diagram has multiple entry points: {entry_points}")
