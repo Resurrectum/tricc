@@ -11,7 +11,7 @@ from questionnaire_parser.models.diagram import (
     Diagram, Node, Edge, Container, Geometry, Style, 
     ShapeType, BaseElement
 )
-from questionnaire_parser.exceptions import XMLParsingError, ValidationError
+from questionnaire_parser.exceptions.parsing import XMLParsingError
 
 
 logger = getLogger(__name__)
@@ -26,8 +26,9 @@ class DrawIoParser:
             'rhombus': ShapeType.RHOMBUS,
             'hexagon': ShapeType.HEXAGON,
             'ellipse': ShapeType.ELLIPSE,
-            'rectangle': ShapeType.RECTANGLE,
-            'callout': ShapeType.CALLOUT
+            'callout': ShapeType.CALLOUT,
+            'offPageConnector': ShapeType.OFFPAGE,
+            None: ShapeType.RECTANGLE  # Explicit mapping for when shape attribute is missing
         }
 
     def parse_file(self, filepath: str) -> Diagram:
@@ -43,28 +44,44 @@ class DrawIoParser:
 
     def parse_xml(self, root: ET.Element) -> Diagram:
         """Convert XML root element into our diagram representation"""
-        # Initialize collections for diagram elements
         nodes: Dict[str, Node] = {}
         edges: Dict[str, Edge] = {}
         containers: Dict[str, Container] = {}
         
+        # Find all diagram elements (direct mxCells and parent-wrapped mxCells)
+        element_nodes = []
+        
+        # Get direct mxCell elements
+        element_nodes.extend(root.findall('.//mxCell', self.namespace))
+        
+        # Get UserObject/object elements that contain mxCells
+        user_objects = root.findall('.//UserObject', self.namespace)
+        objects = root.findall('.//object', self.namespace)
+        
+        for parent in user_objects + objects:
+            mxCell = parent.find('mxCell', self.namespace)
+            if mxCell is not None:
+                # Store reference to parent in mxCell for attribute lookup
+                mxCell.parent_element = parent
+                element_nodes.append(mxCell)
+        
         # First pass: Create all nodes and containers
-        for cell in root.findall('.//mxCell', self.namespace):
-            element_data = self._parse_element(cell)
+        for element in element_nodes:
+            element_data = self._parse_element(element)
             if not element_data:
                 continue
                 
-            if self._is_node(cell):
+            if self._is_node(element):
                 node = self._create_node(element_data)
                 nodes[node.id] = node
-            elif self._is_container(cell):
+            elif self._is_container(element):
                 container = self._create_container(element_data)
                 containers[container.id] = container
                 
         # Second pass: Create edges
-        for cell in root.findall('.//mxCell', self.namespace):
-            if self._is_edge(cell):
-                edge = self._create_edge(cell)
+        for element in element_nodes:
+            if self._is_edge(element):
+                edge = self._create_edge(element)
                 if edge:
                     edges[edge.id] = edge
                     
@@ -123,9 +140,10 @@ class DrawIoParser:
             stroke_color=stroke_color
         )
 
-    def _determine_shape(self, style_dict: Dict[str, str]) -> Optional[ShapeType]:
-        """Determine the shape type from style properties"""
-        shape = style_dict.get('shape', '')
+    def _determine_shape(self, style_dict: Dict[str, str]) -> ShapeType:
+        """Determine the shape type from style properties.
+        In draw.io, a rectangle is the default shape when the shape attribute is missing."""
+        shape = style_dict.get('shape')  # Will be None if shape attribute doesn't exist
         return self.shape_map.get(shape, ShapeType.RECTANGLE)
 
     def _parse_geometry(self, geometry: Optional[ET.Element]) -> Optional[Geometry]:
