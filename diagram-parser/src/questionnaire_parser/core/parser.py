@@ -38,34 +38,48 @@ class DrawIoParser:
             root = tree.getroot()
             return self.parse_xml(root)
         except ET.ParseError as e:
-            raise XMLParsingError(f"Failed to parse XML file: {e}")
+            raise XMLParsingError(f"Failed to parse XML file: {e}") from e
         except Exception as e:
-            raise XMLParsingError(f"Unexpected error during parsing: {e}")
+            raise XMLParsingError(f"Unexpected error during parsing: {e}") from e
 
     def parse_xml(self, root: ET.Element) -> Diagram:
         """Convert XML root element into our diagram representation"""
         nodes: Dict[str, Node] = {}
         edges: Dict[str, Edge] = {}
         containers: Dict[str, Container] = {}
+
+        # Dictionary to store parent relationships {mxCell ID: parent element}
+        parent_map: Dict[str, ET.Element] = {}
+
+        # Track processed mxCell IDs to avoid counting children of parent-wrapped mxCells twice
+        processed_ids: set[str] = set()
         
         # Find all diagram elements (direct mxCells and parent-wrapped mxCells)
         element_nodes = []
         
-        # Get direct mxCell elements
-        element_nodes.extend(root.findall('.//mxCell', self.namespace))
-        
-        # Get UserObject/object elements that contain mxCells
-        user_objects = root.findall('.//UserObject', self.namespace)
-        objects = root.findall('.//object', self.namespace)
-        
-        for parent in user_objects + objects:
-            mxCell = parent.find('mxCell', self.namespace)
-            if mxCell is not None:
-                # Store reference to parent in mxCell for attribute lookup
-                mxCell.parent_element = parent
+       # Process UserObject/object elements first (they take precedence)
+       # Find all UserObject/object elements that contain mxCells
+       # Store references of mxCells to parent elements in parent_map
+       # Track processed mxCells in processed_ids
+        for parent_type in ['UserObject', 'object']:
+            for parent in root.findall(f'.//{parent_type}', self.namespace):
+                mxCell = parent.find('mxCell', self.namespace)
+                if mxCell is not None:
+                    cell_id = mxCell.get('id')
+                    if cell_id:
+                        parent_map[cell_id] = parent
+                        element_nodes.append(mxCell)
+                        processed_ids.add(cell_id)
+
+        # Then get only direct mxCell elements that haven´t been processed 
+        # as children of UserObject/object elements
+        for mxCell in root.findall('.//mxCell', self.namespace):
+            cell_id = mxCell.get('id')
+            if cell_id and cell_id not in processed_ids:
                 element_nodes.append(mxCell)
+                processed_ids.add(cell_id)
         
-        # First pass: Create all nodes and containers
+        # First pass: Create all diagram nodes and containers
         for element in element_nodes:
             element_data = self._parse_element(element)
             if not element_data:
@@ -144,7 +158,7 @@ class DrawIoParser:
         """Determine the shape type from style properties.
         In draw.io, a rectangle is the default shape when the shape attribute is missing."""
         shape = style_dict.get('shape')  # Will be None if shape attribute doesn't exist
-        return self.shape_map.get(shape, ShapeType.RECTANGLE)
+        return self.shape_map[shape]
 
     def _parse_geometry(self, geometry: Optional[ET.Element]) -> Optional[Geometry]:
         """Extract geometric properties from mxGeometry element"""

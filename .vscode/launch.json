@@ -16,7 +16,7 @@
             "name": "Python: Debug Analysis",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/diagram-parser/debug_parser.py",
+            "program": "${workspaceFolder}/diagram-parser/debug_parser_new.py",
             "console": "integratedTerminal",
             "justMyCode": false,
             "env": {

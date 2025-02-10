@@ -3,12 +3,14 @@ Data model for a diagram without any specific format
 """
 
 from enum import Enum
-from typing import Dict, List, Optional, Union
-from pydantic import BaseModel, Field, validator, model_validator
+from typing import Dict, List, Optional, Union, Set
+from logging import getLogger
+from pydantic import BaseModel, Field, validator, model_validator, root_validator
 from uuid import UUID
 from questionnaire_parser.exceptions.validation import (
     NodeValidationError, EdgeValidationError, ContainerValidationError)
 
+logger = getLogger(__name__)
 
 class Geometry(BaseModel):
     """Geometric properties of a non-edge diagram element"""
@@ -33,11 +35,11 @@ class ShapeType(str, Enum):
     RHOMBUS = "rhombus"
     CALLOUT = "callout"
     OFFPAGE = "offPageConnector"
+    LIST = "list" # Multiple choice nodes
 
 
 class Style(BaseModel):
     """Visual style properties of a diagram element"""
-    shape: Optional[ShapeType] = None
     fill_color: Optional[str] = None
     stroke_color: Optional[str] = None
     rounded: bool = False
@@ -56,8 +58,6 @@ class BaseElement(BaseModel):
     This is the base for the three possible types of elements: 
     nodes, edges, and containers."""
     id: str
-    geometry: Optional[Geometry] = None # Edges don't have geometry
-    style: Style
     label: str = ""
     page_id: str = "" # ID of the page containing the element
 
@@ -71,17 +71,27 @@ class BaseElement(BaseModel):
 
 class Node(BaseElement):
     """Represents a node in the diagram. At this basic structural level,
-    a node is simply an element with a position, shape, and label."""
-    pass
+    a node is simply an element with a position, label and shape. """
+    shape: ShapeType
+    geometry: Geometry
+    style: Style
+    options: Optional[List[str]] = None # For multiple choice nodes
 
-class Container(BaseElement):
-    """Represents a container element in the diagram. 
-    A container is a grouping element that can contain other elements.
-    Beyond the base element properties, a container has a non-empty list 
+    @validator('shape')
+    @classmethod
+    def validate_shape(cls, v):
+        """Ensure shape is valid for a node"""
+        return v
+
+class Group(BaseElement):
+    """Represents a group of elements in the diagram. 
+    A group contains other elements.
+    Beyond the base element properties, a group has a non-empty list 
     of contained elements (children)."""
-    contained_elements: List[str] = Field(default_factory=list)
+    contained_elements: Set[str] = Field(default_factory=list)
+    geometry: Geometry
 
-    @validator('container_type')
+    @validator('contained_elements')
     @classmethod
     def validate_contained_elements(cls, v):
         """Validate that the container has at least one child element"""
@@ -106,37 +116,26 @@ class Edge(BaseElement):
             raise ValueError("Edge endpoints cannot be empty")
         return v.strip()
     
-    @model_validator
-    def validate_edge_structure(cls, values):
-        """Validate edge structure"""
-        source_id = values.get('source_id')
-        target_id = values.get('target_id')
-
-        if source_id and target_id:
-            if source_id == target_id:
-                raise ValueError("Edge cannot connect to itself")
-
-            # Additional validations you suggested could go here
-            # Note: We might need to pass the diagram context to do some of these checks    
-        return values
-
-    @model_validator
+    @root_validator(pre=True)
     @classmethod
     def validate_edge_structure(cls, values):
-        """Validate edge does not connect to itself"""
-        source = values.get('source') # source_id
-        target = values.get('target') # target_id
-        
-        if source and target and source == target:
-            raise ValueError("Edge cannot connect a node to itself")
-            
+        """Validate edge structure"""
+        source = values.get('source')
+        target = values.get('target')
+
+        if source and target:
+            if source == target:
+                raise ValueError("Edge cannot connect to itself")
+
+        # Additional validations you suggested could go here
+        # Note: We might need to pass the diagram context to do some of these checks
         return values
 
 class Diagram(BaseModel):
     """Top-level container for the entire diagram"""
     nodes: Dict[str, Node] = Field(default_factory=dict)
     edges: Dict[str, Edge] = Field(default_factory=dict)
-    containers: Dict[str, Container] = Field(default_factory=dict)
+    groups: Dict[str, Group] = Field(default_factory=dict)
 
     @model_validator(mode='after')
     @classmethod
