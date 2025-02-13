@@ -69,13 +69,25 @@ class BaseElement(BaseModel):
             raise ValueError("ID cannot be empty")
         return v.strip()
 
+class NumericConstraints(BaseModel):
+    min_value: Optional[float] = None
+    max_value: Optional[float] = None
+    constraint_message: Optional[str] = None
+
+class NodeMetadata(BaseModel):
+    """Non-visual information attached to nodes (tags)"""
+    name: Optional[str] = None  # The 'name' attribute, used differently by different node types
+    numeric_constraints: Optional[NumericConstraints] = None  # for hexagon/ellipse nodes
+
 class Node(BaseElement):
     """Represents a node in the diagram. At this basic structural level,
-    a node is simply an element with a position, label and shape. """
+    a node is simply an element with a position, label and shape. But a list node
+    can have one or more options."""
     shape: ShapeType
     geometry: Geometry
     style: Style
-    options: Optional[List[str]] = None # For multiple choice nodes
+    options: Optional[List[str]] = None # Only for multiple choice nodes
+    metadata: Optional[NodeMetadata] = None  # Store non-visual information here
 
     @validator('shape')
     @classmethod
@@ -83,12 +95,23 @@ class Node(BaseElement):
         """Ensure shape is valid for a node"""
         return v
 
+    @model_validator(mode='after')
+    def validate_list_attributes(self):
+        """Ensure list nodes have required attributes"""
+        if self.shape == ShapeType.LIST:
+            if not self.options:
+                raise ValueError("Choice nodes must have options")
+        else:
+            if self.options is not None:
+                raise ValueError("Only choice nodes can have options")
+        return self
+
 class Group(BaseElement):
     """Represents a group of elements in the diagram. 
     A group contains other elements.
     Beyond the base element properties, a group has a non-empty list 
     of contained elements (children)."""
-    contained_elements: Set[str] = Field(default_factory=list)
+    contained_elements: Set[str] = Field(default_factory=set)
     geometry: Geometry
 
     @validator('contained_elements')
@@ -125,9 +148,9 @@ class Edge(BaseElement):
 
         if source and target:
             if source == target:
-                raise ValueError("Edge cannot connect to itself")
+                raise ValueError("Edge cannot connect a node to itself")
 
-        # Additional validations you suggested could go here
+        # Additional validations could go here
         # Note: We might need to pass the diagram context to do some of these checks
         return values
 
@@ -138,39 +161,38 @@ class Diagram(BaseModel):
     groups: Dict[str, Group] = Field(default_factory=dict)
 
     @model_validator(mode='after')
-    @classmethod
-    def validate_diagram_structure(cls, values):
+    def validate_diagram_structure(self) -> 'Diagram':
         """Validate overall diagram structure"""
-        nodes = values.get('nodes', {})
-        edges = values.get('edges', {})
-        containers = values.get('containers', {})
-
         # Validate edge connections
-        for edge_id, edge in edges.items():
-            if edge.source_id not in nodes:
+        for edge_id, edge in self.edges.items():
+            if edge.source not in self.nodes:
                 raise ValueError(f"Edge {edge_id} references non-existent source node")
-            if edge.target_id not in nodes:
+            if edge.target not in self.nodes:
                 raise ValueError(f"Edge {edge_id} references non-existent target node")
 
-        # Validate container memberships
-        for container_id, container in containers.items():
-            for element_id in container.contained_elements:
-                if element_id not in nodes:
-                    raise ValueError(f"Container {container_id} references non-existent node")
+        # Validate group memberships
+        for group_id, group in self.groups.items():
+            for element_id in group.contained_elements:
+                if element_id not in self.nodes:
+                    raise ValueError(f"Group {group_id} claims to contain a node that doesn't exist in the diagram.")
 
-        # Validate node relationships
-        for node_id, node in nodes.items():
-            if node.parent_id and node.parent_id not in nodes:
-                logger.error(f"Node {node_id} references non-existent parent {node.parent_id}")
-                raise NodeValidationError("Node references non-existent parent", node_id)
-            if node.container_id and node.container_id not in containers:
-                raise ValueError(f"Node {node_id} references non-existent container")
+        # Validate rhombus references
+        for node_id, node in self.nodes.items():
+            if node.shape == ShapeType.RHOMBUS:
+                if not node.metadata.name:  # The referenced node should be in the name field
+                    raise ValueError(f"Rhombus node {node_id} must reference another node")
+                if node.metadata.name not in self.nodes.values().metadata.name:
+                    raise ValueError(f"Rhombus node {node_id} references non-existent node {node.metadata.name}")
+                
+                # According to docs, referenced node must be upstream
+                # However, we might need the actual graph structure to validate this
+                # Could be added later when we have the complete DAG
 
-        return values
+        return self
 
     def get_entry_points(self) -> List[str]:
         """Find all nodes that could be entry points (no incoming edges)"""
-        incoming_edges = {edge.target_id for edge in self.edges.values()}
+        incoming_edges = {edge.target for edge in self.edges.values()}
         return [node_id for node_id in self.nodes.keys() if node_id not in incoming_edges]
 
     def validate_dag(self) -> bool:
@@ -190,7 +212,7 @@ class Diagram(BaseModel):
             # Check all outgoing edges
             for edge in self.edges.values():
                 if edge.source_id == node_id:
-                    if not dfs(edge.target_id):
+                    if not dfs(edge.target):
                         return False
 
             path.remove(node_id)
