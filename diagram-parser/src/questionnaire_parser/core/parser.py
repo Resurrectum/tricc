@@ -107,48 +107,59 @@ class DrawIoParser:
     def _parse_cell(self, cell: ET.Element) -> Optional[Dict]:
         """Extract basic properties from an mxCell element."""
         cell_id = cell.get('id')
-        # For cells with UserObject/object parents, get ID and label from parent,
-        # the parent is then the 'grandparent' of the cell
+        # For cells with UserObject/object parents, get ID, label AND parentID from parent itself
         if not cell_id:
             wrapper = cell.getparent()
             cell_id = wrapper.get('id')
             label = wrapper.get('label', '')
             # get the parent of the wrappper
-            parent = wrapper.getparent()
+            parent_id = wrapper.getparent().get('id') if wrapper.getparent() is not None else None
         else:
             label = cell.get('value', '')
-            parent = cell.getparent()
+            parent_id = cell.getparent().get('id') if cell.getparent() is not None else None
     
         if not cell_id or cell_id in ('0', '1'):  # Skip root elements
             return None
-            
-        style = cell.get('style', '')
+        
+        # draw.io stores the shape in the style, so we need the whole style-dict to get the shape
+        style_string = cell.get('style', '') # get style string from cell using lxml
+        style_dict = self._parse_style_string(style_string)
+
         geometry = cell.find('mxGeometry', self.ns)
         
         return {
             'id': cell_id,
-            'style': self._parse_style(style),
+            'style_dict': style_dict, # style dict for shape determination
+            'style': self._parse_style(style_dict), # Style object
             'geometry': self._parse_geometry(geometry),
             'label': label,
-            'parent': parent, 
+            'parent_id': parent_id, 
             'source': cell.get('source'),
             'target': cell.get('target'),
             'page_id': self._get_page_id(cell)
         }
 
-    def _parse_style(self, style_str: str) -> Style:
-        """Convert draw.io style string into our Style model."""
+    def _parse_style_string(self, style_str: str) -> Dict[str, str]:
+        """Parse raw draw.io style string into a dictionary."""
         style_dict = {}
         for item in style_str.split(';'):
             if '=' in item:
                 key, value = item.split('=', 1)
                 style_dict[key.strip()] = value.strip()
+            else:
+                # Handle cases like 'rhombus' that appear without value
+                style_dict[item.strip()] = ''
+        return style_dict
+    
+
+    def _parse_style(self, style_dict: Dict[str, str]) -> Style:
+        """Convert style dictionary into our Style model."""
                 
         return Style(
             fill_color=style_dict.get('fillColor'),
             stroke_color=style_dict.get('strokeColor'),
-            rounded='rounded=1' in style_str,
-            dashed='dashed=1' in style_str
+            rounded=style_dict.get('rounded') == '1',
+            dashed=style_dict.get('dashed') == '1'
         )
 
     def _parse_geometry(self, geometry: Optional[ET.Element]) -> Geometry:
@@ -165,27 +176,22 @@ class DrawIoParser:
 
     def _determine_shape_type(self, style_dict: Dict[str, str]) -> ShapeType:
        """Determine the shape type based on style properties.
-    
-       Draw.io has two different ways of encoding shapes in the style string:
-       1. Some shapes (like rhombus, ellipse) appear directly as keys in the style string
-          Example: "rhombus;whiteSpace=wrap;html=1;"
-          These become direct keys in the style_dict
-    
-       2. Other shapes (like hexagon, callout) use a shape=... format
-          Example: "shape=hexagon;whiteSpace=wrap;html=1;"
-          These are accessed via style_dict.get('shape')
+        
+        Draw.io has two different ways of encoding shapes:
+        1. Direct keys (e.g., 'rhombus', 'ellipse')
+        2. shape=... format (e.g., 'shape=hexagon')
     
        The reason for this inconsistency is not documented but appears to be 
        historical in the draw.io codebase.
        """
-       # Check if it's a list (swimlane with stackLayout)
+       # Check if it's a list (swimlane and childLayout = stackLayout)
        if 'swimlane' in style_dict and style_dict.get('childLayout') == 'stackLayout':
-           return ShapeType.LIST
-    
+            return ShapeType.LIST
+       
        # Case 1: Shapes that appear directly in style string
-       if 'rhombus' in style_dict:
+       if 'rhombus' in style_dict.keys():
            return ShapeType.RHOMBUS
-       if 'ellipse' in style_dict:
+       if 'ellipse' in style_dict.keys():
            return ShapeType.ELLIPSE
            
        # Case 2: Shapes that use shape=... format
@@ -254,7 +260,8 @@ class DrawIoParser:
 
     def _create_node(self, data: Dict) -> Node:
         """Create a node from parsed cell data."""
-        shape_type = self._determine_shape_type(data['style'])
+
+        shape_type = self._determine_shape_type(data['style_dict'])
         
         # Extract options for list nodes
         options = None

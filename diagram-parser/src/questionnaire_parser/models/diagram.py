@@ -53,6 +53,16 @@ class Style(BaseModel):
             v = f"#{v}"
         return v
 
+class NumericConstraints(BaseModel):
+    min_value: Optional[float] = None
+    max_value: Optional[float] = None
+    constraint_message: Optional[str] = None
+
+class ElementMetadata(BaseModel):
+    """Non-visual information attached to elements (tags)"""
+    name: Optional[str] = None  # The 'name' attribute, used differently by different node types
+    numeric_constraints: Optional[NumericConstraints] = None  # for hexagon/ellipse nodes
+
 class BaseElement(BaseModel):
     """Base class for all diagram elements. 
     This is the base for the three possible types of elements: 
@@ -60,6 +70,7 @@ class BaseElement(BaseModel):
     id: str
     label: str = ""
     page_id: str = "" # ID of the page containing the element
+    metadata: Optional[ElementMetadata] = None  # Store non-visual information here
 
     @validator('id')
     @classmethod
@@ -69,16 +80,6 @@ class BaseElement(BaseModel):
             raise ValueError("ID cannot be empty")
         return v.strip()
 
-class NumericConstraints(BaseModel):
-    min_value: Optional[float] = None
-    max_value: Optional[float] = None
-    constraint_message: Optional[str] = None
-
-class NodeMetadata(BaseModel):
-    """Non-visual information attached to nodes (tags)"""
-    name: Optional[str] = None  # The 'name' attribute, used differently by different node types
-    numeric_constraints: Optional[NumericConstraints] = None  # for hexagon/ellipse nodes
-
 class Node(BaseElement):
     """Represents a node in the diagram. At this basic structural level,
     a node is simply an element with a position, label and shape. But a list node
@@ -87,7 +88,6 @@ class Node(BaseElement):
     geometry: Geometry
     style: Style
     options: Optional[List[str]] = None # Only for multiple choice nodes
-    metadata: Optional[NodeMetadata] = None  # Store non-visual information here
 
     @validator('shape')
     @classmethod
