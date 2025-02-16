@@ -5,7 +5,7 @@ from pydantic import ValidationError
 
 from questionnaire_parser.models.diagram import (
     Diagram, Node, Edge, Group, Geometry, Style, ShapeType,
-    NodeMetadata, NumericConstraints
+    ElementMetadata, NumericConstraints
 )
 from questionnaire_parser.exceptions.parsing import XMLParsingError, NodeValidationError
 
@@ -15,6 +15,8 @@ class DrawIoParser:
     """Parser for converting draw.io XML files into our diagram model."""
     
     def __init__(self):
+        '''Initialize parser with empty diagram and no namespace.'''
+        self.diagram = Diagram()
         self.ns = None # no namespace in draw.io XML
         
     def parse_file(self, filepath: str) -> Diagram:
@@ -29,306 +31,280 @@ class DrawIoParser:
             raise XMLParsingError(f"Unexpected error during parsing: {e}")
 
     def parse_xml(self, root: ET.Element) -> Diagram:
-        """Convert XML root element into our diagram model."""
-        # Initialize empty diagram
-        diagram = Diagram()
-
-        # Elements with user defined tags are mxCell nodes wrapped in UserObject/object elements
-        # Dictionary to store parent relationships {mxCell ID: parent element object}
-        parent_map: Dict[str, ET.Element] = {}
-
-        # Track processed mxCell IDs to avoid counting children of parent-wrapped mxCells twice
-        processed_ids: set[str] = set()
+        """Parse XML content into diagram model"""
+        # Get all mxCell elements
+        #cells = root.xpath('.//mxCell')
         
-        # Find all diagram elements (direct mxCells and parent-wrapped mxCells)
-        element_nodes: Set[ET.Element] = set()
+        # First pass: Create all groups
+        self._parse_groups(root)
         
-       # Process UserObject/object elements first (they take precedence)
-       # Find all UserObject/object elements that contain mxCells
-       # Store references of mxCells to parent elements in parent_map
-       # Track processed mxCells in processed_ids
-        for parent_type in ['UserObject', 'object']:
-            for parent in root.findall(f'.//{parent_type}', self.ns):
-                mxCell = parent.find('mxCell', self.ns)
-                if mxCell is not None:
-                    cell_id = parent.get('id') # if UserObject/object, ID is stored in parent element, not mxCell nodes 
-                    if cell_id:
-                        parent_map[cell_id] = parent
-                        element_nodes.add(mxCell)
-                        processed_ids.add(cell_id)
+        # Second pass: Create list nodes (multiple choice questions)
+        self._parse_list_nodes(root)
+        
+        # Third pass: Create regular nodes (including rhombus)
+        self._parse_nodes(root)
+        
+        # Fourth pass: Create edges
+        self._parse_edges(root)
+        
+        return self.diagram
 
-        # Then get only direct mxCell elements that haven´t been processed
-        # as children of UserObject/object elements
-        for mxCell in root.findall('.//mxCell', self.ns):
-            cell_id = mxCell.get('id')
-            if cell_id and cell_id not in processed_ids:
-                element_nodes.add(mxCell)
-                processed_ids.add(cell_id)
+    def _parse_groups(self, root: ET.Element):
+        """First pass: Parse group elements"""
+        for cell in root.iter('mxCell'):
+            if self._is_group(cell):
+                group = self._create_group(cell)
+                self.diagram.groups[group.id] = group
+                
+    def _parse_list_nodes(self, root: ET.Element):
+        """Second pass: Parse list nodes (multiple choice)"""
+        for cell in root.iter('mxCell'):
+            if self._is_list_node(cell):
+                node = self._create_list_node(cell)
+                self.diagram.nodes[node.id] = node
+                
+                # Add to parent group if applicable 
+                parent_id = cell.get('parent')
+                if parent_id in self.diagram.groups:
+                    self.diagram.groups[parent_id].contained_elements.add(node.id)
 
-        # First pass: Create all basic nodes and groups
-        for cell in element_nodes:
-            cell_data = self._parse_cell(cell)
-            if not cell_data:
-                continue
-            
+    def _parse_nodes(self, root: ET.Element):
+        """Third pass: Parse regular nodes (including rhombus)"""
+        for cell in root.iter('mxCell'):
             if self._is_node(cell):
-                try:
-                    node = self._create_node(cell_data)
-                    diagram.nodes[node.id] = node
-                except ValidationError as e:
-                    logger.warning(f"Failed to create node from cell {cell_data.get('id')}: {e}")
-                    
-            elif self._is_group(cell):
-                try:
-                    group = self._create_group(cell_data)
-                    diagram.groups[group.id] = group
-                except ValidationError as e:
-                    logger.warning(f"Failed to create group from cell {cell_data.get('id')}: {e}")
+                # Skip if already processed as list node
+                base_attrs = self._extract_base_attributes(cell)
+                if base_attrs['id'] in self.diagram.nodes:
+                    continue
 
-        # Second pass: Create edges and establish relationships
-        for cell in root.findall('.//mxCell', self.ns):
+                # Check if this is a select option for a list node
+                parent_id = cell.get('parent')
+                # If parent is UserObject/object, get its parent (the actual list node)
+                parent_elem = cell.getparent()
+                if parent_elem is not None and parent_elem.tag in ('UserObject', 'object'):
+                    parent_id = parent_elem.get('parent')
+                # If parent is a list node, add this as an option, but don't create a new node
+                if parent_id in self.diagram.nodes:
+                    parent_node = self.diagram.nodes[parent_id]
+                    if parent_node.shape == ShapeType.LIST:
+                        self._add_option_to_list(parent_node, cell)
+                        continue
+                
+                # Create regular node
+                node = self._create_node(cell)
+                self.diagram.nodes[node.id] = node
+                
+                # Add to parent group if applicable
+                if parent_id in self.diagram.groups:
+                    self.diagram.groups[parent_id].contained_elements.add(node.id)
+
+    def _parse_edges(self, root: ET.Element):
+        """Fourth pass: Parse edges"""
+        for cell in root.iter('mxCell'):
             if self._is_edge(cell):
-                try:
-                    edge = self._create_edge(cell)
-                    if edge:
-                        diagram.edges[edge.id] = edge
-                except ValidationError as e:
-                    logger.warning(f"Failed to create edge from cell {cell.get('id')}: {e}")
+                edge = self._create_edge(cell)
+                self.diagram.edges[edge.id] = edge
 
-        # Third pass: Resolve group memberships
-        self._resolve_group_memberships(diagram)
-        
-        # Final validation
-        if not diagram.validate_dag():
-            raise NodeValidationError("Resulting graph is not a valid DAG")
-            
-        return diagram
+    def _is_group(self, cell: ET.Element) -> bool:
+        """Check if cell represents a group"""
+        if cell.get('vertex') != '1':
+            return False
+        style = self._parse_style_string(cell.get('style', ''))
+        return 'swimlane' in style and 'childLayout' not in style
 
-    def _parse_cell(self, cell: ET.Element) -> Optional[Dict]:
-        """Extract basic properties from an mxCell element."""
-        cell_id = cell.get('id')
-        # For cells with UserObject/object parents, get ID, label AND parentID from parent itself
-        if not cell_id:
-            wrapper = cell.getparent()
-            cell_id = wrapper.get('id')
-            label = wrapper.get('label', '')
-            # get the parent of the wrappper
-            parent_id = wrapper.getparent().get('id') if wrapper.getparent() is not None else None
-        else:
-            label = cell.get('value', '')
-            parent_id = cell.getparent().get('id') if cell.getparent() is not None else None
-    
-        if not cell_id or cell_id in ('0', '1'):  # Skip root elements
-            return None
-        
-        # draw.io stores the shape in the style, so we need the whole style-dict to get the shape
-        style_string = cell.get('style', '') # get style string from cell using lxml
-        style_dict = self._parse_style_string(style_string)
-
-        geometry = cell.find('mxGeometry', self.ns)
-        
-        return {
-            'id': cell_id,
-            'style_dict': style_dict, # style dict for shape determination
-            'style': self._parse_style(style_dict), # Style object
-            'geometry': self._parse_geometry(geometry),
-            'label': label,
-            'parent_id': parent_id, 
-            'source': cell.get('source'),
-            'target': cell.get('target'),
-            'page_id': self._get_page_id(cell)
-        }
-
-    def _parse_style_string(self, style_str: str) -> Dict[str, str]:
-        """Parse raw draw.io style string into a dictionary."""
-        style_dict = {}
-        for item in style_str.split(';'):
-            if '=' in item:
-                key, value = item.split('=', 1)
-                style_dict[key.strip()] = value.strip()
-            else:
-                # Handle cases like 'rhombus' that appear without value
-                style_dict[item.strip()] = ''
-        return style_dict
-    
-
-    def _parse_style(self, style_dict: Dict[str, str]) -> Style:
-        """Convert style dictionary into our Style model."""
-                
-        return Style(
-            fill_color=style_dict.get('fillColor'),
-            stroke_color=style_dict.get('strokeColor'),
-            rounded=style_dict.get('rounded') == '1',
-            dashed=style_dict.get('dashed') == '1'
-        )
-
-    def _parse_geometry(self, geometry: Optional[ET.Element]) -> Geometry:
-        """Extract geometric properties from mxGeometry element."""
-        if geometry is None:
-            return Geometry()
-            
-        return Geometry(
-            x=float(geometry.get('x', 0)),
-            y=float(geometry.get('y', 0)),
-            width=float(geometry.get('width', 0)),
-            height=float(geometry.get('height', 0))
-        )
-
-    def _determine_shape_type(self, style_dict: Dict[str, str]) -> ShapeType:
-       """Determine the shape type based on style properties.
-        
-        Draw.io has two different ways of encoding shapes:
-        1. Direct keys (e.g., 'rhombus', 'ellipse')
-        2. shape=... format (e.g., 'shape=hexagon')
-    
-       The reason for this inconsistency is not documented but appears to be 
-       historical in the draw.io codebase.
-       """
-       # Check if it's a list (swimlane and childLayout = stackLayout)
-       if 'swimlane' in style_dict and style_dict.get('childLayout') == 'stackLayout':
-            return ShapeType.LIST
-       
-       # Case 1: Shapes that appear directly in style string
-       if 'rhombus' in style_dict.keys():
-           return ShapeType.RHOMBUS
-       if 'ellipse' in style_dict.keys():
-           return ShapeType.ELLIPSE
-           
-       # Case 2: Shapes that use shape=... format
-       shape = style_dict.get('shape', '')
-       shape_mapping = {
-           'hexagon': ShapeType.HEXAGON,
-           'callout': ShapeType.CALLOUT,
-           'offPageConnector': ShapeType.OFFPAGE
-       }
-    
-       return shape_mapping.get(shape, ShapeType.RECTANGLE)  # Default to rectangle if no specific shape
-
-    def _parse_numeric_constraints(self, cell: ET.Element) -> Optional[NumericConstraints]:
-        """Extract numeric constraints for hexagon/ellipse nodes."""
-        constraints = {}
-        
-        # Look for constraint attributes in the cell
-        min_value = cell.get('min')
-        max_value = cell.get('max')
-        message = cell.get('constraint_message')
-        
-        if any([min_value, max_value, message]):
-            try:
-                constraints['min_value'] = float(min_value) if min_value else None
-                constraints['max_value'] = float(max_value) if max_value else None
-                constraints['constraint_message'] = message
-                return NumericConstraints(**constraints)
-            except ValueError:
-                logger.warning(f"Invalid numeric constraints in cell {cell.get('id')}")
-                
-        return None
+    def _is_list_node(self, cell: ET.Element) -> bool:
+        """Check if cell represents a list node"""
+        if cell.get('vertex') != '1':
+            return False
+        style = self._parse_style_string(cell.get('style', ''))
+        return 'swimlane' in style and style.get('childLayout') == 'stackLayout'
 
     def _is_node(self, cell: ET.Element) -> bool:
-        """Determine if a cell represents a node."""
+        """Check if cell represents a regular node"""
         return (
-            cell.get('vertex') == '1' and
-            not self._is_group(cell)
+            cell.get('vertex') == '1' 
+            and not self._is_group(cell)
+            and not self._is_list_node(cell)
         )
 
     def _is_edge(self, cell: ET.Element) -> bool:
-        """Determine if a cell represents an edge."""
+        """Check if cell represents an edge"""
         return cell.get('edge') == '1'
 
-    def _is_group(self, cell: ET.Element) -> bool:
-        """Determine if a cell represents a group."""
-        style = cell.get('style', '')
-        return (
-            'swimlane' in style and
-            'childLayout' not in style
-        )
+    def _extract_base_attributes(self, cell: ET.Element) -> Dict[str, str]:
+        """Extract base attributes (id, label, page_id) from a cell element.
 
-    def _get_page_id(self, cell: ET.Element) -> str:
-        """Get the ID of the diagram (page) containing this cell.
-        
-        The draw.io XML structure has diagram elements that represent pages,
-        each with a unique ID. This method traverses up the XML tree to find
-        the parent diagram element and returns its ID.
+        If the cell is wrapped in a UserObject/object element, extracts attributes
+        from the wrapper. Otherwise extracts from the cell itself.
+
+        Args:
+            cell: The mxCell element to extract attributes from
+
+        Returns:
+            Dictionary containing 'id', 'label', and 'page_id'
         """
-        # Traverse up the tree to find the diagram element
-        parent = cell
-        while parent is not None:
-            if parent.tag == 'diagram':
-                return parent.get('id', '')
-            parent = parent.getparent()
-        return ''
+        wrapper = cell.getparent()
+        if wrapper.tag in ('UserObject', 'object'):
+            return {
+                'id': wrapper.get('id'),
+                'label': wrapper.get('label', ''),
+                'page_id': self._get_page_id(cell)
+            }
+        else: 
+            return {
+                'id': cell.get('id'),
+                'label': cell.get('value', ''),
+                'page_id': self._get_page_id(cell)
+            }
 
-    def _create_node(self, data: Dict) -> Node:
-        """Create a node from parsed cell data."""
-
-        shape_type = self._determine_shape_type(data['style_dict'])
-        
-        # Extract options for list nodes
-        options = None
-        if shape_type == ShapeType.LIST:
-            options = self._extract_list_options(data)
-            
-        metadata = NodeMetadata(
-            name=data.get('name'),
-            numeric_constraints=self._parse_numeric_constraints(data)
+    def _create_group(self, cell: ET.Element) -> Group:
+        """Create a Group from cell element"""
+        base_attrs = self._extract_base_attributes(cell)
+        metadata = self._extract_metadata(cell)
+        return Group(
+            id=base_attrs['id'],
+            label=base_attrs['label'],
+            page_id=base_attrs['page_id'],
+            metadata=metadata,
+            geometry=self._create_geometry(cell),
+            contained_elements=set() # Will be populated when processing nodes
         )
+
+    def _create_list_node(self, cell: ET.Element) -> Node:
+        """Create a List node from cell element"""
+        base_attrs = self._extract_base_attributes(cell)
+        metadata = self._extract_metadata(cell)
+        return Node(
+            id=base_attrs['id'],
+            label=base_attrs['label'],
+            page_id=base_attrs['page_id'],
+            metadata=metadata,
+            shape=ShapeType.LIST,
+            geometry=self._create_geometry(cell),
+            style=self._create_style(cell),
+            options=[]  # Will be populated when processing child nodes
+        )
+
+    def _create_node(self, cell: ET.Element) -> Node:
+        """Create a regular Node from cell element"""
+        base_attrs = self._extract_base_attributes(cell)
+        shape = self._determine_shape(cell)
+        metadata = self._extract_metadata(cell)
+        
+        # Add numeric constraints for hexagon/ellipse nodes
+        if shape in (ShapeType.HEXAGON, ShapeType.ELLIPSE):
+            numeric_constraints = self._extract_numeric_constraints(cell)
+            if metadata:
+                metadata.numeric_constraints = numeric_constraints
         
         return Node(
-            id=data['id'],
-            shape=shape_type,
-            label=data['label'],
-            geometry=data['geometry'],
-            style=data['style'],
-            options=options,
+            id=base_attrs['id'],
+            label=base_attrs['label'],
+            page_id=base_attrs['page_id'],
             metadata=metadata,
-            page_id=data['page_id']
+            shape=shape,
+            geometry=self._create_geometry(cell),
+            style=self._create_style(cell)
         )
 
-    def _create_edge(self, cell: ET.Element) -> Optional[Edge]:
-        """Create an edge from a cell element."""
-        source = cell.get('source')
-        target = cell.get('target')
-        
-        if not source or not target:
-            return None
-            
+    def _create_edge(self, cell: ET.Element) -> Edge:
+        """Create an Edge from cell element"""
+        metadata = self._extract_metadata(cell)
         return Edge(
             id=cell.get('id'),
-            source=source,
-            target=target,
             label=cell.get('value', ''),
-            page_id=self._get_page_id(cell)
+            page_id=self._get_page_id(cell),
+            metadata=metadata,
+            source=cell.get('source'),
+            target=cell.get('target')
         )
 
-    def _create_group(self, data: Dict) -> Group:
-        """Create a group from parsed cell data."""
-        return Group(
-            id=data['id'],
-            label=data['label'],
-            geometry=data['geometry'],
-            contained_elements=set(),
-            page_id=data['page_id']
+    def _determine_shape(self, cell: ET.Element) -> ShapeType:
+        """Determine shape type from cell style"""
+        style = self._parse_style_string(cell.get('style', ''))
+
+        for shape_type in ShapeType:
+            # Skip list and rectangle as they are not stored as at all in the style dict
+            if shape_type in (ShapeType.LIST, ShapeType.RECTANGLE):
+                continue
+
+            # 'ellipse' and 'rhombus' are stored as a key in the style dict
+            if shape_type in style.keys():
+                return shape_type
+            elif style.get('shape') == shape_type:
+                return shape_type
+        # If not specific shape is found, it's rectangle
+        return ShapeType.RECTANGLE
+
+    def _add_option_to_list(self, list_node: Node, option_cell: ET.Element):
+        """Add an option to a list node"""
+        if not list_node.options:
+            list_node.options = []
+        list_node.options.append(option_cell.get('value', ''))
+
+    def _extract_metadata(self, cell: ET.Element) -> Optional[ElementMetadata]:
+        """Extract metadata from cell or its parent UserObject"""
+        # Check for parent UserObject/object
+        parent = cell.getparent()
+        if parent is not None and parent.tag in ('UserObject', 'object'):
+            return ElementMetadata(
+                name=parent.get('name'),
+                # Add other metadata extraction as needed
+            )
+        return None
+
+    def _extract_numeric_constraints(self, cell: ET.Element) -> Optional[NumericConstraints]:
+        """Extract numeric constraints for hexagon/ellipse nodes"""
+        parent = cell.getparent()
+        if parent is not None and parent.tag in ('UserObject', 'object'):
+            return NumericConstraints(
+                min_value=float(parent.get('min_value')) if parent.get('min_value') else None,
+                max_value=float(parent.get('max_value')) if parent.get('max_value') else None,
+                constraint_message=parent.get('constraint_message')
+            )
+        return None
+
+    def _create_geometry(self, cell: ET.Element) -> Geometry:
+        """Create Geometry from cell"""
+        geometry = cell.find('mxGeometry')
+        if geometry is not None:
+            return Geometry(
+                x=float(geometry.get('x', 0)),
+                y=float(geometry.get('y', 0)),
+                width=float(geometry.get('width', 0)),
+                height=float(geometry.get('height', 0))
+            )
+        return Geometry()
+
+    def _create_style(self, cell: ET.Element) -> Style:
+        """Create Style from cell"""
+        style_dict = self._parse_style_string(cell.get('style', ''))
+        return Style(
+            fill_color=style_dict.get('fillColor'),
+            stroke_color=style_dict.get('strokeColor'),
+            rounded=style_dict.get('rounded', '0') == '1',
+            dashed=style_dict.get('dashed', '0') == '1'
         )
 
-    def _extract_list_options(self, data: Dict) -> List[str]:
-        """Extract options from a list node."""
-        # This would need to find and parse child elements
-        # For now, returning empty list as placeholder
-        return []
+    def _parse_style_string(self, style_str: str) -> Dict[str, str]:
+        """Parse draw.io style string into dictionary"""
+        style_dict = {}
+        if style_str:
+            for item in style_str.split(';'):
+                if '=' in item:
+                    key, value = item.split('=', 1)
+                    style_dict[key.strip()] = value.strip()
+                else:
+                    style_dict[item] = ''
 
-    def _resolve_group_memberships(self, diagram: Diagram):
-        """Establish parent-child relationships between groups and nodes."""
-        # Create a mapping of parent IDs to their children
-        parent_map: Dict[str, Set[str]] = {}
-        
-        # First pass: collect all parent-child relationships
-        for node_id, node in diagram.nodes.items():
-            parent = node.parent_id
-            if parent in diagram.groups:
-                if parent not in parent_map:
-                    parent_map[parent] = set()
-                parent_map[parent].add(node_id)
-        
-        # Second pass: update group contained_elements
-        for group_id, children in parent_map.items():
-            diagram.groups[group_id].contained_elements = children
+        return style_dict
+
+    def _get_page_id(self, cell: ET.Element) -> str:
+        """Get page ID for element"""
+        # Walk up the tree to find the parent page
+        current = cell
+        while current is not None:
+            if current.tag == 'diagram':
+                return current.get('id', '')
+            current = current.getparent()
+        return ''

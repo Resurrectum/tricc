@@ -11,6 +11,7 @@ dependencies = [
     "networkx",
     "matplotlib",
     "lxml",
+    "logging",
 ]
 
 [project.optional-dependencies]
@@ -20,3 +21,6 @@ dev = [
     "black",
     "mypy",
 ]
+
+[tool.pylint.MASTER]
+extension-pkg-allow-list = ["lxml.etree"]

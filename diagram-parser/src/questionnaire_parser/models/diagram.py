@@ -7,6 +7,7 @@ from typing import Dict, List, Optional, Union, Set
 from logging import getLogger
 from pydantic import BaseModel, Field, validator, model_validator, root_validator
 from uuid import UUID
+from questionnaire_parser.utils.logging import setup_logger
 from questionnaire_parser.exceptions.validation import (
     NodeValidationError, EdgeValidationError, ContainerValidationError)
 
@@ -97,13 +98,15 @@ class Node(BaseElement):
 
     @model_validator(mode='after')
     def validate_list_attributes(self):
-        """Ensure list nodes have required attributes"""
-        if self.shape == ShapeType.LIST:
-            if not self.options:
-                raise ValueError("Choice nodes must have options")
-        else:
-            if self.options is not None:
-                raise ValueError("Only choice nodes can have options")
+        """Ensure non-list nodes don't have options"""
+        if self.shape != ShapeType.LIST and self.options is not None:
+            raise ValueError("Only list nodes can have options")
+
+        # Validate rhombus has name
+        if self.shape == ShapeType.RHOMBUS:
+            if not self.metadata or not self.metadata.name:
+                raise ValueError("Rhombus nodes must have a name to reference another node")
+
         return self
 
 class Group(BaseElement):
@@ -114,14 +117,6 @@ class Group(BaseElement):
     contained_elements: Set[str] = Field(default_factory=set)
     geometry: Geometry
 
-    @validator('contained_elements')
-    @classmethod
-    def validate_contained_elements(cls, v):
-        """Validate that the container has at least one child element"""
-        if not v:
-            raise ValueError("Container must contain at least one element")
-        return v
-
 class Edge(BaseElement):
     """Represents an edge in the diagram. Beyond the base element properties,
     an edge has a source and target node."""
@@ -130,12 +125,13 @@ class Edge(BaseElement):
 
     @validator('source', 'target')
     @classmethod
-    def validate_edge_endpoints(cls, v):
+    def validate_edge_endpoints(cls, v, field):
         """Ensure edge endpoints are valid: 
         - they exist
         - source and target are different
         - source and target are not other edges"""
         if not v or not v.strip():
+            logger.warning(f"Edge {field.name} validation failed: endpoint cannot be empty")
             raise ValueError("Edge endpoints cannot be empty")
         return v.strip()
     
@@ -172,9 +168,16 @@ class Diagram(BaseModel):
 
         # Validate group memberships
         for group_id, group in self.groups.items():
+            if not group.contained_elements:
+                raise ValueError(f"Group {group_id} must contain at least one element")
             for element_id in group.contained_elements:
                 if element_id not in self.nodes:
                     raise ValueError(f"Group {group_id} claims to contain a node that doesn't exist in the diagram.")
+
+        # Validate list nodes have options
+        for node_id, node in self.nodes.items():
+            if node.shape == ShapeType.LIST and not node.options:
+                raise ValueError(f"List node {node_id} must have at least one option")
 
         # Validate rhombus references
         for node_id, node in self.nodes.items():
