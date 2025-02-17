@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field, validator, model_validator, root_validato
 from uuid import UUID
 from questionnaire_parser.utils.logging import setup_logger
 from questionnaire_parser.exceptions.validation import (
-    NodeValidationError, EdgeValidationError, ContainerValidationError)
+    NodeValidationError, EdgeValidationError, GroupValidationError)
 
 logger = getLogger(__name__)
 

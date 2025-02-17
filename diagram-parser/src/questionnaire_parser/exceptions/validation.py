@@ -13,6 +13,6 @@ class EdgeValidationError(DiagramValidationError):
     """Raised when edge validation fails"""
     pass
 
-class ContainerValidationError(DiagramValidationError):
+class GroupValidationError(DiagramValidationError):
     """Raised when container validation fails"""
     pass
