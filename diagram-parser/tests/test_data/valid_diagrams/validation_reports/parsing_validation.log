@@ -1,0 +1,37 @@
+Diagram Validation Report
+==================================================
+Validation Level: LENIENT
+Total Issues: 2
+--------------------------------------------------
+
+
+CRITICAL Issues (2):
+------------------------------
+- Unexpected error during parsing: 2 validation errors for Edge
+source
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.10/v/string_type
+target
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.10/v/string_type
+  Element Type: Parsing
+  Time: 2025-02-21 05:37:20
+
+- Error during parsing: 2 validation errors for Edge
+source
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.10/v/string_type
+target
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.10/v/string_type
+  Element Type: Parsing
+  Time: 2025-02-21 05:37:20
+
+
+Summary:
+------------------------------
+CRITICAL: 2 issues
+ERROR: 0 issues
+WARNING: 0 issues
+
+WARNING: Critical issues were found!

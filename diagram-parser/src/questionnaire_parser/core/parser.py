@@ -1,34 +1,68 @@
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, Optional
 from lxml import etree as ET
 from logging import getLogger
-from pydantic import ValidationError
+from pathlib import Path
 
 from questionnaire_parser.models.diagram import (
     Diagram, Node, Edge, Group, Geometry, Style, ShapeType,
     ElementMetadata, NumericConstraints
 )
-from questionnaire_parser.exceptions.parsing import XMLParsingError, NodeValidationError
+from questionnaire_parser.exceptions.parsing import XMLParsingError, DiagramValidationError
+from questionnaire_parser.utils.validation import ValidationCollector, ValidationLevel, ValidationSeverity
 
 logger = getLogger(__name__)
 
 class DrawIoParser:
     """Parser for converting draw.io XML files into our diagram model."""
     
-    def __init__(self):
+    def __init__(self, validation_level: ValidationLevel = ValidationLevel.NORMAL):
         '''Initialize parser with empty diagram and no namespace.'''
         self.diagram = Diagram()
         self.ns = None # no namespace in draw.io XML
+        self.validator = ValidationCollector(validation_level)
         
-    def parse_file(self, filepath: str) -> Diagram:
-        """Parse a draw.io XML file into our diagram model."""
+    def parse_file(self, filepath: Path) -> tuple[Diagram, ValidationCollector]:
+        """Parse a draw.io XML file into our diagram model.
+        
+        Args:
+            filepath: Path to the draw.io XML file
+            
+        Returns:
+            Tuple of (Diagram, ValidationCollector)
+        """
         try:
             tree = ET.parse(filepath)
             root = tree.getroot()
-            return self.parse_xml(root)
+
+            # Save validation report
+            report_path = Path(filepath).parent / 'validation_reports'
+            report_path.mkdir(exist_ok=True)
+
+            # Parse the diagram
+            diagram = self.parse_xml(root)
+            # Save the report after parsing is complete
+            self.validator.save_report(report_path / 'parsing_validation.log')
+
+            return diagram, self.validator
+        
         except ET.ParseError as e:
-            raise XMLParsingError(f"Failed to parse XML file: {e}")
+            self.validator.add_result(
+                severity=ValidationSeverity.CRITICAL,
+                message=f"Failed to parse XML file: {e}",
+                element_type="XML"
+            )
+            # Save report before raising
+            self.validator.save_report(report_path / 'parsing_validation.log')
+            raise
         except Exception as e:
-            raise XMLParsingError(f"Unexpected error during parsing: {e}")
+            self.validator.add_result(
+                severity=ValidationSeverity.CRITICAL,
+                message=f"Unexpected error during parsing: {str(e)}",
+                element_type="Parsing"
+            )
+            # Save report before raising
+            self.validator.save_report(report_path / 'parsing_validation.log')
+            raise
 
     def parse_xml(self, root: ET.Element) -> Diagram:
         """Parse XML content into diagram model"""
@@ -216,7 +250,9 @@ class DrawIoParser:
             page_id=self._get_page_id(cell),
             metadata=metadata,
             source=cell.get('source'),
-            target=cell.get('target')
+            target=cell.get('target'),
+            # need this for managing flexible validations
+            validation_collector = self.validator
         )
 
     def _determine_shape(self, cell: ET.Element) -> ShapeType:

@@ -1,13 +1,24 @@
 from typing import Optional, Dict
+from pathlib import Path
 from lxml import etree as ET
 import logging
 from questionnaire_parser.models.diagram import Diagram, Node, Edge, Group, ShapeType
+from questionnaire_parser.core.parser import ValidationLevel, ValidationSeverity
+from questionnaire_parser.core.parser import DrawIoParser
 
 logger = logging.getLogger(__name__)
 
-def setup_debug_logging():
+def setup_debug_logging(level=logging.INFO):
+    """Set up logging configuration for debugging purposes.
+    level: DEBUG prints also error stack,
+    level: INFO prints just the predefined validation errors"""
+    # Reset root logger handlers
+    root = logging.getLogger()
+    if root.handlers:
+        root.handlers.clear()
+
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=level,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
 
@@ -97,15 +108,48 @@ def examine_node_connections(diagram: Diagram):
     print(f"Isolated nodes (no connections): {isolated_nodes}")
 
 # Example usage
-def debug_parsing(xml_path: str):
-    """Run a complete debugging session for parsing a draw.io file"""
-    setup_debug_logging()
+def debug_parsing(xml_path: Path, validation_level: ValidationLevel = ValidationLevel.LENIENT, logging_level=logging.INFO):
+    """Run a complete debugging session for parsing a draw.io file
 
-    # Create parser and parse diagram
-    from questionnaire_parser.core.parser import DrawIoParser
-    parser = DrawIoParser()
-    diagram = parser.parse_file(xml_path)
+    Args:
+        xml_path: Path to the XML file to parse
+        validation_level: Validation strictness level (default: LENIENT for debugging)
+    """
+    setup_debug_logging(logging_level)
+    logger = logging.getLogger(__name__)
 
-    # Inspect results
-    inspect_diagram(diagram)
-    examine_node_connections(diagram)
+    # Create parser with specified validation level
+    parser = DrawIoParser(validation_level=validation_level)
+
+    try:
+        # Parse diagram and get validation collector
+        diagram, validator = parser.parse_file(xml_path)
+        inspect_diagram(diagram)
+        examine_node_connections(diagram)
+        return diagram, validator
+
+    except Exception as e:
+        import traceback
+
+        # Create error message based on logging level
+        if logging_level == logging.DEBUG:
+            error_message = f"Error during parsing: {str(e)}\n\n{traceback.format_exc()}"
+        else:
+            error_message = f"Error during parsing: {str(e)}"
+
+        # Add to validator with level-appropriate detail
+        parser.validator.add_result(
+            severity=ValidationSeverity.CRITICAL,
+            message=error_message,
+            element_type="Parsing"
+        )
+
+        logger.debug("Full traceback:\n%s", traceback.format_exc())
+        logger.info("Error during parsing: %s", str(e))
+
+        # Save the report
+        report_path = Path(xml_path).parent / 'validation_reports'
+        report_path.mkdir(exist_ok=True)
+        parser.validator.save_report(report_path / 'parsing_validation.log')
+
+        return None, parser.validator

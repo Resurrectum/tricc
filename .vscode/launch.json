@@ -7,9 +7,10 @@
             "request": "launch",
             "program": "${workspaceFolder}/diagram-parser/try_parser.py",
             "console": "integratedTerminal",
-            "justMyCode": false,
+            "justMyCode": true,
             "env": {
-                "PYTHONPATH": "${workspaceFolder}/diagram-parser/src"
+                "PYTHONPATH": "${workspaceFolder}/diagram-parser/src",
+                "PYTHONDONTWRITEBYTECODE": "1"
             }
         },
         {
