@@ -1,9 +1,0 @@
-pydantic
-networkx
-matplotlib
-
-[dev]
-pytest>=7.0
-pytest-cov
-black
-mypy
