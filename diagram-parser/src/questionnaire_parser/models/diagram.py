@@ -122,6 +122,7 @@ class Edge(BaseElement):
 
     class Config:
         arbitrary_types_allowed = True
+        
     
     @validator('source', 'target')
     @classmethod
@@ -129,7 +130,7 @@ class Edge(BaseElement):
         """Ensure edge is connected (has a source and a target)"""
         collector = values.get('validation_collector')
 
-        if not v or not v.strip():
+        if not v.strip(): # Check if empty string or whitespace
             message = f"Edge is not connected. {v} endpoint is empty."
             element_id = values.get('ID')
             if collector:
@@ -140,7 +141,7 @@ class Edge(BaseElement):
                     element_type = 'Edge',
                     field_name='endpoint'
                 )
-                # Onlye return original value if we are in LENIENT mode
+                # Only return original value if we are in LENIENT mode
                 if collector.validation_level == ValidationLevel.LENIENT:
                     return v
             else:

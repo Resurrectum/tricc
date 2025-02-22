@@ -7,7 +7,7 @@ from questionnaire_parser.models.diagram import (
     Diagram, Node, Edge, Group, Geometry, Style, ShapeType,
     ElementMetadata, NumericConstraints
 )
-from questionnaire_parser.exceptions.parsing import XMLParsingError, DiagramValidationError
+from questionnaire_parser.exceptions.parsing import XMLParsingError, DiagramValidationError, EdgeValidationError
 from questionnaire_parser.utils.validation import ValidationCollector, ValidationLevel, ValidationSeverity
 
 logger = getLogger(__name__)
@@ -137,7 +137,8 @@ class DrawIoParser:
         for cell in root.iter('mxCell'):
             if self._is_edge(cell):
                 edge = self._create_edge(cell)
-                self.diagram.edges[edge.id] = edge
+                if edge: # Only add if created successfully
+                    self.diagram.edges[edge.id] = edge
 
     def _is_group(self, cell: ET.Element) -> bool:
         """Check if cell represents a group"""
@@ -244,16 +245,23 @@ class DrawIoParser:
     def _create_edge(self, cell: ET.Element) -> Edge:
         """Create an Edge from cell element"""
         metadata = self._extract_metadata(cell)
-        return Edge(
-            id=cell.get('id'),
-            label=cell.get('value', ''),
-            page_id=self._get_page_id(cell),
-            metadata=metadata,
-            source=cell.get('source'),
-            target=cell.get('target'),
-            # need this for managing flexible validations
-            validation_collector = self.validator
-        )
+
+        try:
+            edge = Edge(
+                id=cell.get('id'),
+                label=cell.get('value', ''),
+                page_id=self._get_page_id(cell),
+                metadata=metadata,
+                source=cell.get('source'),
+                target=cell.get('target'),
+                # need this for managing flexible validations
+                validation_collector = self.validator
+                )
+            return edge
+        except EdgeValidationError as ve:
+            self.validator.add_pydantic_error(ve, cell.get('id'))
+            return None
+            
 
     def _determine_shape(self, cell: ET.Element) -> ShapeType:
         """Determine shape type from cell style"""

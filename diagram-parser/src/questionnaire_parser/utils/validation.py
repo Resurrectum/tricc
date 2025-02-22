@@ -19,7 +19,7 @@ And three validation modes. You should conceive your validators, so that:
 - LENIENT: Collects all issues without raising exceptions (for debugging purposes)
 """
 from enum import Enum
-from typing import List, Optional, Dict
+from typing import List, Optional
 from pydantic import BaseModel, Field
 import logging
 from pathlib import Path
@@ -51,11 +51,11 @@ class ValidationResult(BaseModel):
 
     class Config:
         """Pydantic configuration."""
-        frozen = True  # Make validation results immutable    
+        frozen = True  # Make validation results immutable
 
 class ValidationCollector:
     """Collects and manages validation results during parsing."""
-    
+
     def __init__(self, validation_level: ValidationLevel = ValidationLevel.NORMAL):
         """Initialize the validation collector.
         
@@ -65,10 +65,10 @@ class ValidationCollector:
         """
         self.validation_level = validation_level
         self.results: List[ValidationResult] = []
-        
-    def add_result(self, 
-                  severity: ValidationSeverity, 
-                  message: str, 
+
+    def add_result(self,
+                  severity: ValidationSeverity,
+                  message: str,
                   element_id: Optional[str] = None,
                   element_type: Optional[str] = None,
                   field_name: Optional[str] = None) -> None:
@@ -92,9 +92,22 @@ class ValidationCollector:
             field_name=field_name
         )
         self.results.append(result)
-        
+
         self._log_result(result)
         self._handle_result(result)
+
+    def add_pydantic_error(self, error, element_id: str):
+        """Convert Pydantic validation errors to our format. 
+        Pydantic's own, internal validations are checked prior to user defined ones. 
+        This """
+        for err in error.errors():
+            self.add_result(
+                severity=ValidationSeverity.ERROR,
+                message=f"Field validation error: {err['msg']}",
+                element_id=element_id,
+                element_type='Edge',
+                field_name='.'.join(str(loc) for loc in err['loc'])
+            )
 
     def _log_result(self, result: ValidationResult) -> None:
         """Log the validation result appropriately.
@@ -103,7 +116,7 @@ class ValidationCollector:
             result: The validation result to log
         """
         log_message = self._format_log_message(result)
-        
+
         if result.severity == ValidationSeverity.CRITICAL:
             logger.error(log_message)
         elif result.severity == ValidationSeverity.ERROR:
@@ -134,8 +147,8 @@ class ValidationCollector:
             output_path: Path where to save the validation report
         """
         output_path.parent.mkdir(exist_ok=True)
-        
-        with open(output_path, 'w') as f:
+
+        with open(output_path, 'w', encoding='utf-8') as f:
             self._write_report_header(f)
             self._write_results_by_severity(f)
             self._write_report_summary(f)
@@ -163,7 +176,7 @@ class ValidationCollector:
             if results:
                 file.write(f"\n{severity.value} Issues ({len(results)}):\n")
                 file.write("-" * 30 + "\n")
-                
+
                 for result in results:
                     file.write(f"- {result.message}\n")
                     if result.element_id:
