@@ -20,10 +20,10 @@ And three validation modes. You should conceive your validators, so that:
 """
 from enum import Enum
 from typing import List, Optional
-from pydantic import BaseModel, Field
 import logging
 from pathlib import Path
 from datetime import datetime
+from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 
