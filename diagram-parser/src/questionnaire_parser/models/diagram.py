@@ -142,7 +142,7 @@ class Edge(BaseElement):
         of the broader diagram context.
         """
         if not self.source and not self.target:  # Both endpoints missing
-            message = "Invalid (ghost) edge: both source and target are missing."
+            message = "Invalid (ghost) edge found where both, source and target, are missing. Ghost are ignored."
             if self.validation_collector:
                 self.validation_collector.add_result(
                     severity=ValidationSeverity.ERROR,

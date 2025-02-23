@@ -7,29 +7,29 @@ Total Issues: 4
 
 ERROR Issues (4):
 ------------------------------
-- Invalid (ghost) edge: both source and target are missing.
+- Invalid (ghost) edge found where both, source and target, are missing. Ghost are ignored.
   Element ID: 97X_2J8qlAPc0du_Bcn8-79
   Element Type: Edge
   Field: endpoints
-  Time: 2025-02-23 10:56:34
+  Time: 2025-02-23 11:34:08
 
-- Invalid (ghost) edge: both source and target are missing.
+- Invalid (ghost) edge found where both, source and target, are missing. Ghost are ignored.
   Element ID: 97X_2J8qlAPc0du_Bcn8-81
   Element Type: Edge
   Field: endpoints
-  Time: 2025-02-23 10:56:34
+  Time: 2025-02-23 11:34:08
 
-- Invalid (ghost) edge: both source and target are missing.
+- Invalid (ghost) edge found where both, source and target, are missing. Ghost are ignored.
   Element ID: u-2OYHYpkGujKRkxLq70-45
   Element Type: Edge
   Field: endpoints
-  Time: 2025-02-23 10:56:34
+  Time: 2025-02-23 11:34:08
 
-- Invalid (ghost) edge: both source and target are missing.
+- Invalid (ghost) edge found where both, source and target, are missing. Ghost are ignored.
   Element ID: B3PY1DTbvRqpWWawsYs9-50
   Element Type: Edge
   Field: endpoints
-  Time: 2025-02-23 10:56:34
+  Time: 2025-02-23 11:34:08
 
 
 Summary:

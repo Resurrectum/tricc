@@ -261,6 +261,8 @@ class DrawIoParser:
                 # need this for managing flexible validations
                 validation_collector = self.validator
                 )
+        except ValueError: # do not add to the validator, as this happens in the diagram model. 
+            return None
         # only needed if one wants to overwrite pydantic's default validation error messages
         # if you decide to use this, remember to refactor: invalid edges that have at least source or 
         # target should be added to the diagram's edges list
@@ -279,14 +281,14 @@ class DrawIoParser:
         #        )
         #    return None
         # EdgeValidationError is not used right now because validators use pydantic's generic ValueError
-        except EdgeValidationError as e:
-            self.validator.add_result(
-                severity = ValidationSeverity.ERROR,
-                message = str(e),
-                element_id = e.element_id,
-                element_type = 'Edge'
-            )
-            return None
+        #except EdgeValidationError as e:
+        #    self.validator.add_result(
+        #        severity = ValidationSeverity.ERROR,
+        #        message = str(e),
+        #        element_id = e.element_id,
+        #        element_type = 'Edge'
+        #    )
+        #    return None
 
 
     def _determine_shape(self, cell: ET.Element) -> ShapeType:

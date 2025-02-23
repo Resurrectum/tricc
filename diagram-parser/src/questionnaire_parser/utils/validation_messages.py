@@ -1,7 +1,5 @@
 from enum import Enum
 from lxml import etree as ET
-from typing import Dict, Any, Optional
-from pydantic import ValidationError
 from pydantic_core import ErrorDetails
 
 
@@ -27,11 +25,11 @@ class EdgeValidationMessage(Enum):
         user-friendly messages using our predefined message templates. By being
         a class method, it has direct access to all our message templates and
         maintains the connection between messages and their formatting logic.
-        
+
         Args:
             error_details: The error dictionary from Pydantic's ValidationError
             cell: The XML element representing the edge
-        
+
         Returns:
             A formatted, user-friendly error message
         """
@@ -52,7 +50,7 @@ class EdgeValidationMessage(Enum):
         else:
             # For unhandled error types, use the general format
             message_template = cls.INVALID_GENERAL.value
-        
+
         # Format the chosen template with the provided values
         return message_template.format(
             field_name=field_name,
