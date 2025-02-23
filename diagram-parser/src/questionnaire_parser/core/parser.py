@@ -2,6 +2,7 @@ from typing import Dict, Optional
 from lxml import etree as ET
 from logging import getLogger
 from pathlib import Path
+from pydantic import ValidationError
 
 from questionnaire_parser.models.diagram import (
     Diagram, Node, Edge, Group, Geometry, Style, ShapeType,
@@ -9,6 +10,8 @@ from questionnaire_parser.models.diagram import (
 )
 from questionnaire_parser.exceptions.parsing import XMLParsingError, DiagramValidationError, EdgeValidationError
 from questionnaire_parser.utils.validation import ValidationCollector, ValidationLevel, ValidationSeverity
+
+from questionnaire_parser.utils.validation_messages import EdgeValidationMessage
 
 logger = getLogger(__name__)
 
@@ -242,26 +245,49 @@ class DrawIoParser:
             style=self._create_style(cell)
         )
 
-    def _create_edge(self, cell: ET.Element) -> Edge:
+    def _create_edge(self, cell: ET.Element) -> Optional[Edge]:
         """Create an Edge from cell element"""
+        base_attrs = self._extract_base_attributes(cell)
         metadata = self._extract_metadata(cell)
 
         try:
-            edge = Edge(
-                id=cell.get('id'),
-                label=cell.get('value', ''),
-                page_id=self._get_page_id(cell),
+            return Edge(
+                id=base_attrs['id'],
+                label=base_attrs['label'],
+                page_id=base_attrs['page_id'],
                 metadata=metadata,
                 source=cell.get('source'),
                 target=cell.get('target'),
                 # need this for managing flexible validations
                 validation_collector = self.validator
                 )
-            return edge
-        except EdgeValidationError as ve:
-            self.validator.add_pydantic_error(ve, cell.get('id'))
+        # only needed if one wants to overwrite pydantic's default validation error messages
+        # if you decide to use this, remember to refactor: invalid edges that have at least source or 
+        # target should be added to the diagram's edges list
+        #except ValidationError as ve:
+        #    # Format a clearer error message from Pydantic's validation error for every raised error
+        #    for error_details in ve.errors():
+        #        message = EdgeValidationMessage.format_pydantic_error(error_details, cell)
+        #        field_name = '.'.join(str(loc) for loc in error_details['loc'])
+        #
+        #        self.validator.add_result(
+        #            severity = ValidationSeverity.ERROR,
+        #            message = message,
+        #            element_id = cell.get('ID'),
+        #            element_type = 'Edge',
+        #            field_name=field_name
+        #        )
+        #    return None
+        # EdgeValidationError is not used right now because validators use pydantic's generic ValueError
+        except EdgeValidationError as e:
+            self.validator.add_result(
+                severity = ValidationSeverity.ERROR,
+                message = str(e),
+                element_id = e.element_id,
+                element_type = 'Edge'
+            )
             return None
-            
+
 
     def _determine_shape(self, cell: ET.Element) -> ShapeType:
         """Determine shape type from cell style"""

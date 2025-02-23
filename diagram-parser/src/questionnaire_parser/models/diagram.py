@@ -6,7 +6,6 @@ from enum import Enum
 from typing import Dict, List, Optional, Set
 from pydantic import BaseModel, Field, validator, model_validator, root_validator, field_validator
 from questionnaire_parser.utils.validation import ValidationCollector, ValidationLevel, ValidationSeverity
-from questionnaire_parser.exceptions.parsing import EdgeValidationError
 
 class Geometry(BaseModel):
     """Geometric properties of a non-edge diagram element"""
@@ -112,69 +111,51 @@ class Group(BaseElement):
     contained_elements: Set[str] = Field(default_factory=set)
     geometry: Geometry
 
+
 class Edge(BaseElement):
-    """Represents an edge in the diagram. Beyond the base element properties,
-    an edge has a source and target node. 
-    The validation_collector allows validation levels to be set."""
-    source: str # id of the source node
-    target: str # id of the target node
+    """Represents an edge in the diagram.
+
+    An edge must have at least one connection point (either source or target) to be 
+    considered valid. Edges missing both endpoints are invalid as they cannot be 
+    meaningfully displayed or used in the diagram. However, edges missing just one 
+    endpoint are allowed - their validity will be checked when adding them to the diagram.
+
+    Attributes:
+        source: ID of the source node. Can be missing if target exists.
+        target: ID of the target node. Can be missing if source exists.
+        validation_collector: Optional collector for validation messages.
+    """
+    source: Optional[str] = None  # Making these optional allows single missing endpoint
+    target: Optional[str] = None
     validation_collector: Optional[ValidationCollector] = None
 
     class Config:
         arbitrary_types_allowed = True
-        
-    
-    @validator('source', 'target')
-    @classmethod
-    def validate_edge_endpoints(cls, v, values):
-        """Ensure edge is connected (has a source and a target)"""
-        collector = values.get('validation_collector')
 
-        if not v.strip(): # Check if empty string or whitespace
-            message = f"Edge is not connected. {v} endpoint is empty."
-            element_id = values.get('ID')
-            if collector:
-                collector.add_result(
+    @model_validator(mode='after')
+    def validate_has_at_least_one_endpoint(self) -> 'Edge':
+        """Ensures the edge has at least one endpoint.
+
+        An edge with no endpoints (neither source nor target) is a 'ghost edge' that
+        cannot be meaningfully displayed or used. We validate this at the Edge level
+        since this is a fundamental property of what makes an edge valid, regardless
+        of the broader diagram context.
+        """
+        if not self.source and not self.target:  # Both endpoints missing
+            message = "Invalid (ghost) edge: both source and target are missing."
+            if self.validation_collector:
+                self.validation_collector.add_result(
                     severity=ValidationSeverity.ERROR,
-                    message = message,
-                    element_id = element_id,
-                    element_type = 'Edge',
-                    field_name='endpoint'
+                    message=message,
+                    element_id=self.id,
+                    element_type='Edge',
+                    field_name='endpoints'
                 )
-                # Only return original value if we are in LENIENT mode
-                if collector.validation_level == ValidationLevel.LENIENT:
-                    return v
-            else:
-                raise EdgeValidationError(message, element_id)
+            # raise error and do not create the edge
+            raise ValueError(message)
+        # if validation passes, return the edge
+        return self
 
-        return v.strip()
-
-    @root_validator(pre=True)
-    @classmethod
-    def validate_edge_structure(cls, values):
-        """Validate edge is not connected to another edge"""
-        source = values.get('source')
-        target = values.get('target')
-        edge_id = values.get('ID')
-
-        if source and target and source == target:
-            collector = values.get('validation_collector')
-            if collector:
-                collector.add_result(
-                    severity=ValidationSeverity.ERROR,
-                    message = "Edge cannot connect a node to itself",
-                    element_id = edge_id,
-                    element_type = 'Edge',
-                    field_name = 'structure'
-                )
-                # Onlye return original value if we are in LENIENT mode
-                if collector.validation_level == ValidationLevel.LENIENT:
-                    return values
-            else:
-                raise EdgeValidationError("Edge cannot connect a node to itself", element_id = edge_id)
-
-        return values
-    
 class Diagram(BaseModel):
     """Top-level container for the entire diagram"""
     nodes: Dict[str, Node] = Field(default_factory=dict)

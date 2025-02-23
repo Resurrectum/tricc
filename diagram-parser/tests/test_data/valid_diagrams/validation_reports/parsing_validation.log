@@ -1,64 +1,39 @@
 Diagram Validation Report
 ==================================================
 Validation Level: LENIENT
-Total Issues: 2
+Total Issues: 4
 --------------------------------------------------
 
 
-CRITICAL Issues (2):
+ERROR Issues (4):
 ------------------------------
-- Unexpected error during parsing: 2 validation errors for Edge
-source
-  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
-    For further information visit https://errors.pydantic.dev/2.10/v/string_type
-target
-  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
-    For further information visit https://errors.pydantic.dev/2.10/v/string_type
-  Element Type: Parsing
-  Time: 2025-02-22 08:09:54
+- Invalid (ghost) edge: both source and target are missing.
+  Element ID: 97X_2J8qlAPc0du_Bcn8-79
+  Element Type: Edge
+  Field: endpoints
+  Time: 2025-02-23 10:56:34
 
-- Error during parsing: 2 validation errors for Edge
-source
-  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
-    For further information visit https://errors.pydantic.dev/2.10/v/string_type
-target
-  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
-    For further information visit https://errors.pydantic.dev/2.10/v/string_type
+- Invalid (ghost) edge: both source and target are missing.
+  Element ID: 97X_2J8qlAPc0du_Bcn8-81
+  Element Type: Edge
+  Field: endpoints
+  Time: 2025-02-23 10:56:34
 
-Traceback (most recent call last):
-  File "/home/rafael/repos/TRICC/diagram-parser/src/questionnaire_parser/utils/debugging.py", line 126, in debug_parsing
-    diagram, validator = parser.parse_file(xml_path)
-                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/rafael/repos/TRICC/diagram-parser/src/questionnaire_parser/core/parser.py", line 42, in parse_file
-    diagram = self.parse_xml(root)
-              ^^^^^^^^^^^^^^^^^^^^
-  File "/home/rafael/repos/TRICC/diagram-parser/src/questionnaire_parser/core/parser.py", line 82, in parse_xml
-    self._parse_edges(root)
-  File "/home/rafael/repos/TRICC/diagram-parser/src/questionnaire_parser/core/parser.py", line 139, in _parse_edges
-    edge = self._create_edge(cell)
-           ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/rafael/repos/TRICC/diagram-parser/src/questionnaire_parser/core/parser.py", line 248, in _create_edge
-    return Edge(
-           ^^^^^
-  File "/home/rafael/repos/TRICC/.venv/lib/python3.12/site-packages/pydantic/main.py", line 214, in __init__
-    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-pydantic_core._pydantic_core.ValidationError: 2 validation errors for Edge
-source
-  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
-    For further information visit https://errors.pydantic.dev/2.10/v/string_type
-target
-  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
-    For further information visit https://errors.pydantic.dev/2.10/v/string_type
+- Invalid (ghost) edge: both source and target are missing.
+  Element ID: u-2OYHYpkGujKRkxLq70-45
+  Element Type: Edge
+  Field: endpoints
+  Time: 2025-02-23 10:56:34
 
-  Element Type: Parsing
-  Time: 2025-02-22 08:09:54
+- Invalid (ghost) edge: both source and target are missing.
+  Element ID: B3PY1DTbvRqpWWawsYs9-50
+  Element Type: Edge
+  Field: endpoints
+  Time: 2025-02-23 10:56:34
 
 
 Summary:
 ------------------------------
-CRITICAL: 2 issues
-ERROR: 0 issues
+CRITICAL: 0 issues
+ERROR: 4 issues
 WARNING: 0 issues
-
-WARNING: Critical issues were found!
