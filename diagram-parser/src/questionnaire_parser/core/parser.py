@@ -17,19 +17,19 @@ logger = getLogger(__name__)
 
 class DrawIoParser:
     """Parser for converting draw.io XML files into our diagram model."""
-    
+
     def __init__(self, validation_level: ValidationLevel = ValidationLevel.NORMAL):
         '''Initialize parser with empty diagram and no namespace.'''
-        self.diagram = Diagram()
         self.ns = None # no namespace in draw.io XML
         self.validator = ValidationCollector(validation_level)
-        
+        self.diagram = Diagram(validation_collector=self.validator)
+
     def parse_file(self, filepath: Path) -> tuple[Diagram, ValidationCollector]:
         """Parse a draw.io XML file into our diagram model.
-        
+
         Args:
             filepath: Path to the draw.io XML file
-            
+
         Returns:
             Tuple of (Diagram, ValidationCollector)
         """
@@ -47,44 +47,50 @@ class DrawIoParser:
             self.validator.save_report(report_path / 'parsing_validation.log')
 
             return diagram, self.validator
-        
+
         except ET.ParseError as e:
-            self.validator.add_result(
-                severity=ValidationSeverity.CRITICAL,
-                message=f"Failed to parse XML file: {e}",
-                element_type="XML"
+            message=f"Failed to parse XML file: {e}"
+            if self.validator:
+                self.validator.add_result(
+                    severity=ValidationSeverity.CRITICAL,
+                    message=message,
+                    element_type="XML"
             )
-            # Save report before raising
+            # Save report
             self.validator.save_report(report_path / 'parsing_validation.log')
-            raise
-        except Exception as e:
-            self.validator.add_result(
-                severity=ValidationSeverity.CRITICAL,
-                message=f"Unexpected error during parsing: {str(e)}",
-                element_type="Parsing"
-            )
-            # Save report before raising
-            self.validator.save_report(report_path / 'parsing_validation.log')
-            raise
+            raise ET.ParseError(message) # raise immediately if no collector
+
+        except Exception as e: # all other exceptions
+            message=f"Unexpected error during parsing: {str(e)}"
+            if self.validator:
+                self.validator.add_result(
+                    severity=ValidationSeverity.CRITICAL,
+                    message=message,
+                    element_type="Parsing"
+                )
+                # Save report
+                self.validator.save_report(report_path / 'parsing_validation.log')
+            else:
+                raise Exception(message) # raise immediately if no collector
 
     def parse_xml(self, root: ET.Element) -> Diagram:
         """Parse XML content into diagram model"""
-        # Get all mxCell elements
-        #cells = root.xpath('.//mxCell')
-        
-        # First pass: Create all groups
+            # First pass: Create all groups
         self._parse_groups(root)
-        
+
         # Second pass: Create list nodes (multiple choice questions)
         self._parse_list_nodes(root)
-        
+
         # Third pass: Create regular nodes (including rhombus)
         self._parse_nodes(root)
-        
+
         # Fourth pass: Create edges
         self._parse_edges(root)
-        
-        return self.diagram
+
+        # Validate diagram structure after parsing
+        validated_diagram = Diagram.model_validate(self.diagram)
+
+        return validated_diagram
 
     def _parse_groups(self, root: ET.Element):
         """First pass: Parse group elements"""
@@ -92,14 +98,15 @@ class DrawIoParser:
             if self._is_group(cell):
                 group = self._create_group(cell)
                 self.diagram.groups[group.id] = group
-                
+                # Validate diagram structure after each group is added
+
     def _parse_list_nodes(self, root: ET.Element):
         """Second pass: Parse list nodes (multiple choice)"""
         for cell in root.iter('mxCell'):
             if self._is_list_node(cell):
                 node = self._create_list_node(cell)
                 self.diagram.nodes[node.id] = node
-                
+
                 # Add to parent group if applicable 
                 parent_id = cell.get('parent')
                 if parent_id in self.diagram.groups:
@@ -126,11 +133,11 @@ class DrawIoParser:
                     if parent_node.shape == ShapeType.LIST:
                         self._add_option_to_list(parent_node, cell)
                         continue
-                
+
                 # Create regular node
                 node = self._create_node(cell)
                 self.diagram.nodes[node.id] = node
-                
+
                 # Add to parent group if applicable
                 if parent_id in self.diagram.groups:
                     self.diagram.groups[parent_id].contained_elements.add(node.id)
@@ -188,7 +195,7 @@ class DrawIoParser:
                 'label': wrapper.get('label', ''),
                 'page_id': self._get_page_id(cell)
             }
-        else: 
+        else:
             return {
                 'id': cell.get('id'),
                 'label': cell.get('value', ''),
@@ -228,13 +235,13 @@ class DrawIoParser:
         base_attrs = self._extract_base_attributes(cell)
         shape = self._determine_shape(cell)
         metadata = self._extract_metadata(cell)
-        
+
         # Add numeric constraints for hexagon/ellipse nodes
         if shape in (ShapeType.HEXAGON, ShapeType.ELLIPSE):
             numeric_constraints = self._extract_numeric_constraints(cell)
             if metadata:
                 metadata.numeric_constraints = numeric_constraints
-        
+
         return Node(
             id=base_attrs['id'],
             label=base_attrs['label'],
@@ -261,10 +268,10 @@ class DrawIoParser:
                 # need this for managing flexible validations
                 validation_collector = self.validator
                 )
-        except ValueError: # do not add to the validator, as this happens in the diagram model. 
+        except ValueError: # do not add to the validator, as this happens in the diagram model.
             return None
         # only needed if one wants to overwrite pydantic's default validation error messages
-        # if you decide to use this, remember to refactor: invalid edges that have at least source or 
+        # if you decide to use this, remember to refactor: invalid edges that have at least source or
         # target should be added to the diagram's edges list
         #except ValidationError as ve:
         #    # Format a clearer error message from Pydantic's validation error for every raised error

@@ -116,40 +116,14 @@ def debug_parsing(xml_path: Path, validation_level: ValidationLevel = Validation
         validation_level: Validation strictness level (default: LENIENT for debugging)
     """
     setup_debug_logging(logging_level)
-    logger = logging.getLogger(__name__)
+    #logger = logging.getLogger(__name__)
 
     # Create parser with specified validation level
     parser = DrawIoParser(validation_level=validation_level)
 
-    try:
-        # Parse diagram and get validation collector
-        diagram, validator = parser.parse_file(xml_path)
-        inspect_diagram(diagram)
-        examine_node_connections(diagram)
-        return diagram, validator
+    # Parse diagram and get validation collector
+    diagram, validator = parser.parse_file(xml_path)
+    inspect_diagram(diagram)
+    examine_node_connections(diagram)
 
-    except Exception as e:
-        import traceback
-
-        # Create error message based on logging level
-        if logging_level == logging.DEBUG:
-            error_message = f"Error during parsing: {str(e)}\n\n{traceback.format_exc()}"
-        else:
-            error_message = f"Error during parsing: {str(e)}"
-
-        # Add to validator with level-appropriate detail
-        parser.validator.add_result(
-            severity=ValidationSeverity.CRITICAL,
-            message=error_message,
-            element_type="Parsing"
-        )
-
-        logger.debug("Full traceback:\n%s", traceback.format_exc())
-        logger.info("Error during parsing: %s", str(e))
-
-        # Save the report
-        report_path = Path(xml_path).parent / 'validation_reports'
-        report_path.mkdir(exist_ok=True)
-        parser.validator.save_report(report_path / 'parsing_validation.log')
-
-        return None, parser.validator
+    return diagram, validator

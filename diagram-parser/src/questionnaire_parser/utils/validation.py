@@ -96,21 +96,6 @@ class ValidationCollector:
         self._log_result(result)
         self._handle_result(result)
 
-    '''
-    def add_pydantic_error(self, error, element_id: str):
-        """Convert Pydantic validation errors to our format. 
-        Pydantic's own, internal validations are checked prior to user defined ones. 
-        This """
-        for err in error.errors():
-            self.add_result(
-                severity=ValidationSeverity.ERROR,
-                message=f"Field validation error: {err['msg']}",
-                element_id=element_id,
-                element_type='Edge',
-                field_name='.'.join(str(loc) for loc in err['loc'])
-            )
-    '''
-
     def _log_result(self, result: ValidationResult) -> None:
         """Log the validation result appropriately.
         

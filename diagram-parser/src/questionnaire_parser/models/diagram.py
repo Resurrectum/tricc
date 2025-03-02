@@ -161,16 +161,45 @@ class Diagram(BaseModel):
     nodes: Dict[str, Node] = Field(default_factory=dict)
     edges: Dict[str, Edge] = Field(default_factory=dict)
     groups: Dict[str, Group] = Field(default_factory=dict)
+    validation_collector: Optional[ValidationCollector] = None
+
+    class Config:
+        arbitrary_types_allowed = True
 
     @model_validator(mode='after')
-    def validate_diagram_structure(self) -> 'Diagram':
+    def validate_structure(self) -> 'Diagram':
         """Validate overall diagram structure"""
-        # Validate edge connections
+        # Validate edge connections (edges that made until here have at least a source or a target)
         for edge_id, edge in self.edges.items():
             if edge.source not in self.nodes:
-                raise ValueError(f"Edge {edge_id} references non-existent source node")
-            if edge.target not in self.nodes:
-                raise ValueError(f"Edge {edge_id} references non-existent target node")
+                if self.validation_collector:
+                    message = f"Edge '{edge_id}' references non-existent source node.",
+                    self.validation_collector.add_result(
+                        severity = ValidationSeverity.ERROR,
+                        message = message,
+                        element_id = edge_id, 
+                        element_type = "Edge",
+                        field_name="source"
+                    )
+                raise ValueError(message)
+                
+            if edge.target not in self.nodes and edge.target not in self.groups:
+                # get source node
+                source_node = self.nodes[edge.source]
+                # get source node type
+                source_node_label = source_node.label
+                # if source node is a list node, raise error
+                message = f"Edge '{edge_id}' has no target. It's source has the label: '{source_node_label}'."
+                if self.validation_collector:
+                    self.validation_collector.add_result(
+                        severity=ValidationSeverity.ERROR,
+                        message=message,
+                        element_id=edge_id,
+                        element_type="Edge",
+                        field_name="target"
+                    )
+                # raise error and do not continue if no validation collector is provided
+                raise ValueError(message)
 
         # Validate group memberships
         for group_id, group in self.groups.items():

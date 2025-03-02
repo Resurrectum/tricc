@@ -10,4 +10,3 @@ if __name__ == "__main__":
     debug_parsing(xml_path, validation_level = ValidationLevel.LENIENT, logging_level=logging.INFO)
 
     print('reached end of code')
-    
