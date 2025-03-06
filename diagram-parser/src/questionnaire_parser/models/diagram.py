@@ -5,7 +5,9 @@ Data model for a diagram without any specific format
 from enum import Enum
 from typing import Dict, List, Optional, Set
 from pydantic import BaseModel, Field, validator, model_validator, root_validator, field_validator
+from pydantic_core import PydanticCustomError
 from questionnaire_parser.utils.validation import ValidationCollector, ValidationLevel, ValidationSeverity
+from questionnaire_parser.exceptions.parsing import MissingEndpointsError
 
 class Geometry(BaseModel):
     """Geometric properties of a non-edge diagram element"""
@@ -127,7 +129,6 @@ class Edge(BaseElement):
     """
     source: Optional[str] = None  # Making these optional allows single missing endpoint
     target: Optional[str] = None
-    validation_collector: Optional[ValidationCollector] = None
 
     class Config:
         arbitrary_types_allowed = True
@@ -142,17 +143,12 @@ class Edge(BaseElement):
         of the broader diagram context.
         """
         if not self.source and not self.target:  # Both endpoints missing
-            message = "Invalid (ghost) edge found where both, source and target, are missing. Ghost are ignored."
-            if self.validation_collector:
-                self.validation_collector.add_result(
-                    severity=ValidationSeverity.ERROR,
-                    message=message,
-                    element_id=self.id,
-                    element_type='Edge',
-                    field_name='endpoints'
-                )
             # raise error and do not create the edge
-            raise ValueError(message)
+            raise PydanticCustomError(
+                'ghost-edge', # error type
+                'Ghost edge found where source and target are missing. Edge gets ignored.', # message template
+                {'edge': self.id} # context
+            )
         # if validation passes, return the edge
         return self
 
@@ -181,7 +177,8 @@ class Diagram(BaseModel):
                         element_type = "Edge",
                         field_name="source"
                     )
-                raise ValueError(message)
+                else:
+                    raise ValueError(message)
                 
             if edge.target not in self.nodes and edge.target not in self.groups:
                 # get source node
@@ -198,8 +195,9 @@ class Diagram(BaseModel):
                         element_type="Edge",
                         field_name="target"
                     )
-                # raise error and do not continue if no validation collector is provided
-                raise ValueError(message)
+                else: 
+                    # raise error and do not continue if no validation collector is provided
+                    raise ValueError(message)
 
         # Validate group memberships
         for group_id, group in self.groups.items():

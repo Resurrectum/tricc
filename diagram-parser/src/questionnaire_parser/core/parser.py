@@ -8,7 +8,7 @@ from questionnaire_parser.models.diagram import (
     Diagram, Node, Edge, Group, Geometry, Style, ShapeType,
     ElementMetadata, NumericConstraints
 )
-from questionnaire_parser.exceptions.parsing import XMLParsingError, DiagramValidationError, EdgeValidationError
+from questionnaire_parser.exceptions.parsing import XMLParsingError, MissingEndpointsError
 from questionnaire_parser.utils.validation import ValidationCollector, ValidationLevel, ValidationSeverity
 
 from questionnaire_parser.utils.validation_messages import EdgeValidationMessage
@@ -24,7 +24,7 @@ class DrawIoParser:
         self.validator = ValidationCollector(validation_level)
         self.diagram = Diagram(validation_collector=self.validator)
 
-    def parse_file(self, filepath: Path) -> tuple[Diagram, ValidationCollector]:
+    def parse_file(self, filepath: Path) -> tuple[Optional[Diagram], ValidationCollector]:
         """Parse a draw.io XML file into our diagram model.
 
         Args:
@@ -55,9 +55,11 @@ class DrawIoParser:
                     severity=ValidationSeverity.CRITICAL,
                     message=message,
                     element_type="XML"
-            )
-            # Save report
-            self.validator.save_report(report_path / 'parsing_validation.log')
+                )
+                # Save report
+                self.validator.save_report(report_path / 'parsing_validation.log')
+                return None, self.validator
+
             raise ET.ParseError(message) # raise immediately if no collector
 
         except Exception as e: # all other exceptions
@@ -70,8 +72,12 @@ class DrawIoParser:
                 )
                 # Save report
                 self.validator.save_report(report_path / 'parsing_validation.log')
+                return diagram, self.validator
+            
             else:
                 raise Exception(message) # raise immediately if no collector
+
+
 
     def parse_xml(self, root: ET.Element) -> Diagram:
         """Parse XML content into diagram model"""
@@ -266,36 +272,24 @@ class DrawIoParser:
                 source=cell.get('source'),
                 target=cell.get('target'),
                 # need this for managing flexible validations
-                validation_collector = self.validator
+                # validation_collector = self.validator
                 )
-        except ValueError: # do not add to the validator, as this happens in the diagram model.
+        except ValidationError as ve:
+            for error in ve.errors():
+                if error['type']=='ghost-edge':
+                    severity = ValidationSeverity.WARNING
+                self.validator.add_result(
+                    severity=severity,
+                    message=error['msg'],
+                    element_id = error['input']['id'],
+                    element_type = 'Edge',
+                    field_name = 'endpoints'
+                )
             return None
-        # only needed if one wants to overwrite pydantic's default validation error messages
-        # if you decide to use this, remember to refactor: invalid edges that have at least source or
-        # target should be added to the diagram's edges list
-        #except ValidationError as ve:
-        #    # Format a clearer error message from Pydantic's validation error for every raised error
-        #    for error_details in ve.errors():
-        #        message = EdgeValidationMessage.format_pydantic_error(error_details, cell)
-        #        field_name = '.'.join(str(loc) for loc in error_details['loc'])
-        #
-        #        self.validator.add_result(
-        #            severity = ValidationSeverity.ERROR,
-        #            message = message,
-        #            element_id = cell.get('ID'),
-        #            element_type = 'Edge',
-        #            field_name=field_name
-        #        )
-        #    return None
-        # EdgeValidationError is not used right now because validators use pydantic's generic ValueError
-        #except EdgeValidationError as e:
-        #    self.validator.add_result(
-        #        severity = ValidationSeverity.ERROR,
-        #        message = str(e),
-        #        element_id = e.element_id,
-        #        element_type = 'Edge'
-        #    )
-        #    return None
+
+        except Exception as e: 
+            print(f'fuck you pydantic {e}')
+            return None
 
 
     def _determine_shape(self, cell: ET.Element) -> ShapeType:

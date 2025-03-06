@@ -8,49 +8,53 @@ Total Issues: 6
 CRITICAL Issues (1):
 ------------------------------
 - Unexpected error during parsing: 1 validation error for Diagram
-  Value error, Edge 'x4aIX1mL7_wf33j6CnDN-8' has no target. It's source has the label: 'Diarrhoea (at least 3 liquid stools per day)'. [type=value_error, input_value=Diagram(nodes={'zjpm43I_B...ject at 0x731ef9dda5d0>), input_type=Diagram]
-    For further information visit https://errors.pydantic.dev/2.10/v/value_error
+message
+  Input should be a valid string [type=string_type, input_value=("Edge 'AHG9xMSXvXzmeOXLo...existent source node.",), input_type=tuple]
+    For further information visit https://errors.pydantic.dev/2.10/v/string_type
   Element Type: Parsing
-  Time: 2025-03-02 06:24:10
+  Time: 2025-03-06 08:08:32
 
 
-ERROR Issues (5):
+ERROR Issues (1):
 ------------------------------
-- Invalid (ghost) edge found where both, source and target, are missing. Ghost are ignored.
-  Element ID: 97X_2J8qlAPc0du_Bcn8-79
-  Element Type: Edge
-  Field: endpoints
-  Time: 2025-03-02 06:24:10
-
-- Invalid (ghost) edge found where both, source and target, are missing. Ghost are ignored.
-  Element ID: 97X_2J8qlAPc0du_Bcn8-81
-  Element Type: Edge
-  Field: endpoints
-  Time: 2025-03-02 06:24:10
-
-- Invalid (ghost) edge found where both, source and target, are missing. Ghost are ignored.
-  Element ID: u-2OYHYpkGujKRkxLq70-45
-  Element Type: Edge
-  Field: endpoints
-  Time: 2025-03-02 06:24:10
-
-- Invalid (ghost) edge found where both, source and target, are missing. Ghost are ignored.
-  Element ID: B3PY1DTbvRqpWWawsYs9-50
-  Element Type: Edge
-  Field: endpoints
-  Time: 2025-03-02 06:24:10
-
 - Edge 'x4aIX1mL7_wf33j6CnDN-8' has no target. It's source has the label: 'Diarrhoea (at least 3 liquid stools per day)'.
   Element ID: x4aIX1mL7_wf33j6CnDN-8
   Element Type: Edge
   Field: target
-  Time: 2025-03-02 06:24:10
+  Time: 2025-03-06 08:08:32
+
+
+WARNING Issues (4):
+------------------------------
+- Ghost edge found where source and target are missing. Edge gets ignored.
+  Element ID: 97X_2J8qlAPc0du_Bcn8-79
+  Element Type: Edge
+  Field: endpoints
+  Time: 2025-03-06 08:08:32
+
+- Ghost edge found where source and target are missing. Edge gets ignored.
+  Element ID: 97X_2J8qlAPc0du_Bcn8-81
+  Element Type: Edge
+  Field: endpoints
+  Time: 2025-03-06 08:08:32
+
+- Ghost edge found where source and target are missing. Edge gets ignored.
+  Element ID: u-2OYHYpkGujKRkxLq70-45
+  Element Type: Edge
+  Field: endpoints
+  Time: 2025-03-06 08:08:32
+
+- Ghost edge found where source and target are missing. Edge gets ignored.
+  Element ID: B3PY1DTbvRqpWWawsYs9-50
+  Element Type: Edge
+  Field: endpoints
+  Time: 2025-03-06 08:08:32
 
 
 Summary:
 ------------------------------
 CRITICAL: 1 issues
-ERROR: 5 issues
-WARNING: 0 issues
+ERROR: 1 issues
+WARNING: 4 issues
 
 WARNING: Critical issues were found!
