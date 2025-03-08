@@ -77,6 +77,12 @@ class BaseElement(BaseModel):
             raise ValueError("ID cannot be empty")
         return v.strip()
 
+class SelectOption(BaseElement):
+    """Represents a select-option, which belongs to a list. """
+    parent_id: str
+    geometry: Geometry
+    style: Style
+
 class Node(BaseElement):
     """Represents a node in the diagram. At this basic structural level,
     a node is simply an element with a position, label and shape. But a list node
@@ -84,13 +90,7 @@ class Node(BaseElement):
     shape: ShapeType
     geometry: Geometry
     style: Style
-    options: Optional[List[str]] = None # Only for multiple choice nodes
-
-    @validator('shape')
-    @classmethod
-    def validate_shape(cls, v):
-        """Ensure shape is valid for a node"""
-        return v
+    options: Optional[List[SelectOption]] = None # Only for multiple choice nodes
 
     @model_validator(mode='after')
     def validate_list_attributes(self):
@@ -127,8 +127,8 @@ class Edge(BaseElement):
         target: ID of the target node. Can be missing if source exists.
         validation_collector: Optional collector for validation messages.
     """
-    source: Optional[str] = None  # Making these optional allows single missing endpoint
-    target: Optional[str] = None
+    source: str # Making these optional allows single missing endpoint
+    target: str
 
     class Config:
         arbitrary_types_allowed = True

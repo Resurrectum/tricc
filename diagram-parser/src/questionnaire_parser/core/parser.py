@@ -5,7 +5,7 @@ from pathlib import Path
 from pydantic import ValidationError
 
 from questionnaire_parser.models.diagram import (
-    Diagram, Node, Edge, Group, Geometry, Style, ShapeType,
+    Diagram, Node, SelectOption, Edge, Group, Geometry, Style, ShapeType,
     ElementMetadata, NumericConstraints
 )
 from questionnaire_parser.exceptions.parsing import XMLParsingError, MissingEndpointsError
@@ -113,7 +113,7 @@ class DrawIoParser:
                 node = self._create_list_node(cell)
                 self.diagram.nodes[node.id] = node
 
-                # Add to parent group if applicable 
+                # Add to parent group if applicable
                 parent_id = cell.get('parent')
                 if parent_id in self.diagram.groups:
                     self.diagram.groups[parent_id].contained_elements.add(node.id)
@@ -129,11 +129,6 @@ class DrawIoParser:
 
                 # Check if this is a select option for a list node
                 parent_id = cell.get('parent')
-                # If parent is UserObject/object, get its parent (the actual list node)
-                parent_elem = cell.getparent()
-                if parent_elem is not None and parent_elem.tag in ('UserObject', 'object'):
-                    parent_id = parent_elem.get('parent')
-                # If parent is a list node, add this as an option, but don't create a new node
                 if parent_id in self.diagram.nodes:
                     parent_node = self.diagram.nodes[parent_id]
                     if parent_node.shape == ShapeType.LIST:
@@ -258,6 +253,20 @@ class DrawIoParser:
             style=self._create_style(cell)
         )
 
+    def _create_select_option(self, cell: ET.Element) -> SelectOption:
+        """Create a SelectOption object from cell element"""
+        base_attrs = self._extract_base_attributes(cell)
+
+        return SelectOption(
+            id=base_attrs['id'],
+            label=base_attrs['label'],
+            page_id=base_attrs['page_id'],
+            parent_id = cell.get('parent'),
+            geometry=self._create_geometry(cell),
+            style=self._create_style(cell)
+        )
+
+
     def _create_edge(self, cell: ET.Element) -> Optional[Edge]:
         """Create an Edge from cell element"""
         base_attrs = self._extract_base_attributes(cell)
@@ -278,13 +287,13 @@ class DrawIoParser:
             for error in ve.errors():
                 if error['type']=='ghost-edge':
                     severity = ValidationSeverity.WARNING
-                self.validator.add_result(
-                    severity=severity,
-                    message=error['msg'],
-                    element_id = error['input']['id'],
-                    element_type = 'Edge',
-                    field_name = 'endpoints'
-                )
+                    self.validator.add_result(
+                        severity=severity,
+                        message=error['msg'],
+                        element_id = error['input']['id'],
+                        element_type = 'Edge',
+                        field_name = 'endpoints'
+                    )
             return None
 
         except Exception as e: 
@@ -313,7 +322,8 @@ class DrawIoParser:
         """Add an option to a list node"""
         if not list_node.options:
             list_node.options = []
-        list_node.options.append(option_cell.get('value', ''))
+        select_option = self._create_select_option(option_cell)
+        list_node.options.append(select_option)
 
     def _extract_metadata(self, cell: ET.Element) -> Optional[ElementMetadata]:
         """Extract metadata from cell or its parent UserObject"""
