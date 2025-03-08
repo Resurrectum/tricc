@@ -203,6 +203,46 @@ class DrawIoParser:
                 'page_id': self._get_page_id(cell)
             }
 
+    def _get_element_label(self, element_id: Optional[str]) -> tuple[Optional[str], Optional[str]]:
+        """Get the label and type of an element by its ID, handling all element types.
+
+        Args:
+            element_id: ID of the element to look up
+
+        Returns:
+            A tuple of (label, element_type) where:
+            - label is the text label of the element if found, None otherwise
+            - element_type is a string describing the type ('node', 'group', 'list', 'option', etc.)
+        """
+        if not element_id:
+            return None, None
+
+        # Check if it's a node
+        if element_id in self.diagram.nodes:
+            node = self.diagram.nodes[element_id]
+            node_type = 'list' if node.shape == ShapeType.LIST else 'node'
+            return node.label, node_type
+
+        # Check if it's a select option (needs to search through list nodes)
+        for node in self.diagram.nodes.values():
+            if node.options:
+                for option in node.options:
+                    if option.id == element_id:
+                        # Return both the option label and its parent list node's label
+                        parent_info = f" (option of '{node.label}')"
+                        return option.label + parent_info, 'option'
+
+        # Check if it's a group
+        if element_id in self.diagram.groups:
+            group = self.diagram.groups[element_id]
+            # Include information about contained elements
+            num_elements = len(group.contained_elements)
+            elements_info = f" (group with {num_elements} elements)"
+            return group.label + elements_info, 'group'
+
+        # Element not found
+        return None, None
+
     def _create_group(self, cell: ET.Element) -> Group:
         """Create a Group from cell element"""
         base_attrs = self._extract_base_attributes(cell)
@@ -267,6 +307,7 @@ class DrawIoParser:
         )
 
 
+
     def _create_edge(self, cell: ET.Element) -> Optional[Edge]:
         """Create an Edge from cell element"""
         base_attrs = self._extract_base_attributes(cell)
@@ -279,20 +320,41 @@ class DrawIoParser:
                 page_id=base_attrs['page_id'],
                 metadata=metadata,
                 source=cell.get('source'),
-                target=cell.get('target'),
+                target=cell.get('target')
                 # need this for managing flexible validations
                 # validation_collector = self.validator
                 )
         except ValidationError as ve:
             for error in ve.errors():
                 if error['type']=='ghost-edge':
-                    severity = ValidationSeverity.WARNING
                     self.validator.add_result(
-                        severity=severity,
+                        severity=ValidationSeverity.WARNING,
                         message=error['msg'],
                         element_id = error['input']['id'],
                         element_type = 'Edge',
                         field_name = 'endpoints'
+                    )
+                if error['type']=='target-missing':
+                    # Target is missing but source exists
+                    source_label, source_type = self._get_element_label(error['input']['source'])
+                    source_info = f" Source is a {source_type} node, label is '{source_label}'" if source_label else ""
+                    self.validator.add_result(
+                        severity = ValidationSeverity.ERROR,
+                        message=f"{error.get('msg', 'Edge missing target')}.{source_info}",
+                        element_id = error['input']['id'],
+                        element_type = 'Edge',
+                        field_name='endpoints'
+                    )
+                if error['type']=='source-missing':
+                    # Source is missing but target exists
+                    target_label, target_type = self._get_element_label(error['input']['target'])
+                    target_info = f" Target is a {target_type} node, label is '{target_label}'" if target_label else ""
+                    self.validator.add_result(
+                        severity=ValidationSeverity.ERROR,
+                        message=f"{error.get('msg', 'Edge missing source')}.{target_info}",
+                        element_id = error['input']['id'],
+                        element_type = 'Edge',
+                        field_name='endpoints'
                     )
             return None
 

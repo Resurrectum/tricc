@@ -125,25 +125,39 @@ class Edge(BaseElement):
     Attributes:
         source: ID of the source node. Can be missing if target exists.
         target: ID of the target node. Can be missing if source exists.
-        validation_collector: Optional collector for validation messages.
     """
-    source: str # Making these optional allows single missing endpoint
-    target: str
+    source: Optional[str] = None # Making these optional allows single missing endpoint
+    target: Optional[str] = None
 
     class Config:
         arbitrary_types_allowed = True
 
     @model_validator(mode='after')
-    def validate_has_at_least_one_endpoint(self) -> 'Edge':
-        """Ensures the edge has at least one endpoint.
+    def validate_endpoints(self) -> 'Edge':
+        """Ensures the edge has both endpoints, but distinguish between 3 cases:
+        - source is missing and target is present
+        - source is present and target is missing
+        - source and target are missing.
 
-        An edge with no endpoints (neither source nor target) is a 'ghost edge' that
-        cannot be meaningfully displayed or used. We validate this at the Edge level
-        since this is a fundamental property of what makes an edge valid, regardless
-        of the broader diagram context.
+        An edge with no endpoints is a 'ghost edge'. It cannot be meaningfully 
+        displayed or used.
         """
-        if not self.source and not self.target:  # Both endpoints missing
-            # raise error and do not create the edge
+        source = getattr(self, 'source', None)
+        target = getattr(self, 'target', None)
+
+        if not source and target: # only source is missing
+            raise PydanticCustomError(
+                'source-missing',
+                'Edge has no source.',
+                {'edge': self.id, 'target':target}
+            )
+        if source and not target: # only target is missing
+            raise PydanticCustomError(
+                'target-missing',
+                'Edge has no target.',
+                {'edge': self.id, 'source': source}
+            )
+        if not source and not target:
             raise PydanticCustomError(
                 'ghost-edge', # error type
                 'Ghost edge found where source and target are missing. Edge gets ignored.', # message template

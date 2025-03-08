@@ -2,7 +2,7 @@ from typing import Optional, Dict
 from pathlib import Path
 from lxml import etree as ET
 import logging
-from questionnaire_parser.models.diagram import Diagram, Node, Edge, Group, ShapeType
+from questionnaire_parser.models.diagram import Diagram, ShapeType
 from questionnaire_parser.core.parser import ValidationLevel, ValidationSeverity
 from questionnaire_parser.core.parser import DrawIoParser
 
