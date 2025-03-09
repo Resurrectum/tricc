@@ -12,6 +12,7 @@ from questionnaire_parser.exceptions.parsing import XMLParsingError, MissingEndp
 from questionnaire_parser.utils.validation import ValidationCollector, ValidationLevel, ValidationSeverity
 
 from questionnaire_parser.utils.validation_messages import EdgeValidationMessage
+from questionnaire_parser.utils.edge_error_handler import EdgeValidationErrorHandler
 
 logger = getLogger(__name__)
 
@@ -23,6 +24,7 @@ class DrawIoParser:
         self.ns = None # no namespace in draw.io XML
         self.validator = ValidationCollector(validation_level)
         self.diagram = Diagram(validation_collector=self.validator)
+        self.edge_error_handler = EdgeValidationErrorHandler(self.validator)
 
     def parse_file(self, filepath: Path) -> tuple[Optional[Diagram], ValidationCollector]:
         """Parse a draw.io XML file into our diagram model.
@@ -73,11 +75,7 @@ class DrawIoParser:
                 # Save report
                 self.validator.save_report(report_path / 'parsing_validation.log')
                 return diagram, self.validator
-            
-            else:
-                raise Exception(message) # raise immediately if no collector
-
-
+            raise Exception (message)
 
     def parse_xml(self, root: ET.Element) -> Diagram:
         """Parse XML content into diagram model"""
@@ -94,9 +92,21 @@ class DrawIoParser:
         self._parse_edges(root)
 
         # Validate diagram structure after parsing
-        validated_diagram = Diagram.model_validate(self.diagram)
-
-        return validated_diagram
+        if self.validator.validation_level == ValidationLevel.LENIENT:
+            try:
+                validated_diagram = Diagram.model_validate(self.diagram)
+                return validated_diagram
+            except ValidationError as ve:
+                self.validator.add_result(
+                    severity=ValidationSeverity.ERROR,
+                    message=f"Diagram validation failed in lenient mode: {str(ve)}",
+                    element_type='Diagram'
+                )
+                return self.diagram
+        else:
+            # if not LENIENT mode:
+            validated_diagram = Diagram.model_validate(self.diagram)
+            return validated_diagram
 
     def _parse_groups(self, root: ET.Element):
         """First pass: Parse group elements"""
@@ -312,6 +322,8 @@ class DrawIoParser:
         """Create an Edge from cell element"""
         base_attrs = self._extract_base_attributes(cell)
         metadata = self._extract_metadata(cell)
+        # pass diagram to the edge error handler
+        self.edge_error_handler.set_diagram(self.diagram)
 
         try:
             return Edge(
@@ -325,37 +337,9 @@ class DrawIoParser:
                 # validation_collector = self.validator
                 )
         except ValidationError as ve:
-            for error in ve.errors():
-                if error['type']=='ghost-edge':
-                    self.validator.add_result(
-                        severity=ValidationSeverity.WARNING,
-                        message=error['msg'],
-                        element_id = error['input']['id'],
-                        element_type = 'Edge',
-                        field_name = 'endpoints'
-                    )
-                if error['type']=='target-missing':
-                    # Target is missing but source exists
-                    source_label, source_type = self._get_element_label(error['input']['source'])
-                    source_info = f" Source is a {source_type} node, label is '{source_label}'" if source_label else ""
-                    self.validator.add_result(
-                        severity = ValidationSeverity.ERROR,
-                        message=f"{error.get('msg', 'Edge missing target')}.{source_info}",
-                        element_id = error['input']['id'],
-                        element_type = 'Edge',
-                        field_name='endpoints'
-                    )
-                if error['type']=='source-missing':
-                    # Source is missing but target exists
-                    target_label, target_type = self._get_element_label(error['input']['target'])
-                    target_info = f" Target is a {target_type} node, label is '{target_label}'" if target_label else ""
-                    self.validator.add_result(
-                        severity=ValidationSeverity.ERROR,
-                        message=f"{error.get('msg', 'Edge missing source')}.{target_info}",
-                        element_id = error['input']['id'],
-                        element_type = 'Edge',
-                        field_name='endpoints'
-                    )
+            # Error handling done by EdgeValidationErrorHandler
+            self.edge_error_handler.handle_edge_error(ve)
+
             return None
 
         except Exception as e: 

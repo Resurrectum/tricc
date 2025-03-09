@@ -1,33 +1,1362 @@
 Diagram Validation Report
 ==================================================
 Validation Level: LENIENT
-Total Issues: 7
+Total Issues: 229
 --------------------------------------------------
 
 
 CRITICAL Issues (1):
 ------------------------------
-- Unexpected error during parsing: 1 validation error for Diagram
-message
-  Input should be a valid string [type=string_type, input_value=("Edge 'zjpm43I_BCxAhtO3T...existent source node.",), input_type=tuple]
-    For further information visit https://errors.pydantic.dev/2.10/v/string_type
+- Unexpected error during parsing: 'dict_values' object has no attribute 'metadata'
   Element Type: Parsing
-  Time: 2025-03-08 12:40:49
+  Time: 2025-03-09 15:17:53
 
 
-ERROR Issues (2):
+ERROR Issues (224):
 ------------------------------
-- Edge has no target.. Source is a option node, label is 'Diarrhoea (at least 3 liquid stools per day) (option of 'Check for the presence of the following symptoms (MULTIPLE CHOICE possible)')'
+- Edge has no target.. Target is a select option, it's label is 'Diarrhoea (at least 3 liquid stools per day)' 
   Element ID: x4aIX1mL7_wf33j6CnDN-8
   Element Type: Edge
-  Field: endpoints
-  Time: 2025-03-08 12:40:35
+  Field: target
+  Time: 2025-03-09 15:16:45
 
-- Edge has no source.. Target is a node node, label is 'Upper complicated UTI'
+- Edge has no source.. Source is a rectangle node, label is 'Upper complicated UTI'
   Element ID: AHG9xMSXvXzmeOXLoyHo-3
   Element Type: Edge
-  Field: endpoints
-  Time: 2025-03-08 12:40:35
+  Field: source
+  Time: 2025-03-09 15:16:45
+
+- Edge 'zjpm43I_BCxAhtO3TjfG-289' references non-existent source node.
+  Element ID: zjpm43I_BCxAhtO3TjfG-289
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'zjpm43I_BCxAhtO3TjfG-356' references non-existent source node.
+  Element ID: zjpm43I_BCxAhtO3TjfG-356
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'zjpm43I_BCxAhtO3TjfG-361' references non-existent source node.
+  Element ID: zjpm43I_BCxAhtO3TjfG-361
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'zjpm43I_BCxAhtO3TjfG-370' references non-existent source node.
+  Element ID: zjpm43I_BCxAhtO3TjfG-370
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'zjpm43I_BCxAhtO3TjfG-376' references non-existent source node.
+  Element ID: zjpm43I_BCxAhtO3TjfG-376
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'zjpm43I_BCxAhtO3TjfG-394' references non-existent source node.
+  Element ID: zjpm43I_BCxAhtO3TjfG-394
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6-46R3QmlX0NwOugAWuj-0' references non-existent source node.
+  Element ID: 6-46R3QmlX0NwOugAWuj-0
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'zjpm43I_BCxAhtO3TjfG-296' references non-existent source node.
+  Element ID: zjpm43I_BCxAhtO3TjfG-296
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'YYiCz0d12ighoq34bFLj-37' references non-existent source node.
+  Element ID: YYiCz0d12ighoq34bFLj-37
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'YYiCz0d12ighoq34bFLj-38' references non-existent source node.
+  Element ID: YYiCz0d12ighoq34bFLj-38
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'YYiCz0d12ighoq34bFLj-39' references non-existent source node.
+  Element ID: YYiCz0d12ighoq34bFLj-39
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-58' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-58
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-43' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-43
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-67' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-67
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-68' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-68
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'sMS7xgy6Xd0GGKe-CYij-12' references non-existent source node.
+  Element ID: sMS7xgy6Xd0GGKe-CYij-12
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-98' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-98
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-99' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-99
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-100' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-100
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-118' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-118
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-138' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-138
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-139' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-139
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-167' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-167
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-336' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-336
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-337' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-337
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-338' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-338
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-339' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-339
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-563' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-563
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-614' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-614
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-646' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-646
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-647' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-647
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'NICACBZ1QluxI0W9Qa2Q-173' references non-existent source node.
+  Element ID: NICACBZ1QluxI0W9Qa2Q-173
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'NICACBZ1QluxI0W9Qa2Q-174' references non-existent source node.
+  Element ID: NICACBZ1QluxI0W9Qa2Q-174
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'NICACBZ1QluxI0W9Qa2Q-175' references non-existent source node.
+  Element ID: NICACBZ1QluxI0W9Qa2Q-175
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'NICACBZ1QluxI0W9Qa2Q-178' references non-existent source node.
+  Element ID: NICACBZ1QluxI0W9Qa2Q-178
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'NICACBZ1QluxI0W9Qa2Q-181' references non-existent source node.
+  Element ID: NICACBZ1QluxI0W9Qa2Q-181
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'NICACBZ1QluxI0W9Qa2Q-226' references non-existent source node.
+  Element ID: NICACBZ1QluxI0W9Qa2Q-226
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'NICACBZ1QluxI0W9Qa2Q-227' references non-existent source node.
+  Element ID: NICACBZ1QluxI0W9Qa2Q-227
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'NICACBZ1QluxI0W9Qa2Q-230' references non-existent source node.
+  Element ID: NICACBZ1QluxI0W9Qa2Q-230
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'NICACBZ1QluxI0W9Qa2Q-252' references non-existent source node.
+  Element ID: NICACBZ1QluxI0W9Qa2Q-252
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'NICACBZ1QluxI0W9Qa2Q-256' references non-existent source node.
+  Element ID: NICACBZ1QluxI0W9Qa2Q-256
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-108' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-108
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-119' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-119
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-102' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-102
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-103' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-103
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-104' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-104
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-105' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-105
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-115' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-115
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-116' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-116
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-117' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-117
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-130' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-130
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-131' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-131
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-132' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-132
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-133' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-133
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-54' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-54
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-58' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-58
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-41' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-41
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-42' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-42
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-43' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-43
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-57' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-57
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-31' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-31
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-32' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-32
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-55' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-55
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-60' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-60
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'zjpm43I_BCxAhtO3TjfG-267' references non-existent source node.
+  Element ID: zjpm43I_BCxAhtO3TjfG-267
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'zjpm43I_BCxAhtO3TjfG-268' references non-existent source node.
+  Element ID: zjpm43I_BCxAhtO3TjfG-268
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'zjpm43I_BCxAhtO3TjfG-266' references non-existent source node.
+  Element ID: zjpm43I_BCxAhtO3TjfG-266
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-149' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-149
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-199' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-199
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-201' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-201
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-680' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-680
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-682' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-682
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-340' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-340
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-151' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-151
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-153' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-153
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-197' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-197
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-198' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-198
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-200' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-200
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-60' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-60
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-61' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-61
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-62' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-62
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-63' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-63
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-64' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-64
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-65' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-65
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '3LT_FwkX3_wtisfswZ_E-10' references non-existent source node.
+  Element ID: 3LT_FwkX3_wtisfswZ_E-10
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '_ngWaJjIOC25TS3-QT86-6' references non-existent source node.
+  Element ID: _ngWaJjIOC25TS3-QT86-6
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '_ngWaJjIOC25TS3-QT86-7' references non-existent source node.
+  Element ID: _ngWaJjIOC25TS3-QT86-7
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-70' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-70
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-73' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-73
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'pbZ40mLQ_XrmrcULdRrj-74' references non-existent source node.
+  Element ID: pbZ40mLQ_XrmrcULdRrj-74
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '0RIM-2jba-bQC5kOe2e--5' references non-existent source node.
+  Element ID: 0RIM-2jba-bQC5kOe2e--5
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'XSf1TWJF4OEfPNMGcsag-147' references non-existent source node.
+  Element ID: XSf1TWJF4OEfPNMGcsag-147
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'KGjeGqpUnCV8QP1xGqUL-17' references non-existent source node.
+  Element ID: KGjeGqpUnCV8QP1xGqUL-17
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'KGjeGqpUnCV8QP1xGqUL-18' references non-existent source node.
+  Element ID: KGjeGqpUnCV8QP1xGqUL-18
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'KGjeGqpUnCV8QP1xGqUL-19' references non-existent source node.
+  Element ID: KGjeGqpUnCV8QP1xGqUL-19
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'KGjeGqpUnCV8QP1xGqUL-20' references non-existent source node.
+  Element ID: KGjeGqpUnCV8QP1xGqUL-20
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'KGjeGqpUnCV8QP1xGqUL-21' references non-existent source node.
+  Element ID: KGjeGqpUnCV8QP1xGqUL-21
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'KGjeGqpUnCV8QP1xGqUL-22' references non-existent source node.
+  Element ID: KGjeGqpUnCV8QP1xGqUL-22
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'KGjeGqpUnCV8QP1xGqUL-23' references non-existent source node.
+  Element ID: KGjeGqpUnCV8QP1xGqUL-23
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'KGjeGqpUnCV8QP1xGqUL-32' references non-existent source node.
+  Element ID: KGjeGqpUnCV8QP1xGqUL-32
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'KGjeGqpUnCV8QP1xGqUL-33' references non-existent source node.
+  Element ID: KGjeGqpUnCV8QP1xGqUL-33
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'KGjeGqpUnCV8QP1xGqUL-34' references non-existent source node.
+  Element ID: KGjeGqpUnCV8QP1xGqUL-34
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'KGjeGqpUnCV8QP1xGqUL-35' references non-existent source node.
+  Element ID: KGjeGqpUnCV8QP1xGqUL-35
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'KGjeGqpUnCV8QP1xGqUL-36' references non-existent source node.
+  Element ID: KGjeGqpUnCV8QP1xGqUL-36
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'KGjeGqpUnCV8QP1xGqUL-37' references non-existent source node.
+  Element ID: KGjeGqpUnCV8QP1xGqUL-37
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'KGjeGqpUnCV8QP1xGqUL-38' references non-existent source node.
+  Element ID: KGjeGqpUnCV8QP1xGqUL-38
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '1N5zNx5iRN5klSCbxZqQ-0' references non-existent source node.
+  Element ID: 1N5zNx5iRN5klSCbxZqQ-0
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u-2OYHYpkGujKRkxLq70-694' references non-existent source node.
+  Element ID: u-2OYHYpkGujKRkxLq70-694
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'sFZ---xsbwI6R_iZJZyI-1' references non-existent source node.
+  Element ID: sFZ---xsbwI6R_iZJZyI-1
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'GX0O_AXPPekJ0RnOSEN9-1' references non-existent source node.
+  Element ID: GX0O_AXPPekJ0RnOSEN9-1
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'x4aIX1mL7_wf33j6CnDN-6' references non-existent source node.
+  Element ID: x4aIX1mL7_wf33j6CnDN-6
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'x4aIX1mL7_wf33j6CnDN-9' references non-existent source node.
+  Element ID: x4aIX1mL7_wf33j6CnDN-9
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'sFZ---xsbwI6R_iZJZyI-0' references non-existent source node.
+  Element ID: sFZ---xsbwI6R_iZJZyI-0
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'DEotGF5NDjLoNfRWpb5v-0' references non-existent source node.
+  Element ID: DEotGF5NDjLoNfRWpb5v-0
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'DEotGF5NDjLoNfRWpb5v-1' references non-existent source node.
+  Element ID: DEotGF5NDjLoNfRWpb5v-1
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-15' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-15
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-23' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-23
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-24' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-24
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-26' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-26
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-27' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-27
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-32' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-32
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-33' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-33
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-34' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-34
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-67' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-67
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-90' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-90
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-91' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-91
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-92' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-92
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-96' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-96
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-112' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-112
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-113' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-113
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-114' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-114
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-115' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-115
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-164' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-164
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-196' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-196
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-198' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-198
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '6VhrocRdydVIkS_9V0-j-199' references non-existent source node.
+  Element ID: 6VhrocRdydVIkS_9V0-j-199
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-35' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-35
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-38' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-38
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-40' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-40
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-45' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-45
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-46' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-46
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-47' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-47
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-63' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-63
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-64' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-64
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-65' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-65
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-66' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-66
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-75' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-75
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-100' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-100
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-101' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-101
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-102' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-102
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-103' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-103
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-104' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-104
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-124' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-124
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-125' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-125
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-126' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-126
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-127' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-127
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-135' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-135
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-136' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-136
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-137' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-137
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-138' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-138
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-139' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-139
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-140' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-140
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-141' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-141
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-156' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-156
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-157' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-157
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-158' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-158
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-159' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-159
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-220' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-220
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-221' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-221
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-222' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-222
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-223' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-223
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-225' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-225
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'Rvm2YwlRca2-a_a3BniO-258' references non-existent source node.
+  Element ID: Rvm2YwlRca2-a_a3BniO-258
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'XX48_HRkGQc5FYI5gHGc-13' references non-existent source node.
+  Element ID: XX48_HRkGQc5FYI5gHGc-13
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'XX48_HRkGQc5FYI5gHGc-14' references non-existent source node.
+  Element ID: XX48_HRkGQc5FYI5gHGc-14
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'XX48_HRkGQc5FYI5gHGc-15' references non-existent source node.
+  Element ID: XX48_HRkGQc5FYI5gHGc-15
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'B3PY1DTbvRqpWWawsYs9-6' references non-existent source node.
+  Element ID: B3PY1DTbvRqpWWawsYs9-6
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'B3PY1DTbvRqpWWawsYs9-99' references non-existent source node.
+  Element ID: B3PY1DTbvRqpWWawsYs9-99
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'NK7DIZ3cs_iKskycMavb-1' references non-existent source node.
+  Element ID: NK7DIZ3cs_iKskycMavb-1
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'plpbFzSJFXB6uKafMeHM-16' references non-existent source node.
+  Element ID: plpbFzSJFXB6uKafMeHM-16
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'kamrn7u0m6PcM3petYTL-1' references non-existent source node.
+  Element ID: kamrn7u0m6PcM3petYTL-1
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '3HCHkiq4TzFFquT4f6m7-5' references non-existent source node.
+  Element ID: 3HCHkiq4TzFFquT4f6m7-5
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '3HCHkiq4TzFFquT4f6m7-9' references non-existent source node.
+  Element ID: 3HCHkiq4TzFFquT4f6m7-9
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge '3HCHkiq4TzFFquT4f6m7-10' references non-existent source node.
+  Element ID: 3HCHkiq4TzFFquT4f6m7-10
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'plpbFzSJFXB6uKafMeHM-21' references non-existent source node.
+  Element ID: plpbFzSJFXB6uKafMeHM-21
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'AHG9xMSXvXzmeOXLoyHo-0' references non-existent source node.
+  Element ID: AHG9xMSXvXzmeOXLoyHo-0
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'AHG9xMSXvXzmeOXLoyHo-1' references non-existent source node.
+  Element ID: AHG9xMSXvXzmeOXLoyHo-1
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'AHG9xMSXvXzmeOXLoyHo-2' references non-existent source node.
+  Element ID: AHG9xMSXvXzmeOXLoyHo-2
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'AHG9xMSXvXzmeOXLoyHo-4' references non-existent source node.
+  Element ID: AHG9xMSXvXzmeOXLoyHo-4
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'AHG9xMSXvXzmeOXLoyHo-6' references non-existent source node.
+  Element ID: AHG9xMSXvXzmeOXLoyHo-6
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'xdmUtHyhzr1bfPzNpfsd-6' references non-existent source node.
+  Element ID: xdmUtHyhzr1bfPzNpfsd-6
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'xdmUtHyhzr1bfPzNpfsd-7' references non-existent source node.
+  Element ID: xdmUtHyhzr1bfPzNpfsd-7
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'xdmUtHyhzr1bfPzNpfsd-12' references non-existent source node.
+  Element ID: xdmUtHyhzr1bfPzNpfsd-12
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'xdmUtHyhzr1bfPzNpfsd-27' references non-existent source node.
+  Element ID: xdmUtHyhzr1bfPzNpfsd-27
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'xdmUtHyhzr1bfPzNpfsd-30' references non-existent source node.
+  Element ID: xdmUtHyhzr1bfPzNpfsd-30
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'xdmUtHyhzr1bfPzNpfsd-36' references non-existent source node.
+  Element ID: xdmUtHyhzr1bfPzNpfsd-36
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'xdmUtHyhzr1bfPzNpfsd-38' references non-existent source node.
+  Element ID: xdmUtHyhzr1bfPzNpfsd-38
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'xdmUtHyhzr1bfPzNpfsd-39' references non-existent source node.
+  Element ID: xdmUtHyhzr1bfPzNpfsd-39
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'xdmUtHyhzr1bfPzNpfsd-40' references non-existent source node.
+  Element ID: xdmUtHyhzr1bfPzNpfsd-40
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'xdmUtHyhzr1bfPzNpfsd-41' references non-existent source node.
+  Element ID: xdmUtHyhzr1bfPzNpfsd-41
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'xdmUtHyhzr1bfPzNpfsd-51' references non-existent source node.
+  Element ID: xdmUtHyhzr1bfPzNpfsd-51
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'xdmUtHyhzr1bfPzNpfsd-52' references non-existent source node.
+  Element ID: xdmUtHyhzr1bfPzNpfsd-52
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'xdmUtHyhzr1bfPzNpfsd-53' references non-existent source node.
+  Element ID: xdmUtHyhzr1bfPzNpfsd-53
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'xdmUtHyhzr1bfPzNpfsd-54' references non-existent source node.
+  Element ID: xdmUtHyhzr1bfPzNpfsd-54
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'xdmUtHyhzr1bfPzNpfsd-55' references non-existent source node.
+  Element ID: xdmUtHyhzr1bfPzNpfsd-55
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u_kUptGXEgtFws5r-ntR-4' references non-existent source node.
+  Element ID: u_kUptGXEgtFws5r-ntR-4
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u_kUptGXEgtFws5r-ntR-5' references non-existent source node.
+  Element ID: u_kUptGXEgtFws5r-ntR-5
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'u_kUptGXEgtFws5r-ntR-6' references non-existent source node.
+  Element ID: u_kUptGXEgtFws5r-ntR-6
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'y7gb1KnNRxSXba4yc1OF-2' references non-existent source node.
+  Element ID: y7gb1KnNRxSXba4yc1OF-2
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'WgQVO5QXGywqk8ARn8Ov-1' references non-existent source node.
+  Element ID: WgQVO5QXGywqk8ARn8Ov-1
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'WgQVO5QXGywqk8ARn8Ov-2' references non-existent source node.
+  Element ID: WgQVO5QXGywqk8ARn8Ov-2
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'WgQVO5QXGywqk8ARn8Ov-3' references non-existent source node.
+  Element ID: WgQVO5QXGywqk8ARn8Ov-3
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'keavVYZPR3yRGR-jzD5E-2' references non-existent source node.
+  Element ID: keavVYZPR3yRGR-jzD5E-2
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'keavVYZPR3yRGR-jzD5E-3' references non-existent source node.
+  Element ID: keavVYZPR3yRGR-jzD5E-3
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'keavVYZPR3yRGR-jzD5E-5' references non-existent source node.
+  Element ID: keavVYZPR3yRGR-jzD5E-5
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'keavVYZPR3yRGR-jzD5E-7' references non-existent source node.
+  Element ID: keavVYZPR3yRGR-jzD5E-7
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'keavVYZPR3yRGR-jzD5E-8' references non-existent source node.
+  Element ID: keavVYZPR3yRGR-jzD5E-8
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'keavVYZPR3yRGR-jzD5E-9' references non-existent source node.
+  Element ID: keavVYZPR3yRGR-jzD5E-9
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'keavVYZPR3yRGR-jzD5E-10' references non-existent source node.
+  Element ID: keavVYZPR3yRGR-jzD5E-10
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'keavVYZPR3yRGR-jzD5E-12' references non-existent source node.
+  Element ID: keavVYZPR3yRGR-jzD5E-12
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'keavVYZPR3yRGR-jzD5E-6' references non-existent source node.
+  Element ID: keavVYZPR3yRGR-jzD5E-6
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
+
+- Edge 'keavVYZPR3yRGR-jzD5E-14' references non-existent source node.
+  Element ID: keavVYZPR3yRGR-jzD5E-14
+  Element Type: Edge
+  Field: source
+  Time: 2025-03-09 15:16:55
 
 
 WARNING Issues (4):
@@ -36,31 +1365,31 @@ WARNING Issues (4):
   Element ID: 97X_2J8qlAPc0du_Bcn8-79
   Element Type: Edge
   Field: endpoints
-  Time: 2025-03-08 12:40:35
+  Time: 2025-03-09 15:16:45
 
 - Ghost edge found where source and target are missing. Edge gets ignored.
   Element ID: 97X_2J8qlAPc0du_Bcn8-81
   Element Type: Edge
   Field: endpoints
-  Time: 2025-03-08 12:40:35
+  Time: 2025-03-09 15:16:45
 
 - Ghost edge found where source and target are missing. Edge gets ignored.
   Element ID: u-2OYHYpkGujKRkxLq70-45
   Element Type: Edge
   Field: endpoints
-  Time: 2025-03-08 12:40:35
+  Time: 2025-03-09 15:16:45
 
 - Ghost edge found where source and target are missing. Edge gets ignored.
   Element ID: B3PY1DTbvRqpWWawsYs9-50
   Element Type: Edge
   Field: endpoints
-  Time: 2025-03-08 12:40:35
+  Time: 2025-03-09 15:16:45
 
 
 Summary:
 ------------------------------
 CRITICAL: 1 issues
-ERROR: 2 issues
+ERROR: 224 issues
 WARNING: 4 issues
 
 WARNING: Critical issues were found!

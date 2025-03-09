@@ -179,11 +179,15 @@ class Diagram(BaseModel):
     @model_validator(mode='after')
     def validate_structure(self) -> 'Diagram':
         """Validate overall diagram structure"""
+        # Precompute valid metadata names (excluding rhombus nodes)
+        valid_metadata_names = {n.metadata.name for n in self.nodes.values() 
+                               if n.metadata and n.metadata.name and n.shape != ShapeType.RHOMBUS}
+        
         # Validate edge connections (edges that made until here have at least a source or a target)
         for edge_id, edge in self.edges.items():
             if edge.source not in self.nodes:
                 if self.validation_collector:
-                    message = f"Edge '{edge_id}' references non-existent source node.",
+                    message = f"Edge '{edge_id}' references non-existent source node."
                     self.validation_collector.add_result(
                         severity = ValidationSeverity.ERROR,
                         message = message,
@@ -229,9 +233,9 @@ class Diagram(BaseModel):
         # Validate rhombus references
         for node_id, node in self.nodes.items():
             if node.shape == ShapeType.RHOMBUS:
-                if not node.metadata.name:  # The referenced node should be in the name field
+                if not node.metadata or not node.metadata.name:  # The referenced node should be in the name field
                     raise ValueError(f"Rhombus node {node_id} must reference another node")
-                if node.metadata.name not in self.nodes.values().metadata.name:
+                elif node.metadata.name not in valid_metadata_names:
                     raise ValueError(f"Rhombus node {node_id} references non-existent node {node.metadata.name}")
                 
                 # According to docs, referenced node must be upstream
