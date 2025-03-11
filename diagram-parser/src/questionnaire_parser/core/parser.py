@@ -343,7 +343,7 @@ class DrawIoParser:
             return None
 
         except Exception as e: 
-            print(f'fuck you pydantic {e}')
+            print(f'Unknown edge validation error: {e}')
             return None
 
 

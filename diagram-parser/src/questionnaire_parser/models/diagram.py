@@ -149,13 +149,13 @@ class Edge(BaseElement):
             raise PydanticCustomError(
                 'source-missing',
                 'Edge has no source.',
-                {'edge': self.id, 'target':target}
+                {'edge': self.id, 'source':source}
             )
         if source and not target: # only target is missing
             raise PydanticCustomError(
                 'target-missing',
                 'Edge has no target.',
-                {'edge': self.id, 'source': source}
+                {'edge': self.id, 'target': target}
             )
         if not source and not target:
             raise PydanticCustomError(
@@ -179,68 +179,104 @@ class Diagram(BaseModel):
     @model_validator(mode='after')
     def validate_structure(self) -> 'Diagram':
         """Validate overall diagram structure"""
-        # Precompute valid metadata names (excluding rhombus nodes)
-        valid_metadata_names = {n.metadata.name for n in self.nodes.values() 
-                               if n.metadata and n.metadata.name and n.shape != ShapeType.RHOMBUS}
-        
-        # Validate edge connections (edges that made until here have at least a source or a target)
+        # Precompute valid referral nodes (excluding rhombus nodes)
+        valid_referral_nodes = {n.metadata.name for n in self.nodes.values()
+                           if n.metadata and n.metadata.name and n.shape != ShapeType.RHOMBUS}
+
+        # Precompute valid source IDs
+        valid_node_ids = {node_id for node_id, node in self.nodes.items()
+                         if node.shape != ShapeType.LIST}  # Exclude list nodes
+        all_option_ids = {option.id for node in self.nodes.values()
+                         if node.shape == ShapeType.LIST and node.options
+                         for option in node.options}
+        valid_source_ids = valid_node_ids | all_option_ids  # Union of valid sources
+
+        group_ids = set(self.groups.keys())
+
+    # Validate edge connections
         for edge_id, edge in self.edges.items():
-            if edge.source not in self.nodes:
-                if self.validation_collector:
-                    message = f"Edge '{edge_id}' references non-existent source node."
-                    self.validation_collector.add_result(
-                        severity = ValidationSeverity.ERROR,
-                        message = message,
-                        element_id = edge_id, 
-                        element_type = "Edge",
-                        field_name="source"
-                    )
-                else:
-                    raise ValueError(message)
-                
-            if edge.target not in self.nodes and edge.target not in self.groups:
-                # get source node
-                source_node = self.nodes[edge.source]
-                # get source node type
-                source_node_label = source_node.label
-                # if source node is a list node, raise error
-                message = f"Edge '{edge_id}' has no target. It's source has the label: '{source_node_label}'."
-                if self.validation_collector:
-                    self.validation_collector.add_result(
-                        severity=ValidationSeverity.ERROR,
-                        message=message,
-                        element_id=edge_id,
-                        element_type="Edge",
-                        field_name="target"
-                    )
-                else: 
-                    # raise error and do not continue if no validation collector is provided
-                    raise ValueError(message)
+            if edge.source:
+                if edge.source in group_ids:
+                    message = f"Edge '{edge_id}' has invalid source '{edge.source}' (a group)."
+                    if self.validation_collector:
+                        self.validation_collector.add_result(
+                            severity=ValidationSeverity.ERROR,
+                            message=message,
+                            element_id=edge_id,
+                            element_type="Edge",
+                            field_name="source"
+                        )
+                    else:
+                        raise ValueError(message)
+                elif edge.source not in valid_source_ids:
+                    message = f"Edge origins from an invalid source '{edge.source}'."
+                    if self.validation_collector:
+                        self.validation_collector.add_result(
+                            severity=ValidationSeverity.ERROR,
+                            message=message,
+                            element_id=edge_id,
+                            element_type="Edge",
+                            field_name="source"
+                        )
+                    else:
+                        raise ValueError(message)
 
         # Validate group memberships
         for group_id, group in self.groups.items():
             if not group.contained_elements:
-                raise ValueError(f"Group {group_id} must contain at least one element")
-            for element_id in group.contained_elements:
-                if element_id not in self.nodes:
-                    raise ValueError(f"Group {group_id} claims to contain a node that doesn't exist in the diagram.")
+                message = f"Group {group_id} must contain at least one element"
+                if self.validation_collector:
+                    self.validation_collector.add_result(
+                        severity=ValidationSeverity.ERROR,
+                        message=message,
+                        element_id=group_id,
+                        element_type="Group"
+                        )
+                else:
+                    raise ValueError(message)
 
         # Validate list nodes have options
         for node_id, node in self.nodes.items():
             if node.shape == ShapeType.LIST and not node.options:
-                raise ValueError(f"List node {node_id} must have at least one option")
+                message = f"List node {node_id} must have at least one option"
+                if self.validation_collector:
+                    self.validation_collector.add_result(
+                        severity=ValidationSeverity.ERROR,
+                        message=message,
+                        element_id=node_id,
+                        element_type="Node",
+                        field_name="options"
+                    )
+                else:
+                    raise ValueError(message)
 
         # Validate rhombus references
-        for node_id, node in self.nodes.items():
-            if node.shape == ShapeType.RHOMBUS:
-                if not node.metadata or not node.metadata.name:  # The referenced node should be in the name field
-                    raise ValueError(f"Rhombus node {node_id} must reference another node")
-                elif node.metadata.name not in valid_metadata_names:
-                    raise ValueError(f"Rhombus node {node_id} references non-existent node {node.metadata.name}")
-                
-                # According to docs, referenced node must be upstream
-                # However, we might need the actual graph structure to validate this
-                # Could be added later when we have the complete DAG
+            for node_id, node in self.nodes.items():
+                if node.shape == ShapeType.RHOMBUS:
+                    if not node.metadata or not node.metadata.name:
+                        message = f"Rhombus node {node_id} must reference another node"
+                        if self.validation_collector:
+                            self.validation_collector.add_result(
+                                severity=ValidationSeverity.ERROR,
+                                message=message,
+                                element_id=node_id,
+                                element_type="Node",
+                                field_name="metadata.name"
+                            )
+                        else:
+                            raise ValueError(message)
+                    elif node.metadata.name not in valid_referral_nodes:
+                        message = f"Rhombus node {node_id} references non-existent node {node.metadata.name}"
+                        if self.validation_collector:
+                            self.validation_collector.add_result(
+                                severity=ValidationSeverity.ERROR,
+                                message=message,
+                                element_id=node_id,
+                                element_type="Node",
+                                field_name="metadata.name"
+                            )
+                        else:
+                            raise ValueError(message)
 
         return self
 
