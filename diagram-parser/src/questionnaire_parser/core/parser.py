@@ -92,21 +92,9 @@ class DrawIoParser:
         self._parse_edges(root)
 
         # Validate diagram structure after parsing
-        if self.validator.validation_level == ValidationLevel.LENIENT:
-            try:
-                validated_diagram = Diagram.model_validate(self.diagram)
-                return validated_diagram
-            except ValidationError as ve:
-                self.validator.add_result(
-                    severity=ValidationSeverity.ERROR,
-                    message=f"Diagram validation failed in lenient mode: {str(ve)}",
-                    element_type='Diagram'
-                )
-                return self.diagram
-        else:
-            # if not LENIENT mode:
-            validated_diagram = Diagram.model_validate(self.diagram)
-            return validated_diagram
+        validated_diagram = Diagram.model_validate(self.diagram)
+
+        return validated_diagram
 
     def _parse_groups(self, root: ET.Element):
         """First pass: Parse group elements"""

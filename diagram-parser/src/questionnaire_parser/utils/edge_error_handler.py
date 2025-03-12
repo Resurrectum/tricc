@@ -1,5 +1,3 @@
-# src/questionnaire_parser/validation/error_handler.py
-from pydantic import ValidationError
 from questionnaire_parser.utils.validation import ValidationSeverity
 
 class EdgeValidationErrorHandler:

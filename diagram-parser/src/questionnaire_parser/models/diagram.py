@@ -193,7 +193,7 @@ class Diagram(BaseModel):
 
         group_ids = set(self.groups.keys())
 
-    # Validate edge connections
+        # Validate edge connections
         for edge_id, edge in self.edges.items():
             if edge.source:
                 if edge.source in group_ids:
@@ -251,32 +251,32 @@ class Diagram(BaseModel):
                     raise ValueError(message)
 
         # Validate rhombus references
-            for node_id, node in self.nodes.items():
-                if node.shape == ShapeType.RHOMBUS:
-                    if not node.metadata or not node.metadata.name:
-                        message = f"Rhombus node {node_id} must reference another node"
-                        if self.validation_collector:
-                            self.validation_collector.add_result(
-                                severity=ValidationSeverity.ERROR,
-                                message=message,
-                                element_id=node_id,
-                                element_type="Node",
-                                field_name="metadata.name"
-                            )
-                        else:
-                            raise ValueError(message)
-                    elif node.metadata.name not in valid_referral_nodes:
-                        message = f"Rhombus node {node_id} references non-existent node {node.metadata.name}"
-                        if self.validation_collector:
-                            self.validation_collector.add_result(
-                                severity=ValidationSeverity.ERROR,
-                                message=message,
-                                element_id=node_id,
-                                element_type="Node",
-                                field_name="metadata.name"
-                            )
-                        else:
-                            raise ValueError(message)
+        for node_id, node in self.nodes.items():
+            if node.shape == ShapeType.RHOMBUS:
+                if not node.metadata or not node.metadata.name:
+                    message = f"Rhombus node {node_id} must reference another node"
+                    if self.validation_collector:
+                        self.validation_collector.add_result(
+                            severity=ValidationSeverity.ERROR,
+                            message=message,
+                            element_id=node_id,
+                            element_type="Node",
+                            field_name="metadata.name"
+                        )
+                    else:
+                        raise ValueError(message)
+                elif node.metadata.name not in valid_referral_nodes:
+                    message = f"Rhombus node {node_id} references non-existent node {node.metadata.name}"
+                    if self.validation_collector:
+                        self.validation_collector.add_result(
+                            severity=ValidationSeverity.ERROR,
+                            message=message,
+                            element_id=node_id,
+                            element_type="Node",
+                            field_name="metadata.name"
+                        )
+                    else:
+                        raise ValueError(message)
 
         return self
 
