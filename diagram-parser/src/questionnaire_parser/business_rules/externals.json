@@ -1,0 +1,16 @@
+{
+    "allowed_externals": [
+      "z_score",
+      "z_score_wa",
+      "haemoglobinometer_available",
+      "schistosomiasis_area",
+      "glucometer",
+      "pulse_oxymeter_available",
+      "malaria_transmission_area",
+      "uvulectomy",
+      "endemic_trachoma_area",
+      "oxygen_available",
+      "adrenaline_im_available"
+    ]
+  }
+  

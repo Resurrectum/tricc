@@ -108,7 +108,7 @@ def examine_node_connections(diagram: Diagram):
     print(f"Isolated nodes (no connections): {isolated_nodes}")
 
 # Example usage
-def debug_parsing(xml_path: Path, validation_level: ValidationLevel = ValidationLevel.LENIENT, logging_level=logging.INFO):
+def debug_parsing(xml_path: Path, externals_path: Path, validation_level: ValidationLevel = ValidationLevel.LENIENT, logging_level=logging.INFO):
     """Run a complete debugging session for parsing a draw.io file
 
     Args:
@@ -119,7 +119,7 @@ def debug_parsing(xml_path: Path, validation_level: ValidationLevel = Validation
     #logger = logging.getLogger(__name__)
 
     # Create parser with specified validation level
-    parser = DrawIoParser(validation_level=validation_level)
+    parser = DrawIoParser(externals_path = externals_path, validation_level=validation_level)
 
     # Parse diagram and get validation collector
     diagram, validator = parser.parse_file(xml_path)

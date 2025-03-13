@@ -2,6 +2,7 @@ from typing import Dict, Optional
 from lxml import etree as ET
 from logging import getLogger
 from pathlib import Path
+import json
 from pydantic import ValidationError
 
 from questionnaire_parser.models.diagram import (
@@ -19,12 +20,24 @@ logger = getLogger(__name__)
 class DrawIoParser:
     """Parser for converting draw.io XML files into our diagram model."""
 
-    def __init__(self, validation_level: ValidationLevel = ValidationLevel.NORMAL):
+    def __init__(self, validation_level: ValidationLevel = ValidationLevel.NORMAL, externals_path: Path = Path('externals.json')):
         '''Initialize parser with empty diagram and no namespace.'''
         self.ns = None # no namespace in draw.io XML
         self.validator = ValidationCollector(validation_level)
         self.diagram = Diagram(validation_collector=self.validator)
         self.edge_error_handler = EdgeValidationErrorHandler(self.validator)
+        # Load external data
+        try:
+            with externals_path.open('r') as f:
+                self.allowed_externals = set(json.load(f).get("allowed_externals", []))
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            self.validator.add_result(
+                severity=ValidationSeverity.WARNING,
+                message=f"Failed to load externals from {externals_path}: {e}. Assuming empty set.",
+                element_type="Parser"
+            )
+            self.allowed_externals = set()
+
 
     def parse_file(self, filepath: Path) -> tuple[Optional[Diagram], ValidationCollector]:
         """Parse a draw.io XML file into our diagram model.
@@ -281,6 +294,12 @@ class DrawIoParser:
             if metadata:
                 metadata.numeric_constraints = numeric_constraints
 
+        # Check for external rhombus
+        external = False
+        if shape == ShapeType.RHOMBUS and metadata and metadata.name:
+            if metadata.name in self.allowed_externals:
+                external = True
+
         return Node(
             id=base_attrs['id'],
             label=base_attrs['label'],
@@ -288,7 +307,8 @@ class DrawIoParser:
             metadata=metadata,
             shape=shape,
             geometry=self._create_geometry(cell),
-            style=self._create_style(cell)
+            style=self._create_style(cell),
+            external=external
         )
 
     def _create_select_option(self, cell: ET.Element) -> SelectOption:

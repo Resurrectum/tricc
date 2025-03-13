@@ -1,7 +1,6 @@
 """
 Data model for a diagram without any specific format
 """
-
 from enum import Enum
 from typing import Dict, List, Optional, Set
 from pydantic import BaseModel, Field, validator, model_validator, root_validator, field_validator
@@ -91,6 +90,7 @@ class Node(BaseElement):
     geometry: Geometry
     style: Style
     options: Optional[List[SelectOption]] = None # Only for multiple choice nodes
+    external: bool = False # For Rhombus nodes that refer external information
 
     @model_validator(mode='after')
     def validate_list_attributes(self):
@@ -254,23 +254,21 @@ class Diagram(BaseModel):
         for node_id, node in self.nodes.items():
             if node.shape == ShapeType.RHOMBUS:
                 if not node.metadata or not node.metadata.name:
-                    message = f"Rhombus node {node_id} must reference another node"
                     if self.validation_collector:
                         self.validation_collector.add_result(
                             severity=ValidationSeverity.ERROR,
-                            message=message,
+                            message=f"Rhombus node {node_id} must reference another node",
                             element_id=node_id,
                             element_type="Node",
                             field_name="metadata.name"
                         )
                     else:
                         raise ValueError(message)
-                elif node.metadata.name not in valid_referral_nodes:
-                    message = f"Rhombus node {node_id} references non-existent node {node.metadata.name}"
+                elif not node.external and node.metadata.name not in valid_referral_nodes:
                     if self.validation_collector:
                         self.validation_collector.add_result(
                             severity=ValidationSeverity.ERROR,
-                            message=message,
+                            message=f"Rhombus node {node_id} references non-existent node {node.metadata.name}",
                             element_id=node_id,
                             element_type="Node",
                             field_name="metadata.name"
