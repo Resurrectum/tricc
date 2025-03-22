@@ -88,7 +88,7 @@ class DAGConverter:
         for edge_id, edge in self.diagram.edges.items():
             if edge.source and edge.target:
                 self.graph.add_edge(
-                    edge.source, 
+                    edge.source,
                     edge.target,
                     id=edge_id,
                     label=edge.label or ""
@@ -176,7 +176,7 @@ class DAGConverter:
         else:
             # List node without rounded corners is select_multiple
             self.graph.nodes[node_id]['type'] = "select_multiple"
-    
+
     def _is_color_in_range(self, color, color_name):
         """Check if a color falls within a named range (red, green, blue, grey, etc.).
         
@@ -235,7 +235,7 @@ class DAGConverter:
         
         # Phase 2: Structural Simplifications
         self._simplify_select_options()
-        self._simplify_containers()
+        self._simplify_groups()
         self._simplify_goto_nodes()
         self._simplify_rhombus_nodes()
         self._simplify_help_hint()
@@ -246,39 +246,19 @@ class DAGConverter:
     
     def _consolidate_flag_nodes(self):
         """Merge calculate and diagnosis nodes into flag nodes."""
-        nodes_to_update = {}
-        
-        for node_id, attrs in self.graph.nodes(data=True):
-            node_type = attrs.get('type')
-            
-            if node_type in ['calculate', 'diagnosis']:
-                # Determine severity based on fill color
-                severity = 'NONE'
-                fill_color = attrs.get('fill_color', '')
-                
-                if fill_color:
-                    color = fill_color.lower()
-                    if color.startswith('#'):
-                        color = color[1:]
-                    
-                    if color in ('ff0000', 'ff3333'):  # Red
-                        severity = 'SEVERE'
-                    elif color in ('ff6600', 'ff9900', 'ffcc00'):  # Orange/Yellow
-                        severity = 'MODERATE'
-                    elif color in ('00ff00', '00cc00', '009900'):  # Green
-                        severity = 'BENIGN'
-                
-                # Update attributes
-                nodes_to_update[node_id] = {
-                    'type': 'flag',
-                    'is_diagnosis': node_type == 'diagnosis',
-                    'severity': severity
-                }
-        
+        # Identify nodes to update (dictionary comprehension)
+        nodes_to_update = {
+            node_id: {
+                'type': 'flag',
+                'is_diagnosis': (attrs.get('type') == 'diagnosis') # sets boolean flag
+            }
+            for node_id, attrs in self.graph.nodes(data=True)
+            if attrs.get('type') in {'diagnosis', 'calculate'}
+        }
+
         # Apply updates
         for node_id, updates in nodes_to_update.items():
-            for key, value in updates.items():
-                self.graph.nodes[node_id][key] = value
+            self.graph.nodes[node_id].update(updates)
     
     def _convert_select_one_yesno(self):
         """Convert select_one_yesno to standard select_one with predefined options."""
@@ -313,23 +293,24 @@ class DAGConverter:
         for node_id, attrs in self.graph.nodes(data=True):
             if attrs.get('type') in ['select_one', 'select_multiple'] and 'options' in attrs:
                 select_nodes[node_id] = attrs['options']
-        
+
         # For each select node, create direct edges based on options
         for node_id, options in select_nodes.items():
             for option in options:
                 option_id = option.get('id')
+                # yes/no options don't have an ID and are already handled
                 if not option_id:
                     continue
-                
+
                 # Find edges coming from this option
                 outgoing_edges = []
                 if option_id in self.graph:
                     outgoing_edges = list(self.graph.out_edges(option_id, data=True))
-                
+
                 # Create direct edges from select node with option info
                 for _, target, edge_attrs in outgoing_edges:
                     edge_id = edge_attrs.get('id', f"{node_id}_{target}_{option['label']}")
-                    
+
                     self.graph.add_edge(
                         node_id,
                         target,
@@ -337,49 +318,46 @@ class DAGConverter:
                         option=option['label'],
                         label=edge_attrs.get('label', '')
                     )
-                
+
                 # Remove the option node
                 if option_id in self.graph:
                     self.graph.remove_node(option_id)
-    
-    def _simplify_containers(self):
-        """Store container information as node attributes."""
-        # For each container in the diagram
+
+    def _simplify_groups(self):
+        """Store group information as node attributes. 
+        The edges that were pointing to a group are redirected to the starting node in the group."""
+        # For each group in the diagram
         for group_id, group in self.diagram.groups.items():
-            container_type = "page"  # Default
-            if "hint" in group.label.lower() or "media" in group.label.lower():
-                container_type = "hint_media"
-            
+
             # Update all contained nodes
             for node_id in group.contained_elements:
                 if node_id in self.graph:
-                    self.graph.nodes[node_id]['container_id'] = group_id
-                    self.graph.nodes[node_id]['container_type'] = container_type
-                    self.graph.nodes[node_id]['container_heading'] = group.label
-        
-        # Redirect edges to containers
+                    self.graph.nodes[node_id]['group_id'] = group_id
+                    self.graph.nodes[node_id]['group_heading'] = group.label
+
+        # Redirect edges that point to groups to the first node in the group
         for src, tgt, attrs in list(self.graph.edges(data=True)):
-            # Check if target is a container
+            # Check if target is a group
             if tgt in self.diagram.groups:
                 group = self.diagram.groups[tgt]
-                
-                # Find the "main" node in the container (first node that's not help/hint)
-                main_node = None
+
+                # Find the start node in the group (first node that's not help/hint)
+                start_node = None
                 for node_id in group.contained_elements:
                     if node_id in self.graph:
                         node_type = self.graph.nodes[node_id].get('type')
                         if node_type not in ['help', 'hint']:
-                            main_node = node_id
+                            start_node = node_id
                             break
                 
-                if main_node:
+                if start_node:
                     # Add direct edge to the main node
                     self.graph.add_edge(
                         src,
-                        main_node,
-                        id=f"{src}_{main_node}",
+                        start_node, # start_node is the new target
+                        id=attrs['id'], # Keep the same edge ID
                         label=attrs.get('label', ''),
-                        via_container=tgt
+                        original_target=tgt
                     )
                     
                     # Remove edge to container
@@ -388,10 +366,11 @@ class DAGConverter:
     def _simplify_goto_nodes(self):
         """Convert goto nodes to direct edges."""
         # Find all goto nodes
-        goto_nodes = []
-        for node_id, attrs in self.graph.nodes(data=True):
-            if attrs.get('type') == 'goto':
-                goto_nodes.append((node_id, attrs))
+        goto_nodes = [
+            (node_id, attrs)
+            for node_id, attrs in self.graph.nodes(data=True)
+            if attrs.get('type') == 'goto'
+        ]
         
         for goto_id, attrs in goto_nodes:
             # Get target name from metadata
@@ -400,27 +379,17 @@ class DAGConverter:
                 continue
             
             # Find target node by name
-            target_id = None
-            for n_id, n_attrs in self.graph.nodes(data=True):
-                if n_attrs.get('name') == target_name:
-                    target_id = n_id
-                    break
-            
+            target_id = next(
+                (n_id for n_id, n_attrs in self.graph.nodes(data=True) if n_attrs.get('name') == target_name),
+                None
+            )
             if not target_id:
                 continue
             
-            # Get incoming edges
-            incoming_edges = list(self.graph.in_edges(goto_id, data=True))
-            
-            # Create direct edges
-            for src, _, edge_attrs in incoming_edges:
-                self.graph.add_edge(
-                    src,
-                    target_id,
-                    id=f"{src}_{target_id}",
-                    label=edge_attrs.get('label', ''),
-                    via_goto=goto_id
-                )
+            # Redirect incoming edges to the target node
+            for src, _, edge_attrs in list(self.graph.in_edges(goto_id, data=True)):
+                self.graph.add_edge(src, target_id, **edge_attrs)
+                self.graph.remove_edge(src, goto_id)
             
             # Remove goto node
             self.graph.remove_node(goto_id)

@@ -378,6 +378,8 @@ class DrawIoParser:
             list_node.options = []
         select_option = self._create_select_option(option_cell)
         list_node.options.append(select_option)
+        # Sort the options by the `y` value of their `Geometry` attribute to match draw.io order
+        list_node.options.sort(key=lambda option: option.geometry.y)
 
     def _extract_metadata(self, cell: ET.Element) -> Optional[ElementMetadata]:
         """Extract metadata from cell or its parent UserObject"""
