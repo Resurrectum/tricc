@@ -3,8 +3,9 @@ from pathlib import Path
 from lxml import etree as ET
 import logging
 from questionnaire_parser.models.diagram import Diagram, ShapeType
-from questionnaire_parser.core.parser import ValidationLevel, ValidationSeverity
+from questionnaire_parser.core.parser import ValidationLevel
 from questionnaire_parser.core.parser import DrawIoParser
+from questionnaire_parser.core.graph_converter import DAGConverter
 
 logger = logging.getLogger(__name__)
 
@@ -127,3 +128,13 @@ def debug_parsing(xml_path: Path, externals_path: Path, validation_level: Valida
     examine_node_connections(diagram)
 
     return diagram, validator
+
+def debug_converting_to_dag(diagram: Diagram, validation_collector):
+    """Debug the conversion of a diagram to a directed acyclic graph"""
+    print("\n=== Conversion to DAG ===")
+    converter = DAGConverter(diagram, validation_collector)
+    dag = converter.convert()
+    print("DAG nodes:", dag.nodes)
+    print("DAG edges:", dag.edges)
+
+    return dag
