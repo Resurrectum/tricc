@@ -390,43 +390,46 @@ class DAGConverter:
             for src, _, edge_attrs in list(self.graph.in_edges(goto_id, data=True)):
                 self.graph.add_edge(src, target_id, **edge_attrs)
                 self.graph.remove_edge(src, goto_id)
-            
+
             # Remove goto node
             self.graph.remove_node(goto_id)
-    
+
     def _simplify_rhombus_nodes(self):
-        """Transform decision point nodes by combining edge logic."""
+        """Replace decision point nodes by edges with combined edge logic."""
         # Find all decision point nodes
         decision_points = []
         for node_id, attrs in self.graph.nodes(data=True):
             if attrs.get('type') == 'decision_point':
                 decision_points.append((node_id, attrs))
-        
-        for decision_id, attrs in decision_points:
+
+        for decision_point_id, attrs in decision_points:
             # Skip external decision points
             if attrs.get('external', False):
                 continue
-            
+
             # Get referenced node name
             ref_name = attrs.get('name')
             if not ref_name:
                 continue
-            
+
             # Find referenced node
             ref_id = None
             for n_id, n_attrs in self.graph.nodes(data=True):
                 if n_attrs.get('name') == ref_name:
                     ref_id = n_id
                     break
-            
+
             if not ref_id:
                 continue
             
             # Get incoming and outgoing edges
-            incoming_edges = list(self.graph.in_edges(decision_id, data=True))
-            outgoing_edges = list(self.graph.out_edges(decision_id, data=True))
+            incoming_edges = list(self.graph.in_edges(decision_point_id, data=True))
+            outgoing_edges = list(self.graph.out_edges(decision_point_id, data=True))
             
-            # Create direct edges with combined logic
+            # Create direct edges which have as source the source of the incoming edge,
+            # and as target the target of the ougoing edge, 
+            # short-cuting the path over the decision point. 
+            # The new edge holds the combined logic of the edges it replaces
             for src, _, in_attrs in incoming_edges:
                 for _, tgt, out_attrs in outgoing_edges:
                     # Skip if the edge already exists
@@ -435,7 +438,7 @@ class DAGConverter:
                     
                     # Create condition based on decision point
                     condition = self._create_decision_condition(
-                        decision_id, ref_id, attrs, out_attrs.get('label', '')
+                        decision_point_id, ref_id, attrs, out_attrs.get('label', '')
                     )
                     
                     # Add new edge
@@ -445,13 +448,13 @@ class DAGConverter:
                         id=f"{src}_{tgt}",
                         label=out_attrs.get('label', ''),
                         condition=condition,
-                        via_decision=decision_id
+                        via_decision=decision_point_id
                     )
             
             # Remove decision point node
-            self.graph.remove_node(decision_id)
+            self.graph.remove_node(decision_point_id)
     
-    def _create_decision_condition(self, decision_id: str, ref_id: str, 
+    def _create_decision_condition(self, decision_point_id: str, ref_id: str, 
                                  decision_attrs: Dict[str, Any], edge_label: str) -> Dict[str, Any]:
         """Create a logical condition for a decision point node."""
         ref_attrs = self.graph.nodes[ref_id]
