@@ -1,16 +1,18 @@
 {
-    "allowed_externals": [
-      "z_score",
-      "z_score_wa",
-      "haemoglobinometer_available",
-      "schistosomiasis_area",
-      "glucometer",
-      "pulse_oxymeter_available",
-      "malaria_transmission_area",
-      "uvulectomy",
-      "endemic_trachoma_area",
-      "oxygen_available",
-      "adrenaline_im_available"
+    "numeric": [
+      "zscore length",
+      "zscore age"
+    ],
+    "flags": [
+      "haemoglobinometer available",
+      "schistosomiasis area",
+      "glucometer available",
+      "pulse oxymeter available",
+      "malaria transmission area",
+      "uvulectomy available",
+      "endemic trachoma area",
+      "oxygen available",
+      "adrenaline im available"      
     ]
   }
   

@@ -113,10 +113,10 @@ Edge logic defines the conditions for traversing from one node to another. It re
 ##### Flag Nodes
 
 ```python
-# Checking if a diagnosis/flag is set
+# Checking if a diagnosis/flag is in the flags set
 {
     "type": "condition",
-    "node_id": "flags",
+    "variable": "flags",
     "operation": "in",
     "value": "hypertension"
 }
