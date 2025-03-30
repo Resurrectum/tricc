@@ -3,6 +3,7 @@ import re
 from typing import Dict, List, Optional, Tuple, Set, Any
 from questionnaire_parser.models.diagram import Diagram, Node, Edge, Group, ShapeType
 from questionnaire_parser.utils.validation import ValidationCollector, ValidationSeverity
+from questionnaire_parser.utils.edge_logic import EdgeLogic, EdgeLogicCalculator
 
 class DAGConverter:
     """Converts a Draw.io diagram model into a simplified NetworkX DAG.
@@ -16,7 +17,7 @@ class DAGConverter:
     - Rhombus node simplification with edge logic preservation
     - Help/hint content as node attributes
     """
-    
+
     def __init__(self, diagram: Diagram, validation_collector: Optional[ValidationCollector] = None):
         """Initialize the converter with a parsed diagram.
         
@@ -27,6 +28,7 @@ class DAGConverter:
         self.diagram = diagram
         self.validator = validation_collector or diagram.validation_collector
         self.graph = nx.DiGraph()
+        self.edge_logic_calculator = EdgeLogicCalculator()
         
     def convert(self) -> nx.DiGraph:
         """Convert the diagram to a simplified NetworkX DAG.
@@ -66,18 +68,13 @@ class DAGConverter:
                     attrs['max_value'] = node.metadata.numeric_constraints.max_value
                     attrs['constraint_message'] = node.metadata.numeric_constraints.constraint_message
             
-            # Add external flag for rhombus nodes
-            if node.shape == ShapeType.RHOMBUS:
-                attrs['external'] = node.external
-            
             # Add options for list nodes
             if node.shape == ShapeType.LIST and node.options:
                 attrs['options'] = []
                 for option in node.options:
                     option_data = {
                         'id': option.id,
-                        'label': option.label,
-                        'original_id': option.id
+                        'label': option.label
                     }
                     attrs['options'].append(option_data)
             
@@ -235,10 +232,10 @@ class DAGConverter:
         
         # Phase 2: Structural Simplifications
         self._simplify_select_options()
-        self._simplify_groups()
         self._simplify_goto_nodes()
-        self._simplify_rhombus_nodes()
+        self._simplify_groups() # must happen after goto simplification
         self._simplify_help_hint()
+        self._simplify_rhombus_nodes()
         
         # Phase 3: Edge Simplifications
         self._combine_successive_notes()
