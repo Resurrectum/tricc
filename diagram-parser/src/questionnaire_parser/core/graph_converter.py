@@ -66,6 +66,7 @@ class DAGConverter:
                 "original_id": node_id,
                 "rounded": node.style.rounded,
                 "page_id": node.page_id,
+                "fill_color": node.style.fill_color,  # necessary for color based diagram elements
             }
 
             # Add metadata if available
