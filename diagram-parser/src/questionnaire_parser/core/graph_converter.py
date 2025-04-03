@@ -224,11 +224,14 @@ class DAGConverter:
         elif color_name == "blue":
             return r < 100 and g < 150 and b > 180
         elif color_name == "grey" or color_name == "gray":
+            # calculate average of RGB
+            avg = (r + g + b) / 3
+            # check if all colors are close to the average
+            max_diff = 10
             return (
-                abs(r - g) < 20
-                and abs(g - b) < 20
-                and abs(r - b) < 20
-                and 100 < r < 230
+                abs(r - avg) <= max_diff
+                and abs(g - avg) <= max_diff
+                and abs(r - avg) <= max_diff
             )
         elif color_name == "yellow":
             return r > 180 and g > 180 and b < 100
