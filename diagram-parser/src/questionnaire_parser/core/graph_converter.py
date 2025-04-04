@@ -250,13 +250,12 @@ class DAGConverter:
         # Phase 2: Structural Simplifications
         self._simplify_select_options()
         self._simplify_goto_nodes()
-        self._simplify_groups()  # must happen after goto simplification
+        self._simplify_groups()  # must happen after goto simplification, because gotos can point to groups
         self._simplify_help_hint()
         self._simplify_rhombus_nodes()
 
         # Phase 3: Edge Simplifications
         self._combine_successive_notes()
-        self._remove_non_decision_nodes()
 
     def _consolidate_flag_nodes(self):
         """Merge calculate and diagnosis nodes into flag nodes."""
@@ -326,10 +325,7 @@ class DAGConverter:
 
                 # Create direct edges from select node with option info
                 for _, target, edge_attrs in outgoing_edges:
-                    edge_id = edge_attrs.get(
-                        "id", f"{node_id}_{target}_{option['label']}"
-                    )
-
+                    edge_id = edge_attrs.get("id")
                     self.graph.add_edge(
                         node_id,
                         target,
@@ -529,23 +525,18 @@ class DAGConverter:
             node_type = attrs.get("type")
             label = attrs.get("label", "")
 
-            # Find associated node (typically in same container)
-            container_id = attrs.get("container_id")
-            if not container_id:
+            # Find associated nodes by looking at outgoing edges
+            associated_nodes = []
+            for _, target_id in self.graph.out_edges(help_id):
+                associated_nodes.append(target_id)
+
+            if not associated_nodes:
+                # If no outgoing edges, skip this help/hint node
                 continue
 
-            # Find main node in same container
-            main_node = None
-            for n_id, n_attrs in self.graph.nodes(data=True):
-                if n_attrs.get("container_id") == container_id and n_attrs.get(
-                    "type"
-                ) not in ["help", "hint"]:
-                    main_node = n_id
-                    break
-
-            if main_node:
-                # Add help/hint text to main node
-                attr_name = "help_text" if node_type == "help" else "hint_text"
+            # Add help/hint text to all associated nodes
+            attr_name = "help_text" if node_type == "help" else "hint_text"
+            for main_node in associated_nodes:
                 self.graph.nodes[main_node][attr_name] = label
 
             # Remove help/hint node
@@ -553,82 +544,56 @@ class DAGConverter:
 
     def _combine_successive_notes(self):
         """Combine successive note nodes into a single node."""
-        # Find all note nodes
-        note_nodes = [
-            node_id
-            for node_id, attrs in self.graph.nodes(data=True)
-            if attrs.get("type") == "note"
-        ]
+        # Keep combining notes until no more combinations are possible
+        while True:
+            # Find a pair of notes to combine
+            found_pair = False
 
-        # For each note, check if it forms a chain
-        for node_id in note_nodes:
-            # Skip if node was removed in a previous iteration
-            if node_id not in self.graph:
-                continue
+            for node_id, attrs in list(self.graph.nodes(data=True)):
+                # Skip if not a note
+                if attrs.get("type") != "note":
+                    continue
 
-            # Check predecessors and successors
-            predecessors = list(self.graph.predecessors(node_id))
-            successors = list(self.graph.successors(node_id))
+                # Check outgoing edges
+                successors = list(self.graph.successors(node_id))
+                if len(successors) != 1:
+                    continue
 
-            # Skip if not a simple chain
-            if len(predecessors) != 1 or len(successors) != 1:
-                continue
-
-            pred = predecessors[0]
-            succ = successors[0]
-
-            # Check if predecessor and successor are both notes
-            if (
-                self.graph.nodes[pred].get("type") == "note"
-                and self.graph.nodes[succ].get("type") == "note"
-            ):
-                # Combine notes
-                pred_label = self.graph.nodes[pred].get("label", "")
-                current_label = self.graph.nodes[node_id].get("label", "")
-
-                self.graph.nodes[pred]["label"] = f"{pred_label}\n\n{current_label}"
-
-                # Connect predecessor directly to successor
-                self.graph.add_edge(pred, succ, id=f"{pred}_{succ}", label="")
-
-                # Remove the intermediate node
-                self.graph.remove_node(node_id)
-
-    def _remove_non_decision_nodes(self):
-        """Remove intermediate nodes that don't add decision logic."""
-        # Types that add decision logic
-        decision_types = {"select_one", "select_multiple", "numeric", "flag", "rhombus"}
-
-        # Find removable nodes
-        removable = []
-        for node_id, attrs in self.graph.nodes(data=True):
-            node_type = attrs.get("type")
-
-            # Skip decision nodes
-            if node_type in decision_types:
-                continue
-
-            # Check if it's a simple passthrough
-            predecessors = list(self.graph.predecessors(node_id))
-            successors = list(self.graph.successors(node_id))
-
-            if len(predecessors) == 1 and len(successors) == 1:
-                pred = predecessors[0]
                 succ = successors[0]
 
-                # Connect directly and preserve labels
-                self.graph.add_edge(
-                    pred,
-                    succ,
-                    id=f"{pred}_{succ}",
-                    label=self.graph.edges[node_id, succ].get("label", ""),
-                )
+                # Check if successor is a note with only this incoming edge
+                if (
+                    self.graph.nodes.get(succ, {}).get("type") == "note"
+                    and len(list(self.graph.predecessors(succ))) == 1
+                ):
 
-                removable.append(node_id)
+                    # Combine the successor's content into this node
+                    current_label = attrs.get("label", "")
+                    succ_label = self.graph.nodes[succ].get("label", "")
+                    self.graph.nodes[node_id][
+                        "label"
+                    ] = f"{current_label}\n\n{succ_label}"
 
-        # Remove nodes
-        for node_id in removable:
-            self.graph.remove_node(node_id)
+                    # Redirect edges from successor to this node
+                    for _, target, edge_attrs in list(
+                        self.graph.out_edges(succ, data=True)
+                    ):
+                        self.graph.add_edge(
+                            node_id,
+                            target,
+                            id=f"{node_id}_{target}",
+                            label=edge_attrs.get("label", ""),
+                        )
+
+                    # Remove the successor
+                    self.graph.remove_node(succ)
+
+                    found_pair = True
+                    break
+
+            # If no more pairs can be combined, we're done
+            if not found_pair:
+                break
 
     def _validate_graph(self):
         """Validate the final graph structure."""
