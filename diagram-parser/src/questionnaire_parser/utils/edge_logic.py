@@ -236,7 +236,7 @@ class EdgeLogicCalculator:
 
     def _flag_logic(
         self, flag_label: str, edge_label: Optional[str] = None
-    ) -> EdgeLogic:
+    ) -> Optional[EdgeLogic]:
         """Calculate logic for edges originating from flag nodes."""
 
         # Create condition to check if this flag exists in the 'flags' set
@@ -255,14 +255,7 @@ class EdgeLogicCalculator:
                 value=flag_label,
             )
         else:
-            # If edge_label is not "yes" or "no", we assume it's a condition
-            # and return a basic condition with the flag label
-            return EdgeLogic(
-                "condition",
-                variable="flags",  # Reference the global flags set
-                operation="in",  # Check if value is in the set
-                value=flag_label,
-            )
+            return None
 
     def _parse_numeric_condition(
         self, label: str
