@@ -9,6 +9,7 @@ from questionnaire_parser.core.graph_converter import DAGConverter
 
 logger = logging.getLogger(__name__)
 
+
 def setup_debug_logging(level=logging.INFO):
     """Set up logging configuration for debugging purposes.
     level: DEBUG prints also error stack,
@@ -19,9 +20,9 @@ def setup_debug_logging(level=logging.INFO):
         root.handlers.clear()
 
     logging.basicConfig(
-        level=level,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        level=level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
+
 
 def print_xml_structure(element: ET.Element, level: int = 0):
     """Print the XML structure in a readable format"""
@@ -42,6 +43,7 @@ def print_xml_structure(element: ET.Element, level: int = 0):
     for child in element:
         print_xml_structure(child, level + 1)
 
+
 def inspect_diagram(diagram: Diagram):
     """Print a summary of the parsed diagram"""
     print("\n=== Diagram Summary ===")
@@ -50,16 +52,19 @@ def inspect_diagram(diagram: Diagram):
     print(f"Total groups: {len(diagram.groups)}")
 
     print("\n=== Amount of Node Types ===")
-    node_types : dict[ShapeType, int] = {}
+    node_types: dict[ShapeType, int] = {}
     for node in diagram.nodes.values():
         node_type = node.shape.value
         node_types[node_type] = node_types.get(node_type, 0) + 1
     for node_type, count in node_types.items():
         print(f"{node_type}: {count}")
 
-def inspect_mxcell(cell: ET.Element, parent_map: Optional[Dict[str, ET.Element]] = None):
+
+def inspect_mxcell(
+    cell: ET.Element, parent_map: Optional[Dict[str, ET.Element]] = None
+):
     """Debug information about an mxCell element"""
-    cell_id = cell.get('id')
+    cell_id = cell.get("id")
     print(f"\n=== mxCell {cell_id} ===")
     print("Attributes:", dict(cell.attrib))
 
@@ -69,19 +74,20 @@ def inspect_mxcell(cell: ET.Element, parent_map: Optional[Dict[str, ET.Element]]
         print(f"Parent ({parent.tag}) attributes:", dict(parent.attrib))
 
     # Show geometry if present
-    geometry = cell.find('mxGeometry')
+    geometry = cell.find("mxGeometry")
     if geometry is not None:
         print("Geometry:", dict(geometry.attrib))
 
     # Show style parsed
-    style = cell.get('style', '')
+    style = cell.get("style", "")
     if style:
         style_dict = {}
-        for item in style.split(';'):
-            if '=' in item:
-                key, value = item.split('=', 1)
+        for item in style.split(";"):
+            if "=" in item:
+                key, value = item.split("=", 1)
                 style_dict[key.strip()] = value.strip()
         print("Parsed style:", style_dict)
+
 
 def examine_node_connections(diagram: Diagram):
     """Analyze node connections and potential issues"""
@@ -108,8 +114,14 @@ def examine_node_connections(diagram: Diagram):
             isolated_nodes.append(node_id)
     print(f"Isolated nodes (no connections): {isolated_nodes}")
 
+
 # Example usage
-def debug_parsing(xml_path: Path, externals_path: Path, validation_level: ValidationLevel = ValidationLevel.LENIENT, logging_level=logging.INFO):
+def debug_parsing(
+    xml_path: Path,
+    externals_path: Path,
+    validation_level: ValidationLevel = ValidationLevel.LENIENT,
+    logging_level=logging.INFO,
+):
     """Run a complete debugging session for parsing a draw.io file
 
     Args:
@@ -117,10 +129,12 @@ def debug_parsing(xml_path: Path, externals_path: Path, validation_level: Valida
         validation_level: Validation strictness level (default: LENIENT for debugging)
     """
     setup_debug_logging(logging_level)
-    #logger = logging.getLogger(__name__)
+    # logger = logging.getLogger(__name__)
 
     # Create parser with specified validation level
-    parser = DrawIoParser(externals_path = externals_path, validation_level=validation_level)
+    parser = DrawIoParser(
+        externals_path=externals_path, validation_level=validation_level
+    )
 
     # Parse diagram and get validation collector
     diagram, validator = parser.parse_file(xml_path)
@@ -128,6 +142,7 @@ def debug_parsing(xml_path: Path, externals_path: Path, validation_level: Valida
     examine_node_connections(diagram)
 
     return diagram, validator
+
 
 def debug_converting_to_dag(diagram: Diagram, validation_collector):
     """Debug the conversion of a diagram to a directed acyclic graph"""

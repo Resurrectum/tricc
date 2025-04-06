@@ -1,18 +1,17 @@
 {
-    "numeric": [
-      "zscore length",
-      "zscore age"
-    ],
-    "flags": [
-      "haemoglobinometer available",
-      "schistosomiasis area",
-      "glucometer available",
-      "pulse oxymeter available",
-      "malaria transmission area",
-      "uvulectomy available",
-      "endemic trachoma area",
-      "oxygen available",
-      "adrenaline im available"      
-    ]
-  }
-  
+  "numeric": [
+    "zscore weight length",
+    "zscore weight age"
+  ],
+  "flags": [
+    "haemoglobinometer available",
+    "schistosomiasis area",
+    "glucometer available",
+    "pulse oxymeter available",
+    "malaria transmission area",
+    "uvulectomy available",
+    "endemic trachoma area",
+    "oxygen available",
+    "adrenaline im available"
+  ]
+}

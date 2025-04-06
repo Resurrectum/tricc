@@ -1,12 +1,12 @@
 import networkx as nx
 import re
-from typing import Dict, List, Optional, Tuple, Set, Any
-from questionnaire_parser.models.diagram import Diagram, Node, Edge, Group, ShapeType
+from typing import Dict, Optional, Any
+from questionnaire_parser.models.diagram import Diagram, ShapeType
 from questionnaire_parser.utils.validation import (
     ValidationCollector,
     ValidationSeverity,
 )
-from questionnaire_parser.utils.edge_logic import EdgeLogic, EdgeLogicCalculator
+from questionnaire_parser.utils.edge_logic import EdgeLogicCalculator
 
 
 class DAGConverter:
@@ -47,8 +47,11 @@ class DAGConverter:
         # Phase 1: Initial conversion
         self._initial_conversion()
 
-        # Phase 2: Apply simplifications
+        # Phase 2: Apply simplifications (except removing decision points)
         self._simplify_graph()
+
+        # Phase 2.1: Write edge logic
+        self._calculate_edge_logic()
 
         # Phase 3: Validate final graph
         self._validate_graph()
@@ -252,7 +255,7 @@ class DAGConverter:
         self._simplify_goto_nodes()
         self._simplify_groups()  # must happen after goto simplification, because gotos can point to groups
         self._simplify_help_hint()
-        self._simplify_rhombus_nodes()
+        # self._simplify_rhombus_nodes() # must write edge logic first
 
         # Phase 3: Edge Simplifications
         self._combine_successive_notes()
@@ -280,12 +283,27 @@ class DAGConverter:
                 # Set type to select_one
                 self.graph.nodes[node_id]["type"] = "select_one"
 
-                # Add predefined yes/no options if not already present
-                if "options" not in self.graph.nodes[node_id]:
-                    self.graph.nodes[node_id]["options"] = [
-                        {"label": "yes", "value": "yes"},
-                        {"label": "no", "value": "no"},
-                    ]
+                # Add predefined yes/no options based on outgoing edges
+                options = []
+                for _, target_id, edge_attrs in self.graph.out_edges(
+                    node_id, data=True
+                ):
+                    edge_label = edge_attrs.get("label", "").strip().lower()
+                    edge_id = edge_attrs.get("id", "")
+                    if edge_label in ["yes", "no"] and edge_id:
+                        # add the edge label as an 'option' in order to make yes/no edge look like normal select_one
+                        edge_attrs["option"] = edge_label
+
+                        options.append(
+                            {
+                                "id": f"{edge_id}_{edge_label}",
+                                "label": edge_label,
+                                "option": edge_label,
+                            }
+                        )
+
+                # Assign options to the node
+                self.graph.nodes[node_id]["options"] = options
 
     def _consolidate_numeric_types(self):
         """Consolidate integer and decimal into numeric type."""
@@ -635,3 +653,52 @@ class DAGConverter:
             self.validator.add_result(
                 severity=ValidationSeverity.ERROR, message=message, element_type="Graph"
             )
+
+    def _calculate_edge_logic(self):
+        """Calculate and attach logic to all edges in the graph based on their source node type."""
+        for source_id, target_id, edge_attrs in self.graph.edges(data=True):
+            # Skip if source doesn't exist (shouldn't happen with validation)
+            if source_id not in self.graph.nodes:
+                continue
+
+            # Get source node type
+            source_type = self.graph.nodes[source_id].get("type")
+
+            # Get source node label
+            source_label = self.graph.nodes[source_id].get("label", "")
+
+            # Skip node types that don't have direct logic
+            if source_type in ["note", "numeric", "text", "help", "hint"]:
+                continue
+
+            # Calculate logic using the edge logic calculator
+            logic = self.edge_logic_calculator.calculate_edge_logic(
+                source_label, source_type, source_id, edge_attrs
+            )
+
+            # Calculate decision point logic
+            if source_type == "decision_point":
+                # Get source reference node
+                reference_name = self.graph.nodes[source_id].get("name", "")
+                # Get ID of node where name = reference_name and that is not a decision point
+                reference_id = next(
+                    (
+                        node_id
+                        for node_id, attrs in self.graph.nodes(data=True)
+                        if attrs.get("name") == reference_name
+                        and attrs.get("type") != "decision_point"
+                    ),
+                    None,
+                )
+                reference_type = self.graph.nodes[reference_id].get("type", "")
+
+                logic = self.edge_logic_calculator.calculate_decision_point_logic(
+                    reference_id,
+                    reference_type,
+                    source_label,
+                    edge_attrs.get("label", ""),
+                )
+
+            # If logic was generated, attach it to the edge
+            if logic:
+                edge_attrs["logic"] = logic.to_dict()

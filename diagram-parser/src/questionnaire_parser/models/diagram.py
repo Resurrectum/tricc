@@ -1,21 +1,35 @@
 """
 Data model for a diagram without any specific format
 """
+
 from enum import Enum
 from typing import Dict, List, Optional, Set
-from pydantic import BaseModel, Field, validator, model_validator, root_validator, field_validator
+from pydantic import (
+    BaseModel,
+    Field,
+    validator,
+    model_validator,
+    root_validator,
+    field_validator,
+)
 from pydantic_core import PydanticCustomError
-from questionnaire_parser.utils.validation import ValidationCollector, ValidationLevel, ValidationSeverity
+from questionnaire_parser.utils.validation import (
+    ValidationCollector,
+    ValidationLevel,
+    ValidationSeverity,
+)
 from questionnaire_parser.exceptions.parsing import MissingEndpointsError
+
 
 class Geometry(BaseModel):
     """Geometric properties of a non-edge diagram element"""
+
     x: float = Field(default=0.0, description="X coordinate")
     y: float = Field(default=0.0, description="Y coordinate")
     width: float = Field(default=0.0, description="Width of the element")
     height: float = Field(default=0.0, description="Height of the element")
 
-    @validator('width', 'height')
+    @validator("width", "height")
     @classmethod
     def validate_positive_dimensions(cls, v):
         """Ensure dimensions are positive numbers"""
@@ -23,52 +37,64 @@ class Geometry(BaseModel):
             raise ValueError("Dimensions must be positive numbers")
         return v
 
+
 class ShapeType(str, Enum):
     """Enumeration of possible shapes for nodes"""
+
     RECTANGLE = "rectangle"
     HEXAGON = "hexagon"
     ELLIPSE = "ellipse"
     RHOMBUS = "rhombus"
     CALLOUT = "callout"
     OFFPAGE = "offPageConnector"
-    LIST = "list" # Multiple choice nodes
+    LIST = "list"  # Multiple choice nodes
 
 
 class Style(BaseModel):
     """Visual style properties of a diagram element"""
+
     fill_color: Optional[str] = None
     stroke_color: Optional[str] = None
     rounded: bool = False
     dashed: bool = False
 
-    @validator('fill_color', 'stroke_color')
+    @validator("fill_color", "stroke_color")
     @classmethod
     def validate_color_format(cls, v):
         """Validate color format if present"""
-        if v and not v.startswith('#'):
+        if v and not v.startswith("#"):
             v = f"#{v}"
         return v
+
 
 class NumericConstraints(BaseModel):
     min_value: Optional[float] = None
     max_value: Optional[float] = None
     constraint_message: Optional[str] = None
 
+
 class ElementMetadata(BaseModel):
     """Non-visual information attached to elements (tags)"""
-    name: Optional[str] = None  # The 'name' attribute, used differently by different node types
-    numeric_constraints: Optional[NumericConstraints] = None  # for hexagon/ellipse nodes
+
+    name: Optional[str] = (
+        None  # The 'name' attribute, used differently by different node types
+    )
+    numeric_constraints: Optional[NumericConstraints] = (
+        None  # for hexagon/ellipse nodes
+    )
+
 
 class BaseElement(BaseModel):
-    """Base class for all diagram elements. 
-    This is the base for the three possible types of elements: 
+    """Base class for all diagram elements.
+    This is the base for the three possible types of elements:
     nodes, edges, and containers."""
+
     id: str
     label: str = ""
-    page_id: str = "" # ID of the page containing the element
+    page_id: str = ""  # ID of the page containing the element
     metadata: Optional[ElementMetadata] = None  # Store non-visual information here
 
-    @validator('id')
+    @validator("id")
     @classmethod
     def validate_id_format(cls, v):
         """Ensure ID is not empty and has valid format"""
@@ -76,23 +102,27 @@ class BaseElement(BaseModel):
             raise ValueError("ID cannot be empty")
         return v.strip()
 
+
 class SelectOption(BaseElement):
-    """Represents a select-option, which belongs to a list. """
+    """Represents a select-option, which belongs to a list."""
+
     parent_id: str
     geometry: Geometry
     style: Style
+
 
 class Node(BaseElement):
     """Represents a node in the diagram. At this basic structural level,
     a node is simply an element with a position, label and shape. But a list node
     can have one or more options."""
+
     shape: ShapeType
     geometry: Geometry
     style: Style
-    options: Optional[List[SelectOption]] = None # Only for multiple choice nodes
-    external: bool = False # For Rhombus nodes that refer external information
+    options: Optional[List[SelectOption]] = None  # Only for multiple choice nodes
+    external: bool = False  # For Rhombus nodes that refer external information
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def validate_list_attributes(self):
         """Ensure non-list nodes don't have options"""
         if self.shape != ShapeType.LIST and self.options is not None:
@@ -101,15 +131,19 @@ class Node(BaseElement):
         # Validate rhombus has name
         if self.shape == ShapeType.RHOMBUS:
             if not self.metadata or not self.metadata.name:
-                raise ValueError("Rhombus nodes must have a name to reference another node")
+                raise ValueError(
+                    "Rhombus nodes must have a name to reference another node"
+                )
 
         return self
 
+
 class Group(BaseElement):
-    """Represents a group of elements in the diagram. 
+    """Represents a group of elements in the diagram.
     A group contains other elements.
-    Beyond the base element properties, a group has a non-empty list 
+    Beyond the base element properties, a group has a non-empty list
     of contained elements (children)."""
+
     contained_elements: Set[str] = Field(default_factory=set)
     geometry: Geometry
 
@@ -117,57 +151,60 @@ class Group(BaseElement):
 class Edge(BaseElement):
     """Represents an edge in the diagram.
 
-    An edge must have at least one connection point (either source or target) to be 
-    considered valid. Edges missing both endpoints are invalid as they cannot be 
-    meaningfully displayed or used in the diagram. However, edges missing just one 
+    An edge must have at least one connection point (either source or target) to be
+    considered valid. Edges missing both endpoints are invalid as they cannot be
+    meaningfully displayed or used in the diagram. However, edges missing just one
     endpoint are allowed - their validity will be checked when adding them to the diagram.
 
     Attributes:
         source: ID of the source node. Can be missing if target exists.
         target: ID of the target node. Can be missing if source exists.
     """
-    source: Optional[str] = None # Making these optional allows single missing endpoint
+
+    source: Optional[str] = None  # Making these optional allows single missing endpoint
     target: Optional[str] = None
 
     class Config:
         arbitrary_types_allowed = True
 
-    @model_validator(mode='after')
-    def validate_endpoints(self) -> 'Edge':
+    @model_validator(mode="after")
+    def validate_endpoints(self) -> "Edge":
         """Ensures the edge has both endpoints, but distinguish between 3 cases:
         - source is missing and target is present
         - source is present and target is missing
         - source and target are missing.
 
-        An edge with no endpoints is a 'ghost edge'. It cannot be meaningfully 
+        An edge with no endpoints is a 'ghost edge'. It cannot be meaningfully
         displayed or used.
         """
-        source = getattr(self, 'source', None)
-        target = getattr(self, 'target', None)
+        source = getattr(self, "source", None)
+        target = getattr(self, "target", None)
 
-        if not source and target: # only source is missing
+        if not source and target:  # only source is missing
             raise PydanticCustomError(
-                'source-missing',
-                'Edge has no source.',
-                {'edge': self.id, 'source':source}
+                "source-missing",
+                "Edge has no source.",
+                {"edge": self.id, "source": source},
             )
-        if source and not target: # only target is missing
+        if source and not target:  # only target is missing
             raise PydanticCustomError(
-                'target-missing',
-                'Edge has no target.',
-                {'edge': self.id, 'target': target}
+                "target-missing",
+                "Edge has no target.",
+                {"edge": self.id, "target": target},
             )
         if not source and not target:
             raise PydanticCustomError(
-                'ghost-edge', # error type
-                'Ghost edge found where source and target are missing. Edge gets ignored.', # message template
-                {'edge': self.id} # context
+                "ghost-edge",  # error type
+                "Ghost edge found where source and target are missing. Edge gets ignored.",  # message template
+                {"edge": self.id},  # context
             )
         # if validation passes, return the edge
         return self
 
+
 class Diagram(BaseModel):
     """Top-level container for the entire diagram"""
+
     nodes: Dict[str, Node] = Field(default_factory=dict)
     edges: Dict[str, Edge] = Field(default_factory=dict)
     groups: Dict[str, Group] = Field(default_factory=dict)
@@ -176,19 +213,28 @@ class Diagram(BaseModel):
     class Config:
         arbitrary_types_allowed = True
 
-    @model_validator(mode='after')
-    def validate_structure(self) -> 'Diagram':
+    @model_validator(mode="after")
+    def validate_structure(self) -> "Diagram":
         """Validate overall diagram structure"""
         # Precompute valid referral nodes (excluding rhombus nodes)
-        valid_referral_nodes = {n.metadata.name for n in self.nodes.values()
-                           if n.metadata and n.metadata.name and n.shape != ShapeType.RHOMBUS}
+        valid_referral_nodes = {
+            n.metadata.name
+            for n in self.nodes.values()
+            if n.metadata and n.metadata.name and n.shape != ShapeType.RHOMBUS
+        }
 
         # Precompute valid source IDs
-        valid_node_ids = {node_id for node_id, node in self.nodes.items()
-                         if node.shape != ShapeType.LIST}  # Exclude list nodes
-        all_option_ids = {option.id for node in self.nodes.values()
-                         if node.shape == ShapeType.LIST and node.options
-                         for option in node.options}
+        valid_node_ids = {
+            node_id
+            for node_id, node in self.nodes.items()
+            if node.shape != ShapeType.LIST
+        }  # Exclude list nodes
+        all_option_ids = {
+            option.id
+            for node in self.nodes.values()
+            if node.shape == ShapeType.LIST and node.options
+            for option in node.options
+        }
         valid_source_ids = valid_node_ids | all_option_ids  # Union of valid sources
 
         group_ids = set(self.groups.keys())
@@ -204,7 +250,7 @@ class Diagram(BaseModel):
                             message=message,
                             element_id=edge_id,
                             element_type="Edge",
-                            field_name="source"
+                            field_name="source",
                         )
                     else:
                         raise ValueError(message)
@@ -216,7 +262,7 @@ class Diagram(BaseModel):
                             message=message,
                             element_id=edge_id,
                             element_type="Edge",
-                            field_name="source"
+                            field_name="source",
                         )
                     else:
                         raise ValueError(message)
@@ -230,8 +276,8 @@ class Diagram(BaseModel):
                         severity=ValidationSeverity.ERROR,
                         message=message,
                         element_id=group_id,
-                        element_type="Group"
-                        )
+                        element_type="Group",
+                    )
                 else:
                     raise ValueError(message)
 
@@ -245,7 +291,7 @@ class Diagram(BaseModel):
                         message=message,
                         element_id=node_id,
                         element_type="Node",
-                        field_name="options"
+                        field_name="options",
                     )
                 else:
                     raise ValueError(message)
@@ -260,18 +306,20 @@ class Diagram(BaseModel):
                             message=f"Rhombus node {node_id} must reference another node",
                             element_id=node_id,
                             element_type="Node",
-                            field_name="metadata.name"
+                            field_name="metadata.name",
                         )
                     else:
                         raise ValueError(message)
-                elif not node.external and node.metadata.name not in valid_referral_nodes:
+                elif (
+                    not node.external and node.metadata.name not in valid_referral_nodes
+                ):
                     if self.validation_collector:
                         self.validation_collector.add_result(
                             severity=ValidationSeverity.ERROR,
                             message=f"Rhombus node {node_id} references non-existent node {node.metadata.name}",
                             element_id=node_id,
                             element_type="Node",
-                            field_name="metadata.name"
+                            field_name="metadata.name",
                         )
                     else:
                         raise ValueError(message)
@@ -281,7 +329,9 @@ class Diagram(BaseModel):
     def get_entry_points(self) -> List[str]:
         """Find all nodes that could be entry points (no incoming edges)"""
         incoming_edges = {edge.target for edge in self.edges.values()}
-        return [node_id for node_id in self.nodes.keys() if node_id not in incoming_edges]
+        return [
+            node_id for node_id in self.nodes.keys() if node_id not in incoming_edges
+        ]
 
     def validate_dag(self) -> bool:
         """Verify that the graph is a valid DAG (no cycles)"""

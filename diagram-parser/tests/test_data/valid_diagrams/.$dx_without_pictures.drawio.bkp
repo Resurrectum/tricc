@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2025-04-06T16:35:23.374Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/20.8.16 Chrome/106.0.5249.199 Electron/21.4.0 Safari/537.36" etag="tv2gMj8uCMi1EBegxXxj" compressed="false" version="20.8.16" type="device" pages="6">
+<mxfile host="Electron" modified="2025-04-06T16:32:33.383Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/20.8.16 Chrome/106.0.5249.199 Electron/21.4.0 Safari/537.36" etag="DuNTJi3yPi3OKZpMIEkt" compressed="false" version="20.8.16" type="device" pages="6">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Diagnostic">
     <mxGraphModel dx="3551" dy="2775" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="0" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -615,7 +615,7 @@
         <mxCell id="u-2OYHYpkGujKRkxLq70-38" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="u-2OYHYpkGujKRkxLq70-39" target="u-2OYHYpkGujKRkxLq70-66" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <UserObject label="Does the child have oedema on both feet?" name="oedema" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-39">
+        <UserObject label="Oedema of both feet?" name="oedema" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-39">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
             <mxGeometry x="761" y="1990" width="100" height="100" as="geometry" />
           </mxCell>
@@ -799,7 +799,7 @@
         <mxCell id="u-2OYHYpkGujKRkxLq70-119" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jumpStyle=gap;jumpSize=12;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="u-2OYHYpkGujKRkxLq70-75" target="u-2OYHYpkGujKRkxLq70-103" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <UserObject label="Does the child have oedema on both feet?" name="oedema" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-75">
+        <UserObject label="Oedema of both feet?" name="oedema" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-75">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
             <mxGeometry x="-1100" y="2020" width="100" height="100" as="geometry" />
           </mxCell>
@@ -860,7 +860,7 @@
         <mxCell id="u-2OYHYpkGujKRkxLq70-124" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jumpStyle=gap;jumpSize=12;orthogonalLoop=1;jettySize=auto;html=1;" parent="u-2OYHYpkGujKRkxLq70-103" source="u-2OYHYpkGujKRkxLq70-122" target="u-2OYHYpkGujKRkxLq70-123" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <UserObject label="Does the child have oedema on both feet?" name="oedema" odk_type="rhombus" id="YZMvc4Vs3VP5uEYAVsEE-0">
+        <UserObject label="Oedema of both feet?" name="oedema" odk_type="rhombus" id="YZMvc4Vs3VP5uEYAVsEE-0">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;" parent="u-2OYHYpkGujKRkxLq70-103" vertex="1">
             <mxGeometry x="730" y="270" width="100" height="100" as="geometry" />
           </mxCell>

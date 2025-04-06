@@ -60,7 +60,7 @@ class EdgeLogicCalculator:
     """
 
     def calculate_edge_logic(
-        self, node_type: str, node_id: str, edge_attrs: Dict[str, Any]
+        self, node_label: str, node_type: str, node_id: str, edge_attrs: Dict[str, Any]
     ) -> Optional[EdgeLogic]:
         """Calculate edge logic based on source node type and edge attributes.
 
@@ -81,18 +81,19 @@ class EdgeLogicCalculator:
             return self._select_one_logic(node_id, option, edge_label)
         elif node_type == "select_multiple":
             return self._select_multiple_logic(node_id, option)
+        elif node_type == "flag":
+            return self._flag_logic(node_label)
         else:
-            # Direct edges from flags, numeric, text, note, don't carry logic and
+            # Direct edges from numeric, text, note, don't carry logic and
             # edges from decision points are handled separately
             return None
 
-    def calculate_decision_logic(
+    def calculate_decision_point_logic(
         self,
         reference_id: str,
         reference_type: str,
         decision_label: str,
         edge_label: str,
-        flag_label: str,
     ) -> EdgeLogic:
         """Calculate logic for a decision point (rhombus) reference.
 
@@ -107,15 +108,20 @@ class EdgeLogicCalculator:
         """
         # For flag reference in decision point
         if reference_type == "flag":
-            return EdgeLogic(
-                "condition",
-                variable="flags",  # check existence in the flags set
-                operator="in",
-                value=flag_label,
-            )
+            return self._flag_logic(decision_label, edge_label)
 
-        # Base condition for yes/no edges
+        # Select one reference in decision point
         elif reference_type == "select_one":
+            return self._select_one_logic(reference_id, decision_label, edge_label)
+
+        # Select multiple reference in decision point
+        elif reference_type == "select_multiple":
+            # Extract option from brackets in decision label
+            option = self._extract_option_from_label(decision_label)
+            if option:
+                return self._select_multiple_logic(reference_id, option)
+
+            # Fallback to basic condition if parsing fails
             return EdgeLogic(
                 "condition",
                 node=reference_id,
@@ -146,9 +152,16 @@ class EdgeLogicCalculator:
         # Select multiple reference (extract option from brackets)
         elif reference_type == "select_multiple":
             option = self._extract_option_from_label(decision_label)
-            if option:
+            if option and edge_label.lower() == "yes":
                 return EdgeLogic(
                     "condition", node=reference_id, operator="contains", value=option
+                )
+            elif option and edge_label.lower() == "no":
+                return EdgeLogic(
+                    "condition",
+                    node=reference_id,
+                    operator="not contains",
+                    value=option,
                 )
             # Fallback to basic condition if parsing fails
             return EdgeLogic(
@@ -205,38 +218,51 @@ class EdgeLogicCalculator:
         return EdgeLogic.and_conditions(source_logic, added_logic)
 
     def _select_one_logic(
-        self, node_id: str, option: Optional[str], edge_label: str
+        self, node_id: str, option: str, edge_label: str
     ) -> EdgeLogic:
         """Calculate logic for select_one node edges.
         If option is missing, a yes/no question is assumed.
         """
-        # If option is provided, use that (from option simplification)
-        if option:
+        if edge_label.lower() == "yes":
             return EdgeLogic("condition", node=node_id, operator="=", value=option)
-
-        # For yes/no questions, use the edge label
+        elif edge_label.lower() == "no":
+            return EdgeLogic("condition", node=node_id, operator="!=", value=option)
         else:
-            return EdgeLogic(
-                "condition",
-                node=node_id,
-                operator="=",
-                value=edge_label.lower() == "yes",
-            )
+            return None
 
     def _select_multiple_logic(self, node_id: str, option: str) -> EdgeLogic:
         """Calculate logic for select_multiple node edges."""
         return EdgeLogic("condition", node=node_id, operator="contains", value=option)
 
-    def _flag_logic(self, flag_label: str) -> EdgeLogic:
+    def _flag_logic(
+        self, flag_label: str, edge_label: Optional[str] = None
+    ) -> EdgeLogic:
         """Calculate logic for edges originating from flag nodes."""
 
         # Create condition to check if this flag exists in the 'flags' set
-        return EdgeLogic(
-            "condition",
-            variable="flags",  # Reference the global flags set
-            operation="in",  # Check if value is in the set
-            value=flag_label,
-        )  # The flag label to check for
+        if not edge_label or edge_label.lower() == "yes":
+            return EdgeLogic(
+                "condition",
+                variable="flags",  # Reference the global flags set
+                operation="in",  # Check if value is in the set
+                value=flag_label,
+            )  # The flag label to check for
+        elif edge_label.lower() == "no":
+            return EdgeLogic(
+                "condition",
+                variable="flags",  # Reference the global flags set
+                operation="not in",  # Check if value is not in the set
+                value=flag_label,
+            )
+        else:
+            # If edge_label is not "yes" or "no", we assume it's a condition
+            # and return a basic condition with the flag label
+            return EdgeLogic(
+                "condition",
+                variable="flags",  # Reference the global flags set
+                operation="in",  # Check if value is in the set
+                value=flag_label,
+            )
 
     def _parse_numeric_condition(
         self, label: str
