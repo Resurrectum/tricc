@@ -690,13 +690,26 @@ class DAGConverter:
                     ),
                     None,
                 )
-                reference_type = self.graph.nodes[reference_id].get("type", "")
+                if reference_id:
+                    reference_type = self.graph.nodes[reference_id].get("type", "")
+                elif (
+                    reference_name
+                    in self.diagram.allowed_externals.get_flag_references()
+                ):
+                    reference_type = "flag"
+                elif (
+                    reference_name
+                    in self.diagram.allowed_externals.get_numeric_references()
+                ):
+                    reference_type = "numeric"
+                else:
+                    reference_type = "unknown"
 
                 logic = self.edge_logic_calculator.calculate_decision_point_logic(
-                    reference_id,
                     reference_type,
                     source_label,
                     edge_attrs.get("label", ""),
+                    reference_id,
                 )
 
             # If logic was generated, attach it to the edge

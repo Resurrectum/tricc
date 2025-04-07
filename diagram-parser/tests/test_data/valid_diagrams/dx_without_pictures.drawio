@@ -701,7 +701,7 @@
             <mxGeometry x="1220" y="440" width="180" height="40" as="geometry" />
           </mxCell>
         </UserObject>
-        <UserObject label="WLZ &amp;lt;-2" name="z_score" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-33">
+        <UserObject label="WLZ &amp;lt;-2" name="zscore weight length" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-33">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;" parent="u-2OYHYpkGujKRkxLq70-44" vertex="1">
             <mxGeometry x="590" y="135" width="100" height="100" as="geometry" />
           </mxCell>
@@ -709,7 +709,7 @@
         <mxCell id="u-2OYHYpkGujKRkxLq70-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="u-2OYHYpkGujKRkxLq70-44" source="u-2OYHYpkGujKRkxLq70-49" target="u-2OYHYpkGujKRkxLq70-33" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <UserObject label="WAZ &amp;lt;-2" name="z_score_wa" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-36">
+        <UserObject label="WAZ &amp;lt;-2" name="zscore weight age" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-36">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;" parent="u-2OYHYpkGujKRkxLq70-44" vertex="1">
             <mxGeometry x="740" y="135" width="100" height="100" as="geometry" />
           </mxCell>
@@ -786,7 +786,7 @@
         <mxCell id="u-2OYHYpkGujKRkxLq70-121" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jumpStyle=gap;jumpSize=12;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="u-2OYHYpkGujKRkxLq70-73" target="u-2OYHYpkGujKRkxLq70-103" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <UserObject label="WHZ/WLZ &amp;lt;-2" name="z_score" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-73">
+        <UserObject label="WHZ/WLZ &amp;lt;-2" name="zscore weight length" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-73">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
             <mxGeometry x="-1100" y="2342.5" width="100" height="100" as="geometry" />
           </mxCell>
@@ -847,7 +847,7 @@
             <mxGeometry y="160" width="580" height="30" as="geometry" />
           </mxCell>
         </object>
-        <UserObject label="WHZ/WLZ &amp;lt;-3" name="z_score" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-122">
+        <UserObject label="WHZ/WLZ &amp;lt;-3" name="zscore weight length" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-122">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;" parent="u-2OYHYpkGujKRkxLq70-103" vertex="1">
             <mxGeometry x="320" y="270" width="100" height="100" as="geometry" />
           </mxCell>

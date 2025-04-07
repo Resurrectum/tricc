@@ -3,22 +3,20 @@ Data model for a diagram without any specific format
 """
 
 from enum import Enum
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, Union
 from pydantic import (
     BaseModel,
     Field,
     validator,
     model_validator,
-    root_validator,
-    field_validator,
 )
 from pydantic_core import PydanticCustomError
 from questionnaire_parser.utils.validation import (
     ValidationCollector,
-    ValidationLevel,
     ValidationSeverity,
 )
 from questionnaire_parser.exceptions.parsing import MissingEndpointsError
+from questionnaire_parser.business_rules.external_flags import ExternalReferences
 
 
 class Geometry(BaseModel):
@@ -120,7 +118,6 @@ class Node(BaseElement):
     geometry: Geometry
     style: Style
     options: Optional[List[SelectOption]] = None  # Only for multiple choice nodes
-    external: bool = False  # For Rhombus nodes that refer external information
 
     @model_validator(mode="after")
     def validate_list_attributes(self):
@@ -209,6 +206,7 @@ class Diagram(BaseModel):
     edges: Dict[str, Edge] = Field(default_factory=dict)
     groups: Dict[str, Group] = Field(default_factory=dict)
     validation_collector: Optional[ValidationCollector] = None
+    allowed_externals: Optional[ExternalReferences] = ExternalReferences()
 
     class Config:
         arbitrary_types_allowed = True
@@ -216,12 +214,12 @@ class Diagram(BaseModel):
     @model_validator(mode="after")
     def validate_structure(self) -> "Diagram":
         """Validate overall diagram structure"""
-        # Precompute valid referral nodes (excluding rhombus nodes)
+        # Precompute valid referral nodes (excluding rhombus nodes, including externals)
         valid_referral_nodes = {
             n.metadata.name
             for n in self.nodes.values()
             if n.metadata and n.metadata.name and n.shape != ShapeType.RHOMBUS
-        }
+        } | self.allowed_externals.get_all_references()
 
         # Precompute valid source IDs
         valid_node_ids = {
@@ -310,9 +308,7 @@ class Diagram(BaseModel):
                         )
                     else:
                         raise ValueError(message)
-                elif (
-                    not node.external and node.metadata.name not in valid_referral_nodes
-                ):
+                elif not node.metadata.name not in valid_referral_nodes:
                     if self.validation_collector:
                         self.validation_collector.add_result(
                             severity=ValidationSeverity.ERROR,

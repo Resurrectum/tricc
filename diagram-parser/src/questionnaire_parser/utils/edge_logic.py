@@ -90,10 +90,10 @@ class EdgeLogicCalculator:
 
     def calculate_decision_point_logic(
         self,
-        reference_id: str,
         reference_type: str,
         decision_label: str,
         edge_label: str,
+        reference_id: Optional[str] = None,
     ) -> EdgeLogic:
         """Calculate logic for a decision point (rhombus) reference.
 
