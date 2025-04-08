@@ -1,785 +1,107 @@
 Diagram Validation Report
 ==================================================
 Validation Level: LENIENT
-Total Issues: 133
+Total Issues: 20
 --------------------------------------------------
 
 
-ERROR Issues (129):
+ERROR Issues (16):
 ------------------------------
-- Rhombus node A3S0b1CbI2T3U_TqhLG1-45 references non-existent node vsd
-  Element ID: A3S0b1CbI2T3U_TqhLG1-45
+- Rhombus node u-2OYHYpkGujKRkxLq70-136 references non-existent node haemoglobinometer_available
+  Element ID: u-2OYHYpkGujKRkxLq70-136
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
-- Rhombus node uCj6wmfn23S-pSbQoAlu-15 references non-existent node age
-  Element ID: uCj6wmfn23S-pSbQoAlu-15
+- Rhombus node NICACBZ1QluxI0W9Qa2Q-265 references non-existent node schistosomiasis_area
+  Element ID: NICACBZ1QluxI0W9Qa2Q-265
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
-- Rhombus node u-2OYHYpkGujKRkxLq70-16 references non-existent node age
-  Element ID: u-2OYHYpkGujKRkxLq70-16
+- Rhombus node lZjQX7eTFm_mJbZbWs0o-428 references non-existent node glucometer
+  Element ID: lZjQX7eTFm_mJbZbWs0o-428
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
-- Rhombus node Dsr1vVl4K1XQ0dKTO0ta-4 references non-existent node height
-  Element ID: Dsr1vVl4K1XQ0dKTO0ta-4
+- Rhombus node u-2OYHYpkGujKRkxLq70-617 references non-existent node pulse_oxymeter_available
+  Element ID: u-2OYHYpkGujKRkxLq70-617
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
-- Rhombus node Dsr1vVl4K1XQ0dKTO0ta-5 references non-existent node length
-  Element ID: Dsr1vVl4K1XQ0dKTO0ta-5
+- Rhombus node tQkuQCcyi7Qf0JNKHueI-8 references non-existent node malaria_transmission_area
+  Element ID: tQkuQCcyi7Qf0JNKHueI-8
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
-- Rhombus node Dsr1vVl4K1XQ0dKTO0ta-6 references non-existent node age
-  Element ID: Dsr1vVl4K1XQ0dKTO0ta-6
+- Rhombus node XSf1TWJF4OEfPNMGcsag-101 references non-existent node malaria_transmission_area
+  Element ID: XSf1TWJF4OEfPNMGcsag-101
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
-- Rhombus node u-2OYHYpkGujKRkxLq70-39 references non-existent node oedema
-  Element ID: u-2OYHYpkGujKRkxLq70-39
+- Rhombus node fONjE6NRhC0nG0N8aqxB-86 references non-existent node malaria_transmission_area
+  Element ID: fONjE6NRhC0nG0N8aqxB-86
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
-- Rhombus node u-2OYHYpkGujKRkxLq70-33 references non-existent node zscore weight length
-  Element ID: u-2OYHYpkGujKRkxLq70-33
+- Rhombus node 4l2zNaDLCQaG49sCD82E-4 references non-existent node malaria_transmission_area
+  Element ID: 4l2zNaDLCQaG49sCD82E-4
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
-- Rhombus node u-2OYHYpkGujKRkxLq70-36 references non-existent node zscore weight age
-  Element ID: u-2OYHYpkGujKRkxLq70-36
+- Rhombus node ztq1G2nFzXBuG2lYIVad-16 references non-existent node malaria_transmission_area
+  Element ID: ztq1G2nFzXBuG2lYIVad-16
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
-- Rhombus node u-2OYHYpkGujKRkxLq70-42 references non-existent node muac
-  Element ID: u-2OYHYpkGujKRkxLq70-42
+- Rhombus node MWB4Rc6BaCqBwchYWvXz-2 references non-existent node malaria_transmission_area
+  Element ID: MWB4Rc6BaCqBwchYWvXz-2
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
-- Rhombus node u-2OYHYpkGujKRkxLq70-72 references non-existent node muac
-  Element ID: u-2OYHYpkGujKRkxLq70-72
+- Rhombus node se2ZXh0vibB7Qlh2I6RK-6 references non-existent node malaria_transmission_area
+  Element ID: se2ZXh0vibB7Qlh2I6RK-6
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
-- Rhombus node u-2OYHYpkGujKRkxLq70-73 references non-existent node zscore weight length
-  Element ID: u-2OYHYpkGujKRkxLq70-73
+- Rhombus node 6VhrocRdydVIkS_9V0-j-37 references non-existent node schistosomiasis_area
+  Element ID: 6VhrocRdydVIkS_9V0-j-37
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
-- Rhombus node u-2OYHYpkGujKRkxLq70-75 references non-existent node oedema
-  Element ID: u-2OYHYpkGujKRkxLq70-75
+- Rhombus node 6VhrocRdydVIkS_9V0-j-66 references non-existent node endemic_trachoma_area
+  Element ID: 6VhrocRdydVIkS_9V0-j-66
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
-- Rhombus node u-2OYHYpkGujKRkxLq70-122 references non-existent node zscore weight length
-  Element ID: u-2OYHYpkGujKRkxLq70-122
+- Rhombus node aiGIkLMIdm_plQrjrHjE-11 references non-existent node oxygen_available
+  Element ID: aiGIkLMIdm_plQrjrHjE-11
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
-- Rhombus node u-2OYHYpkGujKRkxLq70-123 references non-existent node muac
-  Element ID: u-2OYHYpkGujKRkxLq70-123
+- Rhombus node aiGIkLMIdm_plQrjrHjE-16 references non-existent node adrenaline_im_available
+  Element ID: aiGIkLMIdm_plQrjrHjE-16
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
-- Rhombus node YZMvc4Vs3VP5uEYAVsEE-0 references non-existent node oedema
-  Element ID: YZMvc4Vs3VP5uEYAVsEE-0
+- Rhombus node aiGIkLMIdm_plQrjrHjE-38 references non-existent node malaria_transmission_area
+  Element ID: aiGIkLMIdm_plQrjrHjE-38
   Element Type: Node
   Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node YYiCz0d12ighoq34bFLj-50 references non-existent node level_anemia
-  Element ID: YYiCz0d12ighoq34bFLj-50
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node YYiCz0d12ighoq34bFLj-53 references non-existent node level_anemia
-  Element ID: YYiCz0d12ighoq34bFLj-53
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-298 references non-existent node age
-  Element ID: u-2OYHYpkGujKRkxLq70-298
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-301 references non-existent node weight
-  Element ID: u-2OYHYpkGujKRkxLq70-301
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-736 references non-existent node temp
-  Element ID: u-2OYHYpkGujKRkxLq70-736
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node NICACBZ1QluxI0W9Qa2Q-237 references non-existent node temp
-  Element ID: NICACBZ1QluxI0W9Qa2Q-237
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node NICACBZ1QluxI0W9Qa2Q-251 references non-existent node prereferal_details
-  Element ID: NICACBZ1QluxI0W9Qa2Q-251
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node NICACBZ1QluxI0W9Qa2Q-253 references non-existent node prereferal_details
-  Element ID: NICACBZ1QluxI0W9Qa2Q-253
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node W7J4lBNUnkOE7EhT0bz9-5 references non-existent node danger_sign
-  Element ID: W7J4lBNUnkOE7EhT0bz9-5
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 6-46R3QmlX0NwOugAWuj-12 references non-existent node danger_sign
-  Element ID: 6-46R3QmlX0NwOugAWuj-12
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node YYiCz0d12ighoq34bFLj-46 references non-existent node danger_signs_general
-  Element ID: YYiCz0d12ighoq34bFLj-46
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node L2TM5GU1keS2TsR4Kdi3-4 references non-existent node major_symptoms
-  Element ID: L2TM5GU1keS2TsR4Kdi3-4
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-622 references non-existent node o2
-  Element ID: u-2OYHYpkGujKRkxLq70-622
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-625 references non-existent node age
-  Element ID: u-2OYHYpkGujKRkxLq70-625
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node _ngWaJjIOC25TS3-QT86-37 references non-existent node o2
-  Element ID: _ngWaJjIOC25TS3-QT86-37
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 6yQQqyyR8zDgo1kb1OcW-9 references non-existent node sickle_cell_disease
-  Element ID: 6yQQqyyR8zDgo1kb1OcW-9
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-258 references non-existent node gender
-  Element ID: u-2OYHYpkGujKRkxLq70-258
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 67bMJ77ECVhQyaKZiGpc-12 references non-existent node major_symptoms
-  Element ID: 67bMJ77ECVhQyaKZiGpc-12
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node wWeWpoI1Yv6dq3Doh1uY-0 references non-existent node fever_past_present
-  Element ID: wWeWpoI1Yv6dq3Doh1uY-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node j04vf4vFtkKXw9VnQPNU-0 references non-existent node major_symptoms
-  Element ID: j04vf4vFtkKXw9VnQPNU-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node YYiCz0d12ighoq34bFLj-1 references non-existent node dehydration_some
-  Element ID: YYiCz0d12ighoq34bFLj-1
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node YYiCz0d12ighoq34bFLj-13 references non-existent node dehydration_some
-  Element ID: YYiCz0d12ighoq34bFLj-13
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-347 references non-existent node age
-  Element ID: u-2OYHYpkGujKRkxLq70-347
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node _ngWaJjIOC25TS3-QT86-19 references non-existent node bloodsugar_mg
-  Element ID: _ngWaJjIOC25TS3-QT86-19
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node _ngWaJjIOC25TS3-QT86-21 references non-existent node unit_bloodsugar
-  Element ID: _ngWaJjIOC25TS3-QT86-21
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node _ngWaJjIOC25TS3-QT86-24 references non-existent node bloodsugar_mmol
-  Element ID: _ngWaJjIOC25TS3-QT86-24
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 0RIM-2jba-bQC5kOe2e--0 references non-existent node danger_sign
-  Element ID: 0RIM-2jba-bQC5kOe2e--0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node pbZ40mLQ_XrmrcULdRrj-69 references non-existent node symptoms_dehydration_severe
-  Element ID: pbZ40mLQ_XrmrcULdRrj-69
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node pbZ40mLQ_XrmrcULdRrj-77 references non-existent node symptoms_dehydration_moderate
-  Element ID: pbZ40mLQ_XrmrcULdRrj-77
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node YYiCz0d12ighoq34bFLj-7 references non-existent node symptoms_dehydration_moderate
-  Element ID: YYiCz0d12ighoq34bFLj-7
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node YYiCz0d12ighoq34bFLj-6 references non-existent node symptoms_dehydration_severe
-  Element ID: YYiCz0d12ighoq34bFLj-6
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-249 references non-existent node age
-  Element ID: u-2OYHYpkGujKRkxLq70-249
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-246 references non-existent node respiratory_rate
-  Element ID: u-2OYHYpkGujKRkxLq70-246
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-243 references non-existent node respiratory_rate
-  Element ID: u-2OYHYpkGujKRkxLq70-243
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-710 references non-existent node fever_past_present
-  Element ID: u-2OYHYpkGujKRkxLq70-710
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-635 references non-existent node fever_past_present
-  Element ID: u-2OYHYpkGujKRkxLq70-635
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-640 references non-existent node sam
-  Element ID: u-2OYHYpkGujKRkxLq70-640
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-643 references non-existent node mam
-  Element ID: u-2OYHYpkGujKRkxLq70-643
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-645 references non-existent node nutritional_risk_moderate
-  Element ID: u-2OYHYpkGujKRkxLq70-645
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node icXafjwbArZH4tCMGFBR-0 references non-existent node age
-  Element ID: icXafjwbArZH4tCMGFBR-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node SUSUrSS6mQ2etNRc7UqF-0 references non-existent node respiratory_rate
-  Element ID: SUSUrSS6mQ2etNRc7UqF-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node XSf1TWJF4OEfPNMGcsag-146 references non-existent node major_symptoms
-  Element ID: XSf1TWJF4OEfPNMGcsag-146
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 9yDKsaIH6DSVjYdZ-YNt-5 references non-existent node major_symptoms
-  Element ID: 9yDKsaIH6DSVjYdZ-YNt-5
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node KGjeGqpUnCV8QP1xGqUL-41 references non-existent node deceased
-  Element ID: KGjeGqpUnCV8QP1xGqUL-41
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node V8gXrvSQk8GROoNPl7uU-3 references non-existent node danger_sign
-  Element ID: V8gXrvSQk8GROoNPl7uU-3
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node TWNOHeJP_Gy84JBcrZWs-1 references non-existent node major_symptoms
-  Element ID: TWNOHeJP_Gy84JBcrZWs-1
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node E7FapWKmNRzshXMiBsKz-0 references non-existent node age
-  Element ID: E7FapWKmNRzshXMiBsKz-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node se2ZXh0vibB7Qlh2I6RK-17 references non-existent node age
-  Element ID: se2ZXh0vibB7Qlh2I6RK-17
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node sjRgDdN2E6i7NQWEwTHG-0 references non-existent node runny_nose_ear_inf
-  Element ID: sjRgDdN2E6i7NQWEwTHG-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node sjRgDdN2E6i7NQWEwTHG-6 references non-existent node runny_nose_ear_inf
-  Element ID: sjRgDdN2E6i7NQWEwTHG-6
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node Mlkynk5GcxE_Do3GZrBg-0 references non-existent node referral_red
-  Element ID: Mlkynk5GcxE_Do3GZrBg-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node ZxWVlJX1oGqglkcC_doR-0 references non-existent node deceased
-  Element ID: ZxWVlJX1oGqglkcC_doR-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node vhHEKr5SGvO7ePhP5IL1-0 references non-existent node major_symptoms
-  Element ID: vhHEKr5SGvO7ePhP5IL1-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 7TQ5BaRk7eadPaJipG2F-0 references non-existent node major_symptoms
-  Element ID: 7TQ5BaRk7eadPaJipG2F-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 7TQ5BaRk7eadPaJipG2F-1 references non-existent node major_symptoms
-  Element ID: 7TQ5BaRk7eadPaJipG2F-1
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node lTfFoAi3TPrqg3RsJWf5-0 references non-existent node major_symptoms
-  Element ID: lTfFoAi3TPrqg3RsJWf5-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node lTfFoAi3TPrqg3RsJWf5-7 references non-existent node major_symptoms
-  Element ID: lTfFoAi3TPrqg3RsJWf5-7
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node lTfFoAi3TPrqg3RsJWf5-8 references non-existent node major_symptoms
-  Element ID: lTfFoAi3TPrqg3RsJWf5-8
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 6VhrocRdydVIkS_9V0-j-14 references non-existent node bronchitis
-  Element ID: 6VhrocRdydVIkS_9V0-j-14
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 6VhrocRdydVIkS_9V0-j-17 references non-existent node pneumonia
-  Element ID: 6VhrocRdydVIkS_9V0-j-17
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 6VhrocRdydVIkS_9V0-j-18 references non-existent node measles_any
-  Element ID: 6VhrocRdydVIkS_9V0-j-18
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 6VhrocRdydVIkS_9V0-j-38 references non-existent node age
-  Element ID: 6VhrocRdydVIkS_9V0-j-38
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 6VhrocRdydVIkS_9V0-j-43 references non-existent node uvulectomy available
-  Element ID: 6VhrocRdydVIkS_9V0-j-43
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 6VhrocRdydVIkS_9V0-j-76 references non-existent node age
-  Element ID: 6VhrocRdydVIkS_9V0-j-76
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 6VhrocRdydVIkS_9V0-j-165 references non-existent node age
-  Element ID: 6VhrocRdydVIkS_9V0-j-165
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 6VhrocRdydVIkS_9V0-j-167 references non-existent node fever_past_present
-  Element ID: 6VhrocRdydVIkS_9V0-j-167
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 6VhrocRdydVIkS_9V0-j-170 references non-existent node cough_persistent
-  Element ID: 6VhrocRdydVIkS_9V0-j-170
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 6VhrocRdydVIkS_9V0-j-171 references non-existent node runny_nose
-  Element ID: 6VhrocRdydVIkS_9V0-j-171
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 6VhrocRdydVIkS_9V0-j-203 references non-existent node malariaRDT
-  Element ID: 6VhrocRdydVIkS_9V0-j-203
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 6VhrocRdydVIkS_9V0-j-206 references non-existent node urinalysis
-  Element ID: 6VhrocRdydVIkS_9V0-j-206
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node v6UF4KpLbzx625GHlS9W-1 references non-existent node hypothermia
-  Element ID: v6UF4KpLbzx625GHlS9W-1
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node Rvm2YwlRca2-a_a3BniO-3 references non-existent node pneumonia
-  Element ID: Rvm2YwlRca2-a_a3BniO-3
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node Rvm2YwlRca2-a_a3BniO-5 references non-existent node sam
-  Element ID: Rvm2YwlRca2-a_a3BniO-5
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node Rvm2YwlRca2-a_a3BniO-6 references non-existent node mam
-  Element ID: Rvm2YwlRca2-a_a3BniO-6
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node Rvm2YwlRca2-a_a3BniO-9 references non-existent node nutritional_risk_moderate
-  Element ID: Rvm2YwlRca2-a_a3BniO-9
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node Rvm2YwlRca2-a_a3BniO-244 references non-existent node fever_past_present
-  Element ID: Rvm2YwlRca2-a_a3BniO-244
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node NgWd2p3StE5dL_ZTSv-H-11 references non-existent node pneumonia
-  Element ID: NgWd2p3StE5dL_ZTSv-H-11
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node aiGIkLMIdm_plQrjrHjE-20 references non-existent node vsd_stridor
-  Element ID: aiGIkLMIdm_plQrjrHjE-20
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node aiGIkLMIdm_plQrjrHjE-21 references non-existent node vsd_difficult_breathing
-  Element ID: aiGIkLMIdm_plQrjrHjE-21
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node IJdIRoib9ndn6FfSGVHh-3 references non-existent node vsd
-  Element ID: IJdIRoib9ndn6FfSGVHh-3
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 3HCHkiq4TzFFquT4f6m7-12 references non-existent node abdominal_pain
-  Element ID: 3HCHkiq4TzFFquT4f6m7-12
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 3HCHkiq4TzFFquT4f6m7-31 references non-existent node malaria_positive
-  Element ID: 3HCHkiq4TzFFquT4f6m7-31
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node plpbFzSJFXB6uKafMeHM-2 references non-existent node malaria_not_done
-  Element ID: plpbFzSJFXB6uKafMeHM-2
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node kGJGo_CqDhE784eWbhBC-9 references non-existent node major_symptoms
-  Element ID: kGJGo_CqDhE784eWbhBC-9
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node kGJGo_CqDhE784eWbhBC-10 references non-existent node runny_nose_ear_inf
-  Element ID: kGJGo_CqDhE784eWbhBC-10
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node kGJGo_CqDhE784eWbhBC-11 references non-existent node symptoms_other
-  Element ID: kGJGo_CqDhE784eWbhBC-11
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node plpbFzSJFXB6uKafMeHM-17 references non-existent node fever_past_present
-  Element ID: plpbFzSJFXB6uKafMeHM-17
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node plpbFzSJFXB6uKafMeHM-22 references non-existent node urinalysis_not_performed
-  Element ID: plpbFzSJFXB6uKafMeHM-22
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node OAc9Q9Q6utW0qeNfqLSp-1 references non-existent node urinalysis_not_performed
-  Element ID: OAc9Q9Q6utW0qeNfqLSp-1
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node LPDKV82DPvGPDO-q65_a-15 references non-existent node referral_red
-  Element ID: LPDKV82DPvGPDO-q65_a-15
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node uf5UWwOlEflc3rKPeV6O-0 references non-existent node urinalysis
-  Element ID: uf5UWwOlEflc3rKPeV6O-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node LPDKV82DPvGPDO-q65_a-11 references non-existent node fever_past_present
-  Element ID: LPDKV82DPvGPDO-q65_a-11
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node QzNPgyqGgLnsmNhGueB2-4 references non-existent node referral_red
-  Element ID: QzNPgyqGgLnsmNhGueB2-4
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node mg7209DPJhh26ENXNz89-0 references non-existent node major_symptoms
-  Element ID: mg7209DPJhh26ENXNz89-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node u-P6qHqAs1UF-bsm2Rdz-0 references non-existent node runny_nose_ear_inf
-  Element ID: u-P6qHqAs1UF-bsm2Rdz-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node fkzApBQmcbQ1PvqF4gpe-0 references non-existent node symptoms_other
-  Element ID: fkzApBQmcbQ1PvqF4gpe-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node yGQxMRoqvpSULoXK3Hmo-5 references non-existent node malaria_not_done
-  Element ID: yGQxMRoqvpSULoXK3Hmo-5
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node B3PY1DTbvRqpWWawsYs9-41 references non-existent node referral_red
-  Element ID: B3PY1DTbvRqpWWawsYs9-41
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node dmZEyriZSWlmK6Sps_xf-8 references non-existent node malariaRDT
-  Element ID: dmZEyriZSWlmK6Sps_xf-8
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node LPDKV82DPvGPDO-q65_a-0 references non-existent node urinalysis
-  Element ID: LPDKV82DPvGPDO-q65_a-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node wTWLMbOMoMhGT7L8ap1u-0 references non-existent node malariaRDT
-  Element ID: wTWLMbOMoMhGT7L8ap1u-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node wTWLMbOMoMhGT7L8ap1u-3 references non-existent node urinalysis
-  Element ID: wTWLMbOMoMhGT7L8ap1u-3
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node dmZEyriZSWlmK6Sps_xf-0 references non-existent node urinalysis
-  Element ID: dmZEyriZSWlmK6Sps_xf-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node GUnMS5SLmA_QTWFvRnAq-0 references non-existent node malariaRDT
-  Element ID: GUnMS5SLmA_QTWFvRnAq-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node GUnMS5SLmA_QTWFvRnAq-1 references non-existent node urinalysis
-  Element ID: GUnMS5SLmA_QTWFvRnAq-1
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node aUp3MIr1n4tncTCpU0qz-0 references non-existent node urinalysis
-  Element ID: aUp3MIr1n4tncTCpU0qz-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 3HCHkiq4TzFFquT4f6m7-4 references non-existent node fever_past_present
-  Element ID: 3HCHkiq4TzFFquT4f6m7-4
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node g8BISFqPUMjrv8BZlGWQ-6 references non-existent node deceased
-  Element ID: g8BISFqPUMjrv8BZlGWQ-6
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 6_plgAe63PtQ9LTfB4Ux-0 references non-existent node age
-  Element ID: 6_plgAe63PtQ9LTfB4Ux-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node 1rD0LaeV0t-KemDT3q0T-2 references non-existent node major_symptoms
-  Element ID: 1rD0LaeV0t-KemDT3q0T-2
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node AWdic--RfmP02qXeHu1U-0 references non-existent node temp
-  Element ID: AWdic--RfmP02qXeHu1U-0
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node xdmUtHyhzr1bfPzNpfsd-48 references non-existent node referral_red
-  Element ID: xdmUtHyhzr1bfPzNpfsd-48
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
-
-- Rhombus node BWtGR0C5wuFTciCPxFBc-1 references non-existent node referral_red
-  Element ID: BWtGR0C5wuFTciCPxFBc-1
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
 
 WARNING Issues (4):
@@ -788,29 +110,29 @@ WARNING Issues (4):
   Element ID: 97X_2J8qlAPc0du_Bcn8-79
   Element Type: Edge
   Field: endpoints
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
 - Ghost edge found where source and target are missing. Edge gets ignored.
   Element ID: 97X_2J8qlAPc0du_Bcn8-81
   Element Type: Edge
   Field: endpoints
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
 - Ghost edge found where source and target are missing. Edge gets ignored.
   Element ID: u-2OYHYpkGujKRkxLq70-45
   Element Type: Edge
   Field: endpoints
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
 - Ghost edge found where source and target are missing. Edge gets ignored.
   Element ID: B3PY1DTbvRqpWWawsYs9-50
   Element Type: Edge
   Field: endpoints
-  Time: 2025-04-07 07:16:10
+  Time: 2025-04-08 17:01:04
 
 
 Summary:
 ------------------------------
 CRITICAL: 0 issues
-ERROR: 129 issues
+ERROR: 16 issues
 WARNING: 4 issues

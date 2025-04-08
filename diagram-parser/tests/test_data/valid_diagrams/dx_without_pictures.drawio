@@ -932,7 +932,7 @@
             <mxGeometry x="-1032.37" y="2810" width="1152.37" height="470" as="geometry" />
           </mxCell>
         </object>
-        <UserObject label="Haemoglobinometer available" name="haemoglobinometer_available" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-136">
+        <UserObject label="Haemoglobinometer available" name="haemoglobinometer available" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-136">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" parent="u-2OYHYpkGujKRkxLq70-128" vertex="1">
             <mxGeometry x="511.8699999999999" y="35" width="119.75" height="117.5" as="geometry" />
           </mxCell>
@@ -1633,7 +1633,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <UserObject label="Schistosomiasis endemic area" name="schistosomiasis_area" odk_type="rhombus" id="NICACBZ1QluxI0W9Qa2Q-265">
+        <UserObject label="Schistosomiasis endemic area" name="schistosomiasis area" odk_type="rhombus" id="NICACBZ1QluxI0W9Qa2Q-265">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
             <mxGeometry x="890" y="8820" width="100" height="100" as="geometry" />
           </mxCell>
@@ -2109,7 +2109,7 @@
             <mxPoint x="300" y="1050" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <UserObject label="Glucometer available" name="glucometer" odk_type="rhombus" id="lZjQX7eTFm_mJbZbWs0o-428">
+        <UserObject label="Glucometer available" name="glucometer available" odk_type="rhombus" id="lZjQX7eTFm_mJbZbWs0o-428">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;fontColor=#000000;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
             <mxGeometry x="200" y="1320" width="80" height="80" as="geometry" />
           </mxCell>
@@ -2473,7 +2473,7 @@
             <mxGeometry x="-940" y="4640" width="900" height="680" as="geometry" />
           </mxCell>
         </object>
-        <UserObject label="Pulse oxymetre available?" name="pulse_oxymeter_available" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-617">
+        <UserObject label="Pulse oxymetre available?" name="pulse oxymeter available" odk_type="rhombus" id="u-2OYHYpkGujKRkxLq70-617">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;" parent="PsrAnjvYD7h0aRf1brzd-3" vertex="1">
             <mxGeometry x="56.91999999999996" y="130" width="100" height="100" as="geometry" />
           </mxCell>
@@ -2749,7 +2749,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <UserObject label="Malaria transmission area" name="malaria_transmission_area" odk_type="rhombus" id="tQkuQCcyi7Qf0JNKHueI-8">
+        <UserObject label="Malaria transmission area" name="malaria transmission area" odk_type="rhombus" id="tQkuQCcyi7Qf0JNKHueI-8">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=#000000;fillColor=none;" parent="PsrAnjvYD7h0aRf1brzd-8" vertex="1">
             <mxGeometry x="744.8" y="985" width="100" height="75" as="geometry" />
           </mxCell>
@@ -3757,7 +3757,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <UserObject label="Malaria transmission area" name="malaria_transmission_area" odk_type="rhombus" id="XSf1TWJF4OEfPNMGcsag-101">
+        <UserObject label="Malaria transmission area" name="malaria transmission area" odk_type="rhombus" id="XSf1TWJF4OEfPNMGcsag-101">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
             <mxGeometry x="199.5000000000001" y="2580" width="100" height="100" as="geometry" />
           </mxCell>
@@ -3795,7 +3795,7 @@
         <mxCell id="cAuHBGCHugT3EbxXHYca-0" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="fONjE6NRhC0nG0N8aqxB-86" target="OWvDVMXcvJacQI1Ut1Ja-0" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <UserObject label="Malaria transmission area" name="malaria_transmission_area" odk_type="rhombus" id="fONjE6NRhC0nG0N8aqxB-86">
+        <UserObject label="Malaria transmission area" name="malaria transmission area" odk_type="rhombus" id="fONjE6NRhC0nG0N8aqxB-86">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=#000000;fillColor=none;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
             <mxGeometry x="2480" y="1547.5" width="160" height="75" as="geometry" />
           </mxCell>
@@ -4169,7 +4169,7 @@
             <mxPoint x="668" y="2920" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <UserObject label="Malaria transmission area" name="malaria_transmission_area" odk_type="rhombus" id="4l2zNaDLCQaG49sCD82E-4">
+        <UserObject label="Malaria transmission area" name="malaria transmission area" odk_type="rhombus" id="4l2zNaDLCQaG49sCD82E-4">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
             <mxGeometry x="480" y="2880" width="160" height="80" as="geometry" />
           </mxCell>
@@ -4207,7 +4207,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <UserObject label="Malaria transmission area" name="malaria_transmission_area" odk_type="rhombus" id="ztq1G2nFzXBuG2lYIVad-16">
+        <UserObject label="Malaria transmission area" name="malaria transmission area" odk_type="rhombus" id="ztq1G2nFzXBuG2lYIVad-16">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
             <mxGeometry x="1442.37" y="5890" width="100" height="100" as="geometry" />
           </mxCell>
@@ -4248,7 +4248,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <UserObject label="Malaria transmission area" name="malaria_transmission_area" odk_type="rhombus" id="MWB4Rc6BaCqBwchYWvXz-2">
+        <UserObject label="Malaria transmission area" name="malaria transmission area" odk_type="rhombus" id="MWB4Rc6BaCqBwchYWvXz-2">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=#000000;fillColor=none;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
             <mxGeometry x="-229.69" y="3500" width="160" height="60" as="geometry" />
           </mxCell>
@@ -4446,7 +4446,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <UserObject label="Malaria transmission area" name="malaria_transmission_area" odk_type="rhombus" id="se2ZXh0vibB7Qlh2I6RK-6">
+        <UserObject label="Malaria transmission area" name="malaria transmission area" odk_type="rhombus" id="se2ZXh0vibB7Qlh2I6RK-6">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=#000000;fillColor=none;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
             <mxGeometry x="-434.48" y="740" width="160" height="60" as="geometry" />
           </mxCell>
@@ -4936,7 +4936,7 @@
             <mxPoint x="218.76" y="75" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <UserObject label="Schistosomiasis endemic area" name="schistosomiasis_area" odk_type="rhombus" id="6VhrocRdydVIkS_9V0-j-37">
+        <UserObject label="Schistosomiasis endemic area" name="schistosomiasis area" odk_type="rhombus" id="6VhrocRdydVIkS_9V0-j-37">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;fontSize=12;" parent="6VhrocRdydVIkS_9V0-j-35" vertex="1">
             <mxGeometry x="38.75999999999999" y="25" width="100" height="100" as="geometry" />
           </mxCell>
@@ -5092,7 +5092,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <UserObject label="Endemic trachoma area" name="endemic_trachoma_area" odk_type="rhombus" id="6VhrocRdydVIkS_9V0-j-66">
+        <UserObject label="Endemic trachoma area" name="endemic trachoma area" odk_type="rhombus" id="6VhrocRdydVIkS_9V0-j-66">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;fontSize=12;" parent="6VhrocRdydVIkS_9V0-j-52" vertex="1">
             <mxGeometry x="22" y="274" width="100" height="100" as="geometry" />
           </mxCell>
@@ -7182,7 +7182,7 @@
             <mxPoint x="290" y="59.67000000000007" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <UserObject label="Oxygen available" odk_type="rhombus" name="oxygen_available" id="aiGIkLMIdm_plQrjrHjE-11">
+        <UserObject label="Oxygen available" odk_type="rhombus" name="oxygen available" id="aiGIkLMIdm_plQrjrHjE-11">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;" parent="aiGIkLMIdm_plQrjrHjE-1" vertex="1">
             <mxGeometry x="30" y="10" width="100" height="100" as="geometry" />
           </mxCell>
@@ -7211,7 +7211,7 @@
             <mxPoint x="331" y="-240.32999999999993" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <UserObject label="Adrenaline IM" name="adrenaline_im_available" odk_type="rhombus" id="aiGIkLMIdm_plQrjrHjE-16">
+        <UserObject label="Adrenaline IM" name="adrenaline im available" odk_type="rhombus" id="aiGIkLMIdm_plQrjrHjE-16">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;fontFamily=Helvetica;fontSize=12;fontColor=#330000;" parent="aiGIkLMIdm_plQrjrHjE-1" vertex="1">
             <mxGeometry x="800" y="120" width="100" height="100" as="geometry" />
           </mxCell>
@@ -7344,7 +7344,7 @@
             <mxPoint x="4150" y="478.3299999999999" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <UserObject label="Malaria transmission area" name="malaria_transmission_area" odk_type="rhombus" id="aiGIkLMIdm_plQrjrHjE-38">
+        <UserObject label="Malaria transmission area" name="malaria transmission area" odk_type="rhombus" id="aiGIkLMIdm_plQrjrHjE-38">
           <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;" parent="1" vertex="1">
             <mxGeometry x="4012" y="440" width="160" height="80" as="geometry" />
           </mxCell>

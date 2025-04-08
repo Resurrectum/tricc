@@ -308,7 +308,7 @@ class Diagram(BaseModel):
                         )
                     else:
                         raise ValueError(message)
-                elif not node.metadata.name not in valid_referral_nodes:
+                elif node.metadata.name not in valid_referral_nodes:
                     if self.validation_collector:
                         self.validation_collector.add_result(
                             severity=ValidationSeverity.ERROR,
