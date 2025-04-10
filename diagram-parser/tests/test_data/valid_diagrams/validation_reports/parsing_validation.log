@@ -1,107 +1,8 @@
 Diagram Validation Report
 ==================================================
 Validation Level: LENIENT
-Total Issues: 20
+Total Issues: 4
 --------------------------------------------------
-
-
-ERROR Issues (16):
-------------------------------
-- Rhombus node u-2OYHYpkGujKRkxLq70-136 references non-existent node haemoglobinometer_available
-  Element ID: u-2OYHYpkGujKRkxLq70-136
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
-
-- Rhombus node NICACBZ1QluxI0W9Qa2Q-265 references non-existent node schistosomiasis_area
-  Element ID: NICACBZ1QluxI0W9Qa2Q-265
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
-
-- Rhombus node lZjQX7eTFm_mJbZbWs0o-428 references non-existent node glucometer
-  Element ID: lZjQX7eTFm_mJbZbWs0o-428
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
-
-- Rhombus node u-2OYHYpkGujKRkxLq70-617 references non-existent node pulse_oxymeter_available
-  Element ID: u-2OYHYpkGujKRkxLq70-617
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
-
-- Rhombus node tQkuQCcyi7Qf0JNKHueI-8 references non-existent node malaria_transmission_area
-  Element ID: tQkuQCcyi7Qf0JNKHueI-8
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
-
-- Rhombus node XSf1TWJF4OEfPNMGcsag-101 references non-existent node malaria_transmission_area
-  Element ID: XSf1TWJF4OEfPNMGcsag-101
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
-
-- Rhombus node fONjE6NRhC0nG0N8aqxB-86 references non-existent node malaria_transmission_area
-  Element ID: fONjE6NRhC0nG0N8aqxB-86
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
-
-- Rhombus node 4l2zNaDLCQaG49sCD82E-4 references non-existent node malaria_transmission_area
-  Element ID: 4l2zNaDLCQaG49sCD82E-4
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
-
-- Rhombus node ztq1G2nFzXBuG2lYIVad-16 references non-existent node malaria_transmission_area
-  Element ID: ztq1G2nFzXBuG2lYIVad-16
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
-
-- Rhombus node MWB4Rc6BaCqBwchYWvXz-2 references non-existent node malaria_transmission_area
-  Element ID: MWB4Rc6BaCqBwchYWvXz-2
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
-
-- Rhombus node se2ZXh0vibB7Qlh2I6RK-6 references non-existent node malaria_transmission_area
-  Element ID: se2ZXh0vibB7Qlh2I6RK-6
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
-
-- Rhombus node 6VhrocRdydVIkS_9V0-j-37 references non-existent node schistosomiasis_area
-  Element ID: 6VhrocRdydVIkS_9V0-j-37
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
-
-- Rhombus node 6VhrocRdydVIkS_9V0-j-66 references non-existent node endemic_trachoma_area
-  Element ID: 6VhrocRdydVIkS_9V0-j-66
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
-
-- Rhombus node aiGIkLMIdm_plQrjrHjE-11 references non-existent node oxygen_available
-  Element ID: aiGIkLMIdm_plQrjrHjE-11
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
-
-- Rhombus node aiGIkLMIdm_plQrjrHjE-16 references non-existent node adrenaline_im_available
-  Element ID: aiGIkLMIdm_plQrjrHjE-16
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
-
-- Rhombus node aiGIkLMIdm_plQrjrHjE-38 references non-existent node malaria_transmission_area
-  Element ID: aiGIkLMIdm_plQrjrHjE-38
-  Element Type: Node
-  Field: metadata.name
-  Time: 2025-04-08 17:01:04
 
 
 WARNING Issues (4):
@@ -110,29 +11,29 @@ WARNING Issues (4):
   Element ID: 97X_2J8qlAPc0du_Bcn8-79
   Element Type: Edge
   Field: endpoints
-  Time: 2025-04-08 17:01:04
+  Time: 2025-04-09 17:26:13
 
 - Ghost edge found where source and target are missing. Edge gets ignored.
   Element ID: 97X_2J8qlAPc0du_Bcn8-81
   Element Type: Edge
   Field: endpoints
-  Time: 2025-04-08 17:01:04
+  Time: 2025-04-09 17:26:13
 
 - Ghost edge found where source and target are missing. Edge gets ignored.
   Element ID: u-2OYHYpkGujKRkxLq70-45
   Element Type: Edge
   Field: endpoints
-  Time: 2025-04-08 17:01:04
+  Time: 2025-04-09 17:26:13
 
 - Ghost edge found where source and target are missing. Edge gets ignored.
   Element ID: B3PY1DTbvRqpWWawsYs9-50
   Element Type: Edge
   Field: endpoints
-  Time: 2025-04-08 17:01:04
+  Time: 2025-04-09 17:26:13
 
 
 Summary:
 ------------------------------
 CRITICAL: 0 issues
-ERROR: 16 issues
+ERROR: 0 issues
 WARNING: 4 issues

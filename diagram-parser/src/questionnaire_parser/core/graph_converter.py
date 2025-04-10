@@ -1,6 +1,7 @@
 import networkx as nx
 import re
 from typing import Dict, Optional, Any
+from bs4 import BeautifulSoup
 from questionnaire_parser.models.diagram import Diagram, ShapeType
 from questionnaire_parser.utils.validation import (
     ValidationCollector,
@@ -249,10 +250,11 @@ class DAGConverter:
         self._consolidate_flag_nodes()
         self._convert_select_one_yesno()
         self._consolidate_numeric_types()
+        self._remove_html_tags()  # in labels of flags and decision points
 
         # Phase 2: Structural Simplifications
         self._simplify_select_options()
-        self._simplify_goto_nodes()
+        self._simplify_goto_nodes()  # these still require the name tag to be used
         self._simplify_groups()  # must happen after goto simplification, because gotos can point to groups
         self._simplify_help_hint()
         # self._simplify_rhombus_nodes() # must write edge logic first
@@ -715,3 +717,36 @@ class DAGConverter:
             # If logic was generated, attach it to the edge
             if logic:
                 edge_attrs["logic"] = logic.to_dict()
+
+    def _remove_html_tags(self):
+        """
+        Remove HTML tags from flag and decision point node labels.
+
+        This method processes all flag and decision point nodes in the graph,
+        removes HTML formatting from their labels, and updates the graph in-place.
+        """
+        # Find all flag and decision point nodes
+        for node_id, attrs in list(self.graph.nodes(data=True)):
+            # Only process flag and decision point nodes
+            if attrs.get("type") in ["flag", "decision_point"]:
+                # Get the label of the node
+                html_string = attrs.get("label", "")
+
+                # Skip if empty
+                if not html_string:
+                    continue
+
+                # Create BeautifulSoup object to parse HTML
+                soup = BeautifulSoup(html_string, "html.parser")
+
+                # Get text without HTML tags
+                plain_text = soup.get_text()
+
+                # Remove extra whitespace and newlines
+                clean_text = " ".join(plain_text.split())
+
+                # Replace non-breaking spaces with regular spaces
+                clean_text = clean_text.replace("\xa0", " ")
+
+                # Update the node's label in the graph
+                self.graph.nodes[node_id]["label"] = clean_text
