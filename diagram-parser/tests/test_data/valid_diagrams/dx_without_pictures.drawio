@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2025-04-06T16:35:23.374Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/20.8.16 Chrome/106.0.5249.199 Electron/21.4.0 Safari/537.36" etag="tv2gMj8uCMi1EBegxXxj" compressed="false" version="20.8.16" type="device" pages="6">
+<mxfile host="Electron" modified="2025-04-10T06:44:45.355Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/20.8.16 Chrome/106.0.5249.199 Electron/21.4.0 Safari/537.36" etag="UUp8n_UWJogAGQq6flyI" compressed="false" version="20.8.16" type="device" pages="6">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Diagnostic">
-    <mxGraphModel dx="3551" dy="2775" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="0" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="4071" dy="3255" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="0" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
@@ -241,7 +241,7 @@
         </mxCell>
         <object label="History of convulsions" odk_type="container_page" name="convulsions" id="6-46R3QmlX0NwOugAWuj-30">
           <mxCell style="swimlane;startSize=0;verticalAlign=bottom;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-            <mxGeometry x="-1120" y="80" width="920" height="560" as="geometry" />
+            <mxGeometry x="-1130" y="80" width="920" height="560" as="geometry" />
           </mxCell>
         </object>
         <UserObject label="&lt;span&gt;According to the information provided by the child&#39;s parent:&amp;nbsp;&lt;/span&gt;&lt;span&gt;has the child really presented a convulsion?&lt;/span&gt;" name="past_convulsions_after_info" odk_type="select_one yesno" id="6-46R3QmlX0NwOugAWuj-50">
@@ -411,7 +411,7 @@
         <mxCell id="zjpm43I_BCxAhtO3TjfG-425" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jumpStyle=gap;jumpSize=10;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;strokeColor=#000000;" parent="u-2OYHYpkGujKRkxLq70-1" source="zjpm43I_BCxAhtO3TjfG-347" target="zjpm43I_BCxAhtO3TjfG-338" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="Tggpn-h0w9b8xoBbMFwP-6" value="Is the child younger than 1 year?" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="u-2OYHYpkGujKRkxLq70-1">
+        <mxCell id="Tggpn-h0w9b8xoBbMFwP-6" value="Is the child younger than 1 year?" style="rounded=0;whiteSpace=wrap;html=1;" parent="u-2OYHYpkGujKRkxLq70-1" vertex="1">
           <mxGeometry x="30" y="38.5" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="dGri61usbkveLN2TPeln-2" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="u-2OYHYpkGujKRkxLq70-1" source="Tggpn-h0w9b8xoBbMFwP-6" target="GoqbsMwnB59L8INMPmg2-17" edge="1">
@@ -1554,7 +1554,7 @@
             <mxPoint x="65" y="1221.63" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Tggpn-h0w9b8xoBbMFwP-2" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="NICACBZ1QluxI0W9Qa2Q-237" target="A3S0b1CbI2T3U_TqhLG1-45">
+        <mxCell id="Tggpn-h0w9b8xoBbMFwP-2" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="NICACBZ1QluxI0W9Qa2Q-237" target="A3S0b1CbI2T3U_TqhLG1-45" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="-720" y="1320.63" as="targetPoint" />
           </mxGeometry>
@@ -3533,9 +3533,9 @@
             <mxGeometry x="710.74" y="440" width="118.52" height="50" as="geometry" />
           </mxCell>
         </UserObject>
-        <mxCell id="u-2OYHYpkGujKRkxLq70-239" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;jumpStyle=gap;jumpSize=12;" parent="XSf1TWJF4OEfPNMGcsag-65" source="NICACBZ1QluxI0W9Qa2Q-215" target="SUSUrSS6mQ2etNRc7UqF-0" edge="1">
+        <mxCell id="u-2OYHYpkGujKRkxLq70-239" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;jumpStyle=gap;jumpSize=12;" parent="XSf1TWJF4OEfPNMGcsag-65" source="NICACBZ1QluxI0W9Qa2Q-215" target="u-2OYHYpkGujKRkxLq70-249" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="2312.51" y="675" as="targetPoint" />
+            <mxPoint x="500" y="550" as="targetPoint" />
             <mxPoint x="1944.01" y="660" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
@@ -3676,19 +3676,6 @@
             <mxPoint x="414.5" y="-360" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="SUSUrSS6mQ2etNRc7UqF-1" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="XSf1TWJF4OEfPNMGcsag-65" source="SUSUrSS6mQ2etNRc7UqF-0" target="u-2OYHYpkGujKRkxLq70-249" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="640" y="590" />
-              <mxPoint x="640" y="465" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <UserObject label="Respiratory rate &amp;gt;0" name="respiratory_rate" odk_type="rhombus" id="SUSUrSS6mQ2etNRc7UqF-0">
-          <mxCell style="rhombus;whiteSpace=wrap;html=1;rounded=0;strokeColor=default;fillColor=none;" parent="XSf1TWJF4OEfPNMGcsag-65" vertex="1">
-            <mxGeometry x="430" y="550" width="140" height="80" as="geometry" />
-          </mxCell>
-        </UserObject>
         <mxCell id="XSf1TWJF4OEfPNMGcsag-71" style="edgeStyle=orthogonalEdgeStyle;rounded=0;jumpStyle=gap;jumpSize=12;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="XSf1TWJF4OEfPNMGcsag-68" target="XSf1TWJF4OEfPNMGcsag-69" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
@@ -3899,7 +3886,7 @@
             <mxGeometry y="80" width="80" height="40" as="geometry" />
           </mxCell>
         </UserObject>
-        <mxCell id="Tggpn-h0w9b8xoBbMFwP-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="KGjeGqpUnCV8QP1xGqUL-5" source="KGjeGqpUnCV8QP1xGqUL-24" target="KGjeGqpUnCV8QP1xGqUL-25">
+        <mxCell id="Tggpn-h0w9b8xoBbMFwP-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="KGjeGqpUnCV8QP1xGqUL-5" source="KGjeGqpUnCV8QP1xGqUL-24" target="KGjeGqpUnCV8QP1xGqUL-25" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <object label="Weight (kg):" odk_type="decimal" min="2" max="29" constraint_message="This weight is unrealistic. Enter a realistic value." required="yes" name="weight" id="KGjeGqpUnCV8QP1xGqUL-24">
@@ -3935,11 +3922,11 @@
           </mxCell>
         </UserObject>
         <object label="Age" name="age" id="Tggpn-h0w9b8xoBbMFwP-0">
-          <mxCell style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="KGjeGqpUnCV8QP1xGqUL-5">
+          <mxCell style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;" parent="KGjeGqpUnCV8QP1xGqUL-5" vertex="1">
             <mxGeometry x="62.34999999999991" y="40" width="120" height="80" as="geometry" />
           </mxCell>
         </object>
-        <mxCell id="Tggpn-h0w9b8xoBbMFwP-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="KGjeGqpUnCV8QP1xGqUL-5" source="KGjeGqpUnCV8QP1xGqUL-8" target="KGjeGqpUnCV8QP1xGqUL-41">
+        <mxCell id="Tggpn-h0w9b8xoBbMFwP-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="KGjeGqpUnCV8QP1xGqUL-5" source="KGjeGqpUnCV8QP1xGqUL-8" target="KGjeGqpUnCV8QP1xGqUL-41" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <UserObject label="Report" odk_type="goto" name="report" id="KGjeGqpUnCV8QP1xGqUL-84">
@@ -4590,7 +4577,7 @@
         <mxCell id="x4aIX1mL7_wf33j6CnDN-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="u-2OYHYpkGujKRkxLq70-172" target="x4aIX1mL7_wf33j6CnDN-5" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="x4aIX1mL7_wf33j6CnDN-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="u-2OYHYpkGujKRkxLq70-173" edge="1" target="x4aIX1mL7_wf33j6CnDN-5">
+        <mxCell id="x4aIX1mL7_wf33j6CnDN-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="u-2OYHYpkGujKRkxLq70-173" target="x4aIX1mL7_wf33j6CnDN-5" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="-410" y="3590" as="targetPoint" />
             <Array as="points">

@@ -95,7 +95,7 @@ class DAGConverter:
             # Add the node to the graph without type inference
             self.graph.add_node(node_id, **attrs)
 
-        # Step 2: Add all edges
+        # Step 2: Add all edges (will also add groups as nodes to the graph)
         for edge_id, edge in self.diagram.edges.items():
             if edge.source and edge.target:
                 self.graph.add_edge(
@@ -361,6 +361,7 @@ class DAGConverter:
     def _simplify_groups(self):
         """Store group information as node attributes.
         The edges that were pointing to a group are redirected to the starting node in the group.
+        Afterward, all group nodes are removed from the graph.
         """
         # For each group in the diagram
         for group_id, group in self.diagram.groups.items():
@@ -371,23 +372,39 @@ class DAGConverter:
                     self.graph.nodes[node_id]["group_id"] = group_id
                     self.graph.nodes[node_id]["group_heading"] = group.label
 
-        # Redirect edges that point to groups to the first node in the group
-        for src, tgt, attrs in list(self.graph.edges(data=True)):
-            # Check if target is a group
-            if tgt in self.diagram.groups:
-                group = self.diagram.groups[tgt]
+            # Determine the start node for the group
+            start_nodes = [
+                node_id
+                for node_id in group.contained_elements
+                if node_id in self.graph
+                and self.graph.nodes[node_id].get("type") not in ["help", "hint"]
+                and not list(self.graph.in_edges(node_id))  # No incoming edges
+            ]
 
-                # Find the start node in the group (first node that's not help/hint)
-                start_node = None
-                for node_id in group.contained_elements:
-                    if node_id in self.graph:
-                        node_type = self.graph.nodes[node_id].get("type")
-                        if node_type not in ["help", "hint"]:
-                            start_node = node_id
-                            break
+            # Handle cases where there are no or multiple start nodes
+            if len(start_nodes) != 1:
+                if self.validator:
+                    self.validator.add_result(
+                        severity=ValidationSeverity.WARNING,
+                        message=(
+                            f"Group {group_id} should have exactly one start node, "
+                            f"but found {len(start_nodes)}. Using the first available node."
+                        ),
+                        element_id=group_id,
+                        element_type="Group",
+                    )
+                # Take the first available node if it exists, otherwise skip
+                start_node = start_nodes[0] if start_nodes else None
+            else:
+                start_node = start_nodes[0]
 
-                if start_node:
-                    # Add direct edge to the main node
+            # If no valid start node is found, skip processing this group
+            if not start_node:
+                continue
+
+            # Redirect all edges pointing to the group to the start node
+            for src, tgt, attrs in list(self.graph.edges(data=True)):
+                if tgt == group_id:
                     self.graph.add_edge(
                         src,
                         start_node,  # start_node is the new target
@@ -395,9 +412,13 @@ class DAGConverter:
                         label=attrs.get("label", ""),
                         original_target=tgt,
                     )
-
-                    # Remove edge to container
+                    # Remove edge to the group node
                     self.graph.remove_edge(src, tgt)
+
+        # Remove all group nodes from the graph
+        for group_id in self.diagram.groups.keys():
+            if group_id in self.graph:
+                self.graph.remove_node(group_id)
 
     def _simplify_goto_nodes(self):
         """Convert goto nodes to direct edges."""
@@ -720,33 +741,25 @@ class DAGConverter:
 
     def _remove_html_tags(self):
         """
-        Remove HTML tags from flag and decision point node labels.
+        Remove HTML tags from flag and decision point node labels, and replace
+        non-breaking spaces (\xa0) with normal spaces for all other nodes.
 
-        This method processes all flag and decision point nodes in the graph,
-        removes HTML formatting from their labels, and updates the graph in-place.
+        This method processes all nodes in the graph and updates their labels in-place.
         """
-        # Find all flag and decision point nodes
-        for node_id, attrs in list(self.graph.nodes(data=True)):
-            # Only process flag and decision point nodes
+        for node_id, attrs in self.graph.nodes(data=True):
+            # Get the label of the node
+            label = attrs.get("label", "")
+            if not label:  # Skip if label is empty
+                continue
+
             if attrs.get("type") in ["flag", "decision_point"]:
-                # Get the label of the node
-                html_string = attrs.get("label", "")
+                # Parse HTML and extract plain text for 'flag' and 'decision_point' nodes
+                plain_text = BeautifulSoup(label, "html.parser").get_text()
+                # Clean up the text (remove extra whitespace and replace non-breaking spaces)
+                clean_text = " ".join(plain_text.split()).replace("\xa0", " ")
+            else:
+                # For all other nodes, just replace non-breaking spaces
+                clean_text = label.replace("\xa0", " ")
 
-                # Skip if empty
-                if not html_string:
-                    continue
-
-                # Create BeautifulSoup object to parse HTML
-                soup = BeautifulSoup(html_string, "html.parser")
-
-                # Get text without HTML tags
-                plain_text = soup.get_text()
-
-                # Remove extra whitespace and newlines
-                clean_text = " ".join(plain_text.split())
-
-                # Replace non-breaking spaces with regular spaces
-                clean_text = clean_text.replace("\xa0", " ")
-
-                # Update the node's label in the graph
-                self.graph.nodes[node_id]["label"] = clean_text
+            # Update the node's label in the graph
+            attrs["label"] = clean_text
