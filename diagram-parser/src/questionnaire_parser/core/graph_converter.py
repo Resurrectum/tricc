@@ -254,9 +254,10 @@ class DAGConverter:
 
         # Phase 2: Structural Simplifications
         self._simplify_select_options()
+        self._simplify_help_hint()
         self._simplify_goto_nodes()  # these still require the name tag to be used
         self._simplify_groups()  # must happen after goto simplification, because gotos can point to groups
-        self._simplify_help_hint()
+
         # self._simplify_rhombus_nodes() # must write edge logic first
 
         # Phase 3: Edge Simplifications
@@ -382,7 +383,7 @@ class DAGConverter:
             ]
 
             # Handle cases where there are no or multiple start nodes
-            if len(start_nodes) != 1:
+            if len(start_nodes) > 1:
                 if self.validator:
                     self.validator.add_result(
                         severity=ValidationSeverity.WARNING,
@@ -395,6 +396,23 @@ class DAGConverter:
                     )
                 # Take the first available node if it exists, otherwise skip
                 start_node = start_nodes[0] if start_nodes else None
+            elif len(start_nodes) == 0:
+                # check if an edge from outside the group points to a node inside that group
+                for node_id in group.contained_elements:
+                    if node_id in self.graph:
+                        for src, tgt, attrs in self.graph.in_edges(node_id, data=True):
+                            if src not in group.contained_elements:
+                                if self.validator:
+                                    group_label = self.diagram.groups[group_id].label
+                                    src_label = self.diagram.nodes[src].label
+                                    node_label = self.diagram.nodes[node_id].label
+                                    self.validator.add_result(
+                                        severity=ValidationSeverity.WARNING,
+                                        message=(
+                                            f"Group '{group_label}' has no start node, but an edge from '{src_label}' points to '{node_label}'. External edges must not point to nodes inside a group."
+                                        ),
+                                    )
+                continue
             else:
                 start_node = start_nodes[0]
 
