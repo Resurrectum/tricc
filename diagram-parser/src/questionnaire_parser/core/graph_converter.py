@@ -51,10 +51,13 @@ class DAGConverter:
         # Phase 2: Apply simplifications (except removing decision points)
         self._simplify_graph()
 
-        # Phase 2.1: Write edge logic
+        # Phase 3: Write edge logic
         self._calculate_edge_logic()
 
-        # Phase 3: Validate final graph
+        # Phase 4: Simplify decision points
+        self._simplify_rhombus_nodes()
+
+        # Phase 5: Validate final graph
         self._validate_graph()
 
         return self.graph
@@ -257,8 +260,6 @@ class DAGConverter:
         self._simplify_help_hint()
         self._simplify_goto_nodes()  # these still require the name tag to be used
         self._simplify_groups()  # must happen after goto simplification, because gotos can point to groups
-
-        # self._simplify_rhombus_nodes() # must write edge logic first
 
         # Phase 3: Edge Simplifications
         self._combine_successive_notes()
@@ -476,44 +477,21 @@ class DAGConverter:
     def _simplify_rhombus_nodes(self):
         """Replace decision point nodes by edges with combined edge logic."""
         # Find all decision point nodes
-        decision_points = []
         for node_id, attrs in self.graph.nodes(data=True):
             if attrs.get("type") == "decision_point":
-                decision_points.append((node_id, attrs))
+                # Get incoming and outgoing edges
+                incoming_edges = list(self.graph.in_edges(node_id, data=True))
+                outgoing_edges = list(self.graph.out_edges(node_id, data=True))
 
-        for decision_point_id, attrs in decision_points:
-            # Skip external decision points
-            if attrs.get("external", False):
-                continue
-
-            # Get referenced node name
-            ref_name = attrs.get("name")
-            if not ref_name:
-                continue
-
-            # Find referenced node
-            ref_id = None
-            for n_id, n_attrs in self.graph.nodes(data=True):
-                if n_attrs.get("name") == ref_name:
-                    ref_id = n_id
-                    break
-
-            if not ref_id:
-                continue
-
-            # Get incoming and outgoing edges
-            incoming_edges = list(self.graph.in_edges(decision_point_id, data=True))
-            outgoing_edges = list(self.graph.out_edges(decision_point_id, data=True))
-
-            # Create direct edges which have as source the source of the incoming edge,
-            # and as target the target of the ougoing edge,
-            # short-cuting the path over the decision point.
-            # The new edge holds the combined logic of the edges it replaces
-            for src, _, in_attrs in incoming_edges:
-                for _, tgt, out_attrs in outgoing_edges:
-                    # Skip if the edge already exists
-                    if self.graph.has_edge(src, tgt):
-                        continue
+                # Create direct edges which have as source the source of the incoming edge,
+                # and as target the target of the ougoing edge,
+                # short-cuting the path over the decision point.
+                # The new edge holds the combined logic of the edges it replaces
+                for src, _, in_attrs in incoming_edges:
+                    for _, tgt, out_attrs in outgoing_edges:
+                        # If the edge already exists, combine the logic of the edges
+                        if self.graph.has_edge(src, tgt):
+                            
 
                     # Create condition based on decision point
                     condition = self._create_decision_condition(
